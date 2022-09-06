@@ -123,41 +123,53 @@
         </div>
     </div>
     </div>
+    <style>
+        .header{
+            position:sticky;
+            top: 0 ;
+        }
+        .table-responsive {
+            /* width: 600px; */
+            height: 300px;
+            overflow: auto;
+        }
+    </style>
     <div class="table-responsive">
         <table class="mytable table table-bordered" id="example" class="display nowrap" style="width:100%">
-        <tr style="background:rgb(234,182,118)">
-                                <th>No</th>
-                                <th>Code</th>
-                                <th>Name</th>
-                                <th>Active</th>
-                                <th>Type</th>
-                                <th>Address1</th>
-                                <th>Address2</th>
-                                <th>Address3</th>
-                                <th>Country</th>
-                                <th>Country Code</th>
-                                <th>State</th>
-                                <th>State Code</th>
-                                <th>City</th>
-                                <th>STD Code</th>
-                                <th>Telephone</th>
-                                <th>Mob-Cnt-Code</th>
-                                <th>Mobile</th>
-                                <th>GSTIN</th>
-                                <th>FSSAI NO</th>
-                                <th>CIN NO</th>
-                                <th>PAN</th>
-                                <th>TAN</th>
-                                <th>LST/TPIN/TIN</th>
-                                <th>CST NO</th>
-                                <th>Co-Regn No</th>
-                                <th>Drug Lic No</th>
-                                <th>IMP/EXP</th>
-                                <th>Created BY</th>
-                                <th>Created Date</th>
-                                <th>Upadted Name</th>
-                                <th width="50%;">Upadted Date/Time</th>
-                            </tr>
+            <thead style="position: sticky;top: 0" class="thead-dark">
+                <tr>
+                    <th class="header" scope="col">No</th>
+                    <th class="header" scope="col">Code</th>
+                    <th class="header" scope="col">Name</th>
+                    <th class="header" scope="col">Active</th>
+                    <th class="header" scope="col">Type</th>
+                    <th class="header" scope="col">Address1</th>
+                    <th class="header" scope="col">Address2</th>
+                    <th class="header" scope="col">Address3</th>
+                    <th class="header" scope="col">Country</th>
+                    <th class="header" scope="col">Country Code</th>
+                    <th class="header" scope="col">State</th>
+                    <th class="header" scope="col">State Code</th>
+                    <th class="header" scope="col">City</th>
+                    <th class="header" scope="col">STD Code</th>
+                    <th class="header" scope="col">Telephone</th>
+                    <th class="header" scope="col">Mob-Cnt-Code</th>
+                    <th class="header" scope="col">Mobile</th>
+                    <th class="header" scope="col">GSTIN</th>
+                    <th class="header" scope="col">FSSAI NO</th>
+                    <th class="header" scope="col">CIN NO</th>
+                    <th class="header" scope="col">PAN</th>
+                    <th class="header" scope="col">TAN</th>
+                    <th class="header" scope="col">LST/TPIN/TIN</th>
+                    <th class="header" scope="col">CST NO</th>
+                    <th class="header" scope="col">Co-Regn No</th>
+                    <th class="header" scope="col">Drug Lic No</th>
+                    <th class="header" scope="col">IMP/EXP</th>
+                    <th class="header" scope="col">Created BY</th>
+                    <th class="header" scope="col">Created Date and Time</th>
+                    <th class="header" scope="col">Upadted Date and Time </th>
+                </tr>
+            </thead>
                         @if(count($comp_masterdata) < 1)
                         <tr>
                             <td>No Product Found.</td>
@@ -195,10 +207,7 @@
                             <td>{{$mast_value->importexport}}</td>
                             <td>{{$mast_value->created_by}}</td>
                             <td>{{$mast_value->created_at}}</td>
-                            <td>{{$mast_value->comp_code}}</td>
-                            <td>{{$mast_value->comp_code}}</td>
-                            
-                            
+                            <td>{{$mast_value->updated_at}}</td>    
                         </tr> 
                         @endforeach
                     @endif

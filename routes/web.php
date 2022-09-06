@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
   
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Master\companyMaster;
+use App\Http\Controllers\Master\branchMaster;
 use App\Http\Controllers\Master\PointofSale;
 
 /*
@@ -29,3 +30,5 @@ Route::post('company_master_post', [companyMaster::class, 'store'])->name('compa
 Route::post('company_master_city', [companyMaster::class, 'cityChange'])->name('company_master_city');
 
 Route::get('pointofsale', [PointofSale::class, 'index'])->name('pointofsale');
+
+Route::get('branch_master', [branchMaster::class, 'index'])->name('branch_master');
