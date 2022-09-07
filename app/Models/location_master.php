@@ -9,4 +9,5 @@ class location_master extends Model
 {
     use HasFactory;
     protected $table = 'location_master';
+    protected $guarded = []; 
 }

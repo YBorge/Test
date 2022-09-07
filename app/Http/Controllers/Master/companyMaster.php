@@ -16,11 +16,7 @@ class companyMaster extends Controller
 {
     public function index()
     {
-        $comp_type = common_list_master::select('list_desc','list_value')
-                           ->where('status', '=', 'Y')
-                           ->where('list_code', '=', 'COMP_TYPE')
-                           ->orderBy('order_by')
-                           ->get();
+        
         $comp_city = city::select('city_id','city_name')
                            ->get();
         $comp_masterdata= company_master::all();
@@ -30,7 +26,7 @@ class companyMaster extends Controller
         $city_master = city::pluck('city_name','city_id');
         $state_master = state::pluck('state_name','state_code');
         $country_master = country::pluck('country_name','country_code');                 
-        return view('master.company_master',['comp_type' => $comp_type, 'comp_city' => $comp_city,'comp_masterdata'  => $comp_masterdata,'city_master' => $city_master,'state_master' => $state_master,'country_master' => $country_master,'comp_type_master' => $comp_type_master]);
+        return view('master.company_master',['comp_city' => $comp_city,'comp_masterdata'  => $comp_masterdata,'city_master' => $city_master,'state_master' => $state_master,'country_master' => $country_master,'comp_type_master' => $comp_type_master]);
     }
 
     public function cityChange(Request $request)

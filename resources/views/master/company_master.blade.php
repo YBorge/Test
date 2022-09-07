@@ -23,8 +23,8 @@
             <label style="color:black;" >Type<span style="color:red;">*</span></label>
             <select name="type" id="type" class="form-control">
                 <option value="" >Select</option>
-                @foreach($comp_type as $owener)
-                <option value="{{$owener->list_value}}" >{{$owener->list_desc}}</option>
+                @foreach($comp_type_master as $key => $owener)
+                <option value="{{$key}}" >{{$owener}}</option>
                 @endforeach      
 			</select> 
             <span class="text-danger"><strong id="txt_type-error"></strong></span>
@@ -46,8 +46,8 @@
             <label>City <span style="color:red;">*</span></label>
             <select name="city" id="city" class="form-control">
                 <option value="" >Select</option>
-                @foreach($comp_city as $key => $city_value)
-                <option value="{{$city_value->city_id}}" >{{$city_value->city_name}}</option>
+                @foreach($city_master as $key => $city_value)
+                <option value="{{$key}}" >{{$city_value}}</option>
                 @endforeach       
 			</select>
             <span class="text-danger"><strong id="txt_city-error"></strong></span>
