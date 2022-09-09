@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Master\companyMaster;
 use App\Http\Controllers\Master\branchMaster;
 use App\Http\Controllers\Master\PointofSale;
+use App\Http\Controllers\Master\cateMaster;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,3 +34,5 @@ Route::get('pointofsale', [PointofSale::class, 'index'])->name('pointofsale');
 
 Route::get('branch_master', [branchMaster::class, 'index'])->name('branch_master');
 Route::post('branch_master_post', [branchMaster::class, 'store'])->name('branch_master_post');
+
+Route::get('cate_master', [cateMaster::class, 'index'])->name('cate_master');

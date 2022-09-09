@@ -5,7 +5,6 @@ use Session;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use App\Models\company_master;
 use App\Models\common_list_master;
 use App\Models\country;
 use App\Models\state;
@@ -41,9 +40,9 @@ class branchMaster extends Controller
             'city' => 'required'
         ],
         [
-            'loc_code.required' => 'Please Enter Code',
+            'loc_code.required' => 'Please Enter Location Code',
             'loc_code.unique' => 'Code Already Exist',
-            'loc_no.required' => 'Please Enter Location',
+            'loc_no.required' => 'Please Enter Location No',
             'loc_name.required' => 'Please Enter Location Name',
             'addr1.required' => 'Please Enter Address',
             'addr2.required' => 'Please Enter Address',
