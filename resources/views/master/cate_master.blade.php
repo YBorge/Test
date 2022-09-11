@@ -1,133 +1,112 @@
 @extends('layout')
   
 @section('content')
-<style type="text/css">
-  .point{ width: 50px;padding: 5px;}
-  table tr th,td {padding: 3px;}
-</style>
 
 <div class="container-fluid">
-  <div class="panel panel-primary">
-    <div class="panel-heading" style="padding: 10px;"><b>Point-of-Sale (Counter Sale)</b></div>
-    <div class="panel-body" >
-      <form id="posTransaction" name="posTransaction" method="POST">
-        {{ csrf_field() }}
-        <div class="col-md-9">
-           <table width="100%">
-              <tr>
-                <th>Location </th>
-                <th>Bill Date </th>
-                <th>Bill No </th>
-                <th>Bill Date </th>
-                <th>Cashier </th>
-                <th>Machine </th>
-              </tr>
-            </table>
-        </div><br>
-        <div class="col-md-3">
-          
+    <div class="col-md-6">
+        <div class="panel panel-success">
+            <div class="panel-heading" style="padding: 10px;"><b>Add Category</b></div>
+            <div class="panel-body" >
+            <div class="row">
+                <div class="col-md-2" class="form-group">
+                    <label style="color:black;" >Code <span style="color:red;">*</span></label>
+                    <input type="text" name="loc_code" id="loc_code" class="form-control" placeholder="Code">
+                </div>
+                <div class="col-md-3" class="form-group">
+                    <label style="color:black;">Name <span style="color:red;">*</span></label>
+                    <input type="text" name="loc_no" id="loc_no" placeholder="Name" class="form-control">
+                </div>
+                <div class="col-md-2" class="form-group">
+                    <label style="color:black;">Type <span style="color:red;">*</span></label>
+                    <select name="" id="" class="form-control">
+                        <option value="" id="yes" readonly>Select</option>
+                        @foreach($food_type as $key => $type)
+                        <option value="{{$key}}" >{{$type}}</option>
+                        @endforeach 
+                    </select>
+                </div>
+                <div class="col-md-3" class="form-group">
+                    <label style="color:black;">Group <span style="color:red;">*</span></label>
+                    <input type="text" name="loc_name" id="loc_name" class="form-control" style='text-transform:uppercase' placeholder="Group"value="">	
+                </div>
+                <div class="col-md-2" class="form-group">
+                    <label style="color:black;">Inventory <span style="color:red;">*</span></label>
+                    <select name="inventory" id="inventory" class="form-control">
+                        <option value="" id="yes" readonly>Select</option>
+                        <option value="Y" id="yes">Yes</option>
+                        <option value="N" id="no">No</option>
+                    </select>
+                </div>
+                <div class="col-md-1" style="padding-top:18px;">
+                    <input type="submit" name="btn_submit" id="btn_submit" value="Add" class="btn btn-success" onclick="add_cat();" >
+                    
+                </div>
+                <div class="col-md-1" style="padding-top:18px;">
+                    
+                    <input type="submit" name="btn_cancel" id="btn_cancel" value="Clear" class="btn btn-danger" onclick="chk1();">
+                </div>
+            </div>
+            </div>
         </div>
-        <div class="col-md-9">
-          <b> Mobile <span style="color:red;">*</span></b> <input type="text" name="" placeholder="Mobile" style="width: 83px;"><b>Cust-Id <span style="color:red;">*</span> </b><input type="text" name="" placeholder="Customer Id" > <input type="text" name="" placeholder="Customer Name"> <a href="#" class="btn btn-xs btn-primary"> New Cust</a>  
-            <b>HD <span style="color:red;">*</span> </b>
-              <select name="">
-                <option value="Y">Select</option>
-                <option value="Y">YES</option>
-                <option value="N">NO</option>
-              </select>
-            
-            <b>Points </b><input type="text" name="" placeholder="Points" class="point" class="point">
-            <b>Disc </b><input type="text" name="" placeholder="Amt" class="point"> 
-            <input type="text" name="" class="point" placeholder="%"><br>
-            <b>Address</b> <input type="text" name="" placeholder="Address">
-            <b>Last Bill No </b><input type="text" name="" class="point" placeholder="Last Bill No" >
-            <b>Last Bill Amt. </b><input type="text" name="" class="point" placeholder="Last Bill Amt" >
-            <b>Last Bill Charges </b><input type="text" name="" class="point" placeholder="Last Bill Charges" >
-            <b>Other Charges </b><input type="text" name="" class="point" placeholder="Amt"> 
-            <input type="text" name="" class="point" placeholder="%"><br><br>
-            <b>Scan Barcode</b><input type="text" name=""  placeholder="" value="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <b>SEARCH SKU</b><input type="text" name=""  placeholder="" value=""><br><br>
-            <table width="100%" border="1">
-              <tr>
-                <th>Sku </th>
-                <th>Sku Name </th>
-                <th>Batch-No </th>
-                <th>MRP </th>
-                <th>Disc </th>
-                <th>Qty </th>
-                <th>Rate </th>
-                <th>Amount </th>
-              </tr>
-              <tr>
-                <td>1 </td>
-                <td>Roll </td>
-                <td>1 </td>
-                <td>100.00 </td>
-                <td>5.00 </td>
-                <td>1.00 </td>
-                <td>95.00</td>
-                <td>100.00 </td>
-              </tr>
-            </table>
-        </div>
-        <div class="col-md-3">
-          <table width="100%" border="1">
-              <tr>
-                <th><b>Sku Count</b> </th>
-                <th><input type="text" name="" class="point" placeholder="" value="1"> </th>
-                <th><b>Total Qty</b> </th>
-                <th><input type="text" name="" class="point" placeholder="" value="1.00"> </th>
-                
-              </tr>
-              <tr>
-                <td colspan="4" align="center"><b>Payable Value </b></td>
-              </tr>
-              <tr>
-                <td colspan="4" align="center">
-                <input type="text" name="" style="text-align: " class="" placeholder="" value="95.00"></td>
-              </tr>
-              <tr>
-                <td colspan="4" ><b>Total MRP</b>  <input type="text" name="" class="" placeholder="" value="100.00"></td>
-              </tr>
-              <tr>
-                <td colspan="4" ><b>Save </b><input type="text" name="" class="" placeholder="" value="5.00"></td>
-              </tr>
-               <tr>
-                <td colspan="4" ><b>Amount </b>  <input type="text" name="" class="" placeholder="" value="95.00"></td>
-              </tr>
-               <tr>
-                <td colspan="4" ><b>Pmt. Chrg </b>  <input type="text" name="" class="" placeholder="" value=".00"></td>
-              </tr>
-              <tr>
-                <td colspan="4" ><b>Item Disc</b>  <input type="text" name="" class="" placeholder="" value=".00"></td>
-              </tr>
-              <tr>
-                <td colspan="4" ><b>Bill Disc</b>  <input type="text" name="" class="" placeholder="" value=".00"></td>
-              </tr>
-              <tr>
-                <td colspan="4" ><b>Round Off</b>  <input type="text" name="" class="" placeholder="" value="0.00"></td>
-              </tr>
-              <tr>
-                <td colspan="4" >
-                <a href="#" class="btn btn-xs btn-primary"> Re-Print Bill</a>&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-xs btn-success"> Cancel Bill</a>
-                </td>
-              </tr>
-            </table>
-        </div>
-        <div class="col-md-12">
-          <a href="#" class="btn btn-xs btn-success"> Non-Lnv Sku</a>&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-xs btn-success"> Sku Copy</a>&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-xs btn-success"> Remove Sku</a>&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-xs btn-success"> Change Qty</a>&nbsp;&nbsp;&nbsp;
-          <a href="#" class="btn btn-xs btn-success"> Block Change</a>&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-xs btn-success"> Query Mode</a>&nbsp;&nbsp;&nbsp;
-          <a href="#" class="btn btn-xs btn-success"> Display / Show</a>&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-xs btn-success"> Sku List-LOV</a>&nbsp;&nbsp;&nbsp;
-          <a href="#" class="btn btn-xs btn-success"> Hold Bill</a>&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-xs btn-success">Pop Hold Bill </a>
-        </div>  
-      </form>
     </div>
-  </div>
+    <div class="col-md-6">
+        <div class="panel panel-success">
+            <div class="panel-heading" style="padding: 10px;"><b>Add Sub-Category</b></div>
+            <div class="panel-body" >
+            <div class="row">
+                <div class="col-md-2" class="form-group">
+                    <label style="color:black;" >Code <span style="color:red;">*</span></label>
+                    <input type="text" name="loc_code" id="loc_code" class="form-control" placeholder="Code">
+                </div>
+                <div class="col-md-4" class="form-group">
+                    <label style="color:black;">Sub Ctegory Name <span style="color:red;">*</span></label>
+                    <input type="text" name="loc_no" id="loc_no" placeholder="Sub Ctegory Name" class="form-control">
+                </div>
+                <div class="col-md-3" class="form-group">
+                    <label style="color:black;">Ctegory <span style="color:red;">*</span></label>
+                    <select name="" id="" class="form-control">
+                        <option value="" id="yes" readonly>Select</option>
+                        @foreach($cat_mater as $key => $cattype)
+                        <option value="{{$key}}" >{{$cattype}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-2" class="form-group">
+                    <label style="color:black;">MarkUp <span style="color:red;">*</span></label>
+                    <input type="text" name="loc_name" id="loc_name" class="form-control" onkeypress="return isNumber(event)" placeholder="MarkUp" value="">	
+                </div>
+                <div class="col-md-3" class="form-group">
+                    <label style="color:black;">MarkDown <span style="color:red;">*</span></label>
+                    <input type="text" name="loc_name" id="loc_name" class="form-control" onkeypress="return isNumber(event)" placeholder="MarkUp" value="">    
+                </div>
+                <div class="col-md-3" class="form-group">
+                    <label>Shelf Life Peried</label>
+                    <input type="text" name="txt_shelflife" id="txt_shelflife" placeholder="ShelfLife" class="form-control" onkeypress="return isNumber(event)">
+                </div>
+                <div class="col-md-3" class="form-group">
+                    <label>Shelf Life D/M</label>
+                    <select name="txt_shelfperied" id="txt_shelfperied" class="form-control">
+                        <option value="" id="yes" readonly>Select</option>
+                        <option value="D" id="yes">Days</option>
+                        <option value="M" id="no">Month</option>
+                    </select>
+                </div>
+                <div class="col-md-1" style="padding-top:18px;">
+                    <input type="submit" name="btn_submit" id="btn_submit" value="Add" class="btn btn-success" onclick="add_cat();" >
+                    
+                </div>
+                <div class="col-md-1" style="padding-top:18px;">
+                    
+                    <input type="submit" name="btn_cancel" id="btn_cancel" value="Clear" class="btn btn-danger" onclick="chk1();">
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
 </div>
-
 <script>
          $(document).ready(function(){
-            var form=$("#companyMaster");
+            var form=$("#branchMaster");
             $('#btn_submit').click(function(e){
                  e.preventDefault();
                  $.ajaxSetup({
@@ -136,81 +115,43 @@
                      }
                  });
                  $.ajax({
-                    url: "{{ url('company_master_post') }}",
+                    url: "{{ url('branch_master_post') }}",
                     method: 'post',
                     data:form.serialize(),
-                     success: function(data){
-                       if(data.errors) {
-                           if(data.errors.txt_code){
-                               $( '#txtcode-error' ).html("Please Enter Code" );
-                           }else{
-                               $( '#txtcode-error' ).html("");
-                           }
-
-                           if(data.errors.txt_comname){
-                               $( '#txt_comname-error' ).html( "Please Enter Company Name" );
-                           }else{
-                               $( '#txt_comname-error' ).html( "");
-                           }
-                           if(data.errors.type){
-                               $( '#txt_type-error' ).html("Please Select Type");
-                           }else{
-                               $( '#txt_type-error' ).html("");
-                           }
-                           if(data.errors.addr1){
-                               $( '#txt_addr1-error' ).html( "Please Enter Address" );
-                           }else{
-                               $( '#txt_addr1-error' ).html( "");
-                           }
-                           if(data.errors.city){
-                               $( '#txt_city-error' ).html( "Please Select City" );
-                           }else{
-                               $( '#txt_city-error' ).html( "");
-                           }
-
+                    success: function(data)
+                    {
+                       if(data.errors) 
+                       {
+                            toastr.error(data.errors);
+                            // $.each(data.errors, function(index, jsonObject) {
+                            //       $.each(jsonObject, function(key, val) { 
+                            //      toastr.error(val);
+                            //       });
+                            //    });
                        }
-                       if(data.success) {
-                            alert("Data Saved..!");
-                               $( '#txtcode-error' ).html( "");
-                               $( '#txt_comname-error' ).html( "");
-                               $( '#txt_type-error' ).html( "");
-                               $( '#txt_addr1-error' ).html( "");
-                           $('#success-msg5').removeClass('hide');
-                           setInterval(function(){ 
-                               $('#success-msg5').addClass('hide');
-                           }, 4000);
-
+                       if(data.success) 
+                       {
+                            toastr.success('Data Saved Successfully');
+                            $('#branchMaster')[0].reset();
+                            location.reload();
                           
                        }
-                     }
+                    },
+                    error: function(data) {
+                    }
                  });
              });
-            $('#city').change(function(e){
-                 e.preventDefault();
-                 $.ajaxSetup({
-                     headers: {
-                         'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-                     }
-                 });
-                 $.ajax({
-                    url: "{{ url('company_master_city') }}",
-                    method: 'post',
-                    data:form.serialize(),
-                     success: function(data)
-                     {
-                        if(data.StateCount.state)
-                        {
-                            $("#state").val(data.StateCount.state);
-                        }
-                        if(data.StateCount.comp_country)
-                        {
-                            $("#country").val(data.StateCount.comp_country);
-                        }
-                        
-                     }
-                 });
-             });
-         });
+        });  
+        function isNumber(evt) 
+        {
+            var iKeyCode = (evt.which) ? evt.which : evt.keyCode
+            if (iKeyCode != 46 && iKeyCode > 31 && (iKeyCode < 48 || iKeyCode > 57) && iKeyCode != 9){
+            alert("Please Enter Numbers Only");
+                return false;
+            }
+            return true;
+        }
+
       </script>
 
 @endsection
