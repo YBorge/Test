@@ -52,7 +52,7 @@
                           <div class="form-group row">
                               <label for="company" class="col-md-4 col-form-label text-md-right">Location</label>
                               <div class="col-md-6">
-                              <select class="form-control"  name="txt_company" id="txt_company">
+                              <select class="form-control"  name="txt_location" id="txt_location">
                                     @if(sizeof($PostLocation) > 1)
                                     <option value="">Select</option>
                                     @endif
