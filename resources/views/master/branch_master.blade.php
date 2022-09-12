@@ -23,8 +23,8 @@
         </div>
         <div class="col-md-3" class="form-group">
             <label style="color:black;">Company <span style="color:red;">*</span></label>
-            <input type="text" name="comp_name" id="comp_name" class="form-control" value="" readonly>
-            <input type="hidden" name="comp_code" id="comp_code" class="form-control" value="" readonly>	
+            <input type="text" name="comp_name" id="comp_name" class="form-control" value="{{ Session::get('companyname')}}" readonly>
+            <input type="hidden" name="comp_code" id="comp_code" class="form-control" value="{{ Session::get('companyname')}}" readonly>	
         </div>
         <div class="col-md-2" class="form-group">
             <label style="color:black;">Address 1 <span style="color:red;">*</span></label>
