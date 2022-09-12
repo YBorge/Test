@@ -12,7 +12,7 @@
     <div class="panel-body" >
       <form id="posTransaction" name="posTransaction" method="POST">
         {{ csrf_field() }}
-        <div class="col-md-9">
+        <div class="col-md-9" style="background-color: #cfccc9;">
            <table width="100%">
               <tr>
                 <th>Location </th>
