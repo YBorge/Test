@@ -67,7 +67,7 @@
                     <table class="mytable table table-bordered" id="example" class="display nowrap">
                         <thead style="position: sticky;top: 0" class="thead-dark">
                             <tr>
-                                <th class="header" scope="col"></th>
+                                <th class="header" scope="col">Select</th>
                                 <th class="header" scope="col">Sr. No</th>
                                 <th class="header" scope="col">Code</th>
                                 <th class="header" scope="col">Name</th>
@@ -88,7 +88,7 @@
                                 @php $srNo=0; @endphp
                                 @foreach($category_master_data as $cat_value)
                                 <tr>
-                                    <td></td>
+                                    <td><input type="checkbox" name="check_{{$cat_value->cat_code}}" id="check_{{$cat_value->cat_code}}" value="{{$cat_value->cat_code}}" onclick="return CheckData('this.val')"> </td>
                                     <td>{{++$srNo}}</td>
                                     <td>{{$cat_value->cat_code}}</td>
                                     <td>{{$cat_value->cat_name}}</td>
@@ -290,7 +290,10 @@
             }
             return true;
         }
-
+        function CheckData(dataid)
+        {
+            return dataid;
+        }
       </script>
 
 @endsection
