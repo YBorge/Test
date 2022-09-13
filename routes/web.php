@@ -36,3 +36,5 @@ Route::get('branch_master', [branchMaster::class, 'index'])->name('branch_master
 Route::post('branch_master_post', [branchMaster::class, 'store'])->name('branch_master_post');
 
 Route::get('cate_master', [cateMaster::class, 'index'])->name('cate_master');
+Route::post('cate_master_post', [cateMaster::class, 'store'])->name('cate_master_post');
+Route::post('sub_cate_master_post', [cateMaster::class, 'subCateSave'])->name('sub_cate_master_post');
