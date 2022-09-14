@@ -5,11 +5,15 @@ use Session;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use App\Models\common_list_master;
 use App\Models\category_master;
 use App\Models\sub_category_master;
-use Illuminate\Support\Facades\Validator;
+use App\Exports\cateExport;
+
 use Response;
+use PDF;
+use Excel;
 class cateMaster extends Controller
 {
     public function index()
@@ -105,5 +109,34 @@ class cateMaster extends Controller
            
             return Response::json(['success' => true]);
         }
+    }
+
+    public function CatePDF()
+    {
+        $category_master_data= category_master::all()->where('status','Y');
+        $food_type = common_list_master::where('status', '=', 'Y')
+                            ->where('list_code', '=', 'CAT_TYPE')
+                            ->pluck('list_value','list_id');
+        $pdf = PDF::loadView('master.cateMasterPDF',["category_master_data" => $category_master_data,'food_type' => $food_type,'cateType' => 'Master']);
+    
+        return $pdf->download('category.pdf');
+    }
+    public function subcateMaster()
+    {
+        $food_type = common_list_master::where('status', '=', 'Y')
+                            ->where('list_code', '=', 'CAT_TYPE')
+                            ->pluck('list_value','list_id');
+        $cat_master = category_master::where('status', '=', 'Y')
+                            ->pluck('cat_name','cat_code');
+        $sub_category_master_data= sub_category_master::all()->where('status','Y');
+        $pdf = PDF::loadView('master.cateMasterPDF',["sub_category_master_data" => $sub_category_master_data,'food_type' => $food_type,'cateType' => 'SubMaster','cat_master' => $cat_master]);
+    
+        return $pdf->download('subcategory.pdf');
+    }
+
+    public static function cateMasterExcel()
+    {
+        
+        
     }
 }

@@ -43,13 +43,11 @@
                         <option value="N">No</option>
                     </select>
                 </div>
-                <div class="col-md-1" style="padding-top:22px;">
-                    <input type="submit" name="cate_btn_submit" id="cate_btn_submit" value="Add" class="btn btn-success">
-                    
-                </div>
-                <div class="col-md-1" style="padding-top:22px;">
-                    
-                    <input type="submit" name="btn_cancel" id="btn_cancel" value="Clear" class="btn btn-danger">
+                <div class="col-md-5" style="padding-top:22px;">
+                    <input type="submit" name="cate_btn_submit" id="cate_btn_submit" value="Add" class="btn btn-success">&nbsp;
+                    <input type="submit" name="btn_cancel" id="btn_cancel" value="Clear" class="btn btn-danger"> 
+                    <a href="{{route('cate_master_pdf')}}" target="_blank" class="btn btn-primary">PDF</a>
+                    <a href="{{route('cate_master_excel')}}" target="_blank" class="btn btn-primary">Excel</a>
                 </div>
                 </div>
                 <style>
@@ -149,13 +147,10 @@
                         <option value="M" id="no">Month</option>
                     </select>
                 </div>
-                <div class="col-md-1" style="padding-top:22px;">
-                    <input type="submit" name="subcate_btn_submit" id="subcate_btn_submit" value="Add" class="btn btn-success" >
-                    
-                </div>
-                <div class="col-md-1" style="padding-top:22px;">
-                    
-                    <input type="submit" name="btn_cancel" id="btn_cancel" value="Clear" class="btn btn-danger">
+                <div class="col-md-3" style="padding-top:22px;">
+                    <input type="submit" name="subcate_btn_submit" id="subcate_btn_submit" value="Add" class="btn btn-success btn-xs" >&nbsp;
+                    <input type="submit" name="btn_cancel" id="btn_cancel" value="Clear" class="btn btn-danger btn-xs">
+                    <a href="{{route('sub_cate_master_pdf')}}" target="_blank" class="btn btn-primary btn-xs">PDF</a>
                 </div>
                
                 <div class="table-responsive col-md-12 form-group" style="padding-top:1px;">
@@ -189,7 +184,7 @@
                                     <td>{{++$srNo}}</td>
                                     <td>{{$sub_cat_value->sub_cat_code}}</td>
                                     <td>{{$sub_cat_value->sub_cat_name}}</td>
-                                    <td>{{$sub_cat_value->cat_code}}</td>
+                                    <td>{{$cat_mater[$sub_cat_value->cat_code]}}</td>
                                     <td>{{$sub_cat_value->markup}}</td>
                                     <td>{{$sub_cat_value->markdown}}</td>
                                     <td>{{$sub_cat_value->shelf_life_p}}</td>

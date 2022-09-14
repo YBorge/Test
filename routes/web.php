@@ -38,3 +38,6 @@ Route::post('branch_master_post', [branchMaster::class, 'store'])->name('branch_
 Route::get('cate_master', [cateMaster::class, 'index'])->name('cate_master');
 Route::post('cate_master_post', [cateMaster::class, 'store'])->name('cate_master_post');
 Route::post('sub_cate_master_post', [cateMaster::class, 'subCateSave'])->name('sub_cate_master_post');
+Route::get('cate_master_pdf', [cateMaster::class, 'CatePDF'])->name('cate_master_pdf');
+Route::get('sub_cate_master_pdf', [cateMaster::class, 'subcateMaster'])->name('sub_cate_master_pdf');
+Route::get('cate_master_excel', [cateMaster::class, 'cateMasterExcel'])->name('cate_master_excel');
