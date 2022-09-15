@@ -43,11 +43,11 @@
                         <option value="N">No</option>
                     </select>
                 </div>
-                <div class="col-md-5" style="padding-top:22px;">
-                    <input type="submit" name="cate_btn_submit" id="cate_btn_submit" value="Add" class="btn btn-success">&nbsp;
-                    <input type="submit" name="btn_cancel" id="btn_cancel" value="Clear" class="btn btn-danger"> 
-                    <a href="{{route('cate_master_pdf')}}" target="_blank" class="btn btn-primary">PDF</a>
-                    <a href="{{route('cate_master_excel')}}" target="_blank" class="btn btn-primary">Excel</a>
+                <div class="col-md-5" style="padding-top:25px;">
+                    <input type="submit" name="cate_btn_submit" id="cate_btn_submit" value="Add" class="btn btn-success btn-xs">&nbsp;
+                    <input type="submit" name="btn_cancel" id="btn_cancel" value="Clear" class="btn btn-danger btn-xs"> 
+                    <a href="{{route('cate_master_pdf')}}" target="_blank" class="btn btn-primary btn-xs">PDF</a>
+                    <button class="btn btn-primary btn-xs" formaction="{{route('cate_master_excel')}}" id="btn" type="submit">Excel</button>
                 </div>
                 </div>
                 <style>
@@ -131,7 +131,7 @@
                     <label style="color:black;">MarkUp <span style="color:red;">*</span></label>
                     <input type="text" name="markup" id="markup" class="form-control" onkeypress="return isNumber(event)" placeholder="MarkUp" value="">	
                 </div>
-                <div class="col-md-3" class="form-group">
+                <div class="col-md-2" class="form-group">
                     <label style="color:black;">MarkDown <span style="color:red;">*</span></label>
                     <input type="text" name="markdown" id="markdown" class="form-control" onkeypress="return isNumber(event)" placeholder="MarkUp" value="">    
                 </div>
@@ -147,10 +147,11 @@
                         <option value="M" id="no">Month</option>
                     </select>
                 </div>
-                <div class="col-md-3" style="padding-top:22px;">
+                <div class="col-md-4" style="padding-top:25px;">
                     <input type="submit" name="subcate_btn_submit" id="subcate_btn_submit" value="Add" class="btn btn-success btn-xs" >&nbsp;
                     <input type="submit" name="btn_cancel" id="btn_cancel" value="Clear" class="btn btn-danger btn-xs">
                     <a href="{{route('sub_cate_master_pdf')}}" target="_blank" class="btn btn-primary btn-xs">PDF</a>
+                    <button class="btn btn-primary btn-xs" formaction="{{route('sub_cate_master_excel')}}" id="btn" type="submit">Excel</button>
                 </div>
                
                 <div class="table-responsive col-md-12 form-group" style="padding-top:1px;">

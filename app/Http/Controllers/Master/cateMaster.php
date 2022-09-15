@@ -10,21 +10,33 @@ use App\Models\common_list_master;
 use App\Models\category_master;
 use App\Models\sub_category_master;
 use App\Exports\cateExport;
-
+use App\Exports\cateSubExport;
 use Response;
 use PDF;
 use Excel;
 class cateMaster extends Controller
 {
+    public $cat_mater;
+    public $food_type;
+    public $category_master_data;
+    public $sub_category_master_data;
+    public function __construct()
+    {
+        $this->cat_mater = category_master::where('status', '=', 'Y')
+                            ->pluck('cat_name','cat_code');
+        $this->food_type = common_list_master::where('status', '=', 'Y')
+                    ->where('list_code', '=', 'CAT_TYPE')
+                    ->pluck('list_value','list_id');
+        $this->category_master_data= category_master::all()->where('status','Y');
+        $this->sub_category_master_data= sub_category_master::all()->where('status','Y');
+    }
+
     public function index()
     {
-    	$cat_mater = category_master::where('status', '=', 'Y')
-                            ->pluck('cat_name','cat_code');
-    	$food_type = common_list_master::where('status', '=', 'Y')
-                            ->where('list_code', '=', 'CAT_TYPE')
-                            ->pluck('list_value','list_id');
-        $category_master_data= category_master::all()->where('status','Y');
-        $sub_category_master_data= sub_category_master::all()->where('status','Y');
+    	$cat_mater=$this->cat_mater;
+    	$food_type = $this->food_type;
+        $category_master_data=$this->category_master_data;
+        $sub_category_master_data=$this->sub_category_master_data;
         return view('master.cate_master',['food_type' => $food_type,'cat_mater' => $cat_mater,'category_master_data' => $category_master_data,'sub_category_master_data' => $sub_category_master_data]);
     }
     public function store(Request $request)
@@ -113,30 +125,60 @@ class cateMaster extends Controller
 
     public function CatePDF()
     {
-        $category_master_data= category_master::all()->where('status','Y');
-        $food_type = common_list_master::where('status', '=', 'Y')
-                            ->where('list_code', '=', 'CAT_TYPE')
-                            ->pluck('list_value','list_id');
+        $category_master_data=$this->category_master_data;
+        $food_type = $this->food_type;
         $pdf = PDF::loadView('master.cateMasterPDF',["category_master_data" => $category_master_data,'food_type' => $food_type,'cateType' => 'Master']);
     
         return $pdf->download('category.pdf');
     }
     public function subcateMaster()
     {
-        $food_type = common_list_master::where('status', '=', 'Y')
-                            ->where('list_code', '=', 'CAT_TYPE')
-                            ->pluck('list_value','list_id');
-        $cat_master = category_master::where('status', '=', 'Y')
-                            ->pluck('cat_name','cat_code');
-        $sub_category_master_data= sub_category_master::all()->where('status','Y');
+        $food_type = $this->food_type;
+        $cat_master =$this->cat_mater;
+        $sub_category_master_data=$this->sub_category_master_data;
         $pdf = PDF::loadView('master.cateMasterPDF',["sub_category_master_data" => $sub_category_master_data,'food_type' => $food_type,'cateType' => 'SubMaster','cat_master' => $cat_master]);
     
         return $pdf->download('subcategory.pdf');
     }
 
-    public static function cateMasterExcel()
+    public function cateMasterExcel()
+    {
+        $category_master_data=$this->category_master_data;
+        $food_type = $this->food_type;
+        return Excel::download(new cateExport($category_master_data,$food_type),'cateMaster.xlsx');
+    }
+
+    public function cateMasterGetExcel($category_master_data, $food_type)
+    {
+        $arrOfYesNo=array(); $arrOfYesNo['Y']='Yes'; $arrOfYesNo['N']='No'; 
+        $arrOfStatus=array(); $arrOfStatus['Y']='Active'; $arrOfStatus['N']='In-Active';
+        $srNo=0;
+        foreach($category_master_data as $cat_value)
+        {
+            $result[]=array(++$srNo,$cat_value->cat_code,$cat_value->cat_name,$food_type[$cat_value->cat_type],$cat_value->group,$arrOfYesNo[$cat_value->inventory],$arrOfStatus[$cat_value->status],$cat_value->created_by,$cat_value->created_at,$cat_value->updated_at);
+        }
+
+        return $result;
+    }
+
+    public function sub_cate_master_excel()
+    {
+        $cat_master =$this->cat_mater;
+        $sub_category_master_data=$this->sub_category_master_data;
+        return Excel::download(new cateSubExport($cat_master,$sub_category_master_data),'subcateMaster.xlsx');
+    }
+
+    public function cateSubMasterGetExcel($sub_category_master_data,$cat_master)
     {
         
-        
+        $arrOfDayMonth=array(); $arrOfDayMonth['D']='Days'; $arrOfDayMonth['M']='Month'; 
+        $arrOfStatus=array(); $arrOfStatus['Y']='Active'; $arrOfStatus['N']='In-Active';
+        $srNo=0;
+        foreach($sub_category_master_data as $sub_cat_value)
+        {
+            $result[]=array(++$srNo,$sub_cat_value->sub_cat_code,$sub_cat_value->sub_cat_name,$cat_master[$sub_cat_value->cat_code],$sub_cat_value->markup,$sub_cat_value->markdown,$sub_cat_value->shelf_life_p,$arrOfDayMonth[$sub_cat_value->shelf_life_dm],$arrOfStatus[$sub_cat_value->status],$sub_cat_value->created_by,$sub_cat_value->created_at,$sub_cat_value->updated_at);
+        }
+
+        return $result;
     }
 }

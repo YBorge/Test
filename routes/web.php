@@ -40,4 +40,5 @@ Route::post('cate_master_post', [cateMaster::class, 'store'])->name('cate_master
 Route::post('sub_cate_master_post', [cateMaster::class, 'subCateSave'])->name('sub_cate_master_post');
 Route::get('cate_master_pdf', [cateMaster::class, 'CatePDF'])->name('cate_master_pdf');
 Route::get('sub_cate_master_pdf', [cateMaster::class, 'subcateMaster'])->name('sub_cate_master_pdf');
-Route::get('cate_master_excel', [cateMaster::class, 'cateMasterExcel'])->name('cate_master_excel');
+Route::post('cate_master_excel', [cateMaster::class, 'cateMasterExcel'])->name('cate_master_excel');
+Route::post('sub_cate_master_excel', [cateMaster::class, 'sub_cate_master_excel'])->name('sub_cate_master_excel');
