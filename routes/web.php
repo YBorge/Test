@@ -7,6 +7,8 @@ use App\Http\Controllers\Master\companyMaster;
 use App\Http\Controllers\Master\branchMaster;
 use App\Http\Controllers\Master\PointofSale;
 use App\Http\Controllers\Master\cateMaster;
+use App\Http\Controllers\Master\manufacturerBrandMaster;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -42,3 +44,6 @@ Route::get('cate_master_pdf', [cateMaster::class, 'CatePDF'])->name('cate_master
 Route::get('sub_cate_master_pdf', [cateMaster::class, 'subcateMaster'])->name('sub_cate_master_pdf');
 Route::post('cate_master_excel', [cateMaster::class, 'cateMasterExcel'])->name('cate_master_excel');
 Route::post('sub_cate_master_excel', [cateMaster::class, 'sub_cate_master_excel'])->name('sub_cate_master_excel');
+
+Route::get('brand_master', [manufacturerBrandMaster::class, 'index'])->name('brand_master');
+Route::post('brand_master_post', [manufacturerBrandMaster::class, 'store'])->name('brand_master_post');
