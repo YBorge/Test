@@ -11,10 +11,10 @@
             <div class="row">
                 <div class="col-md-2" class="form-group">
                     <label style="color:black;" >Code <span style="color:red;">*</span></label>
-                    @if($manufSeq[0]['param_value']=='Y')
-                    <input type="text" name="manufact_code" id="manufact_code" class="form-control" placeholder="Code" value="{{$mancode}}" readonly>
+                    @if($manufSeq=='Y')
+                    <input type="text" name="manufact_code" id="manufact_code" class="form-control" placeholder="Code" value="" readonly>
                     @else
-                    <input type="text" name="manufact_code" id="manufact_code" class="form-control" placeholder="Code" value="0" onkeypress="return isNumber(event)">
+                    <input type="text" name="manufact_code" id="manufact_code" class="form-control" placeholder="Code" value="" onkeypress="return isNumber(event)">
                     @endif
                 </div>
                 <div class="col-md-3" class="form-group">
@@ -31,15 +31,15 @@
                 </div>
                
                 @php  
-                $arrOfYesNo=array(); $arrOfYesNo['Y']='Yes'; $arrOfYesNo['N']='No'; 
+                $arrOfYesNo=array(); $arrOfYesNo['B']='Branded'; $arrOfYesNo['U']='Unbranded'; 
                 $arrOfStatus=array(); $arrOfStatus['Y']='Active'; $arrOfStatus['N']='In-Active';
                 @endphp
                
                 <div class="col-md-4" style="padding-top:25px;">
                     <input type="submit" name="manu_btn_submit" id="manu_btn_submit" value="Add" class="btn btn-success btn-xs">&nbsp;
                     <input type="submit" name="btn_cancel" id="btn_cancel" value="Clear" class="btn btn-danger btn-xs"> 
-                    <a href="{{route('cate_master_pdf')}}" target="_blank" class="btn btn-primary btn-xs">PDF</a>
-                    <button class="btn btn-primary btn-xs" formaction="{{route('cate_master_excel')}}" id="btn" type="submit">Excel</button>
+                    <a href="{{route('brand_master_pdf')}}"  class="btn btn-primary btn-xs">PDF</a>
+                    <button class="btn btn-primary btn-xs" formaction="{{route('brand_master_excel')}}" id="btn" type="submit">Excel</button>
                 </div>
                 </div>
                 <style>
@@ -62,13 +62,35 @@
                                 <th class="header" scope="col">Code</th>
                                 <th class="header" scope="col">Name</th>
                                 <th class="header" scope="col">Type</th>
-                               
                                 <th class="header" scope="col">Status</th>
                                 <th class="header" scope="col">Created By</th>
                                 <th class="header" scope="col">Created Date and Time</th>
                                 <th class="header" scope="col">Updated Date and Time</th>
                             </tr>
                         </thead>
+                        <tbody>
+                            @if(count($manfacData) < 1)
+                                <tr>
+                                    <td colspan="9">No Record Found.</td>
+                                </tr>
+                            @else
+                            @php $srNo=0; @endphp
+                            @foreach($manfacData as $mancf_value)
+                            <tr>
+                                <td></td>
+                                <td>{{++$srNo}}</td>
+                                <td>{{$mancf_value->manufact_code}}</td>
+                                <td>{{$mancf_value->manufact_name}}</td>
+                                <td>{{$arrOfYesNo[$mancf_value->type]}}</td>
+                                <td>{{$arrOfStatus[$mancf_value->status]}}</td>
+                                <td>{{$mancf_value->created_by}}</td>
+                                <td>{{$mancf_value->created_at}}</td>
+                                <td>{{$mancf_value->updated_at}}</td>
+                                
+                            </tr>
+                            @endforeach
+                            @endif
+                        </tbody>
                                 
                     </table>
                 </div>
@@ -82,49 +104,69 @@
             <div class="row">
                 <div class="col-md-2" class="form-group">
                     <label style="color:black;" >Code <span style="color:red;">*</span></label>
-                    @if($manufSeq[0]['param_value']=='Y')
-                    <input type="text" name="manufact_code" id="manufact_code" class="form-control" placeholder="Code">
+                    @if($branAutoCode=='Y')
+                    <input type="text" name="brand_code" id="brand_code" class="form-control" placeholder="Code" readonly onkeypress="return isNumber(event)">
                     @else
-                    @php $readonlytext=""; @endphp
+                    <input type="text" name="brand_code" id="brand_code" class="form-control" placeholder="Code" onkeypress="return isNumber(event)">
                     @endif
                     
                 </div>
                 <div class="col-md-3" class="form-group">
                     <label style="color:black;">Name <span style="color:red;">*</span></label>
-                    <input type="text" name="sub_cat_name" id="sub_cat_name" placeholder="Sub Ctegory Name" class="form-control">
+                    <input type="text" name="brand_name" id="brand_name" placeholder="Name" class="form-control">
                 </div>
                 <div class="col-md-3" class="form-group">
                     <label style="color:black;">Manufacturer <span style="color:red;">*</span></label>
-                    <select name="cat_code" id="cat_code" class="form-control">
-                        <option value="" id="yes" readonly>Select</option>
-                        
+                    <select name="manufact_brand" id="manufact_brand" class="form-control">
+                        <option value="">Select</option>
+                        @foreach($manfacData as $mnafdata)
+                        <option value="{{$mnafdata->manufact_code}}">{{$mnafdata->manufact_name}}</option>
+                        @endforeach
                     </select>
                 </div>
                 
                 <div class="col-md-4" style="padding-top:25px;">
-                    <input type="submit" name="subcate_btn_submit" id="subcate_btn_submit" value="Add" class="btn btn-success btn-xs" >&nbsp;
-                    <input type="submit" name="btn_cancel" id="btn_cancel" value="Clear" class="btn btn-danger btn-xs">
-                    <a href="{{route('sub_cate_master_pdf')}}" target="_blank" class="btn btn-primary btn-xs">PDF</a>
-                    <button class="btn btn-primary btn-xs" formaction="{{route('sub_cate_master_excel')}}" id="btn" type="submit">Excel</button>
+                    <input type="submit" name="brand_btn_submit" id="brand_btn_submit" value="Add" class="btn btn-success btn-xs" >&nbsp;
+                    <input type="submit" name="btn_cancel_brand" id="btn_cancel_brand" value="Clear" class="btn btn-danger btn-xs">
+                    <a href="{{route('sub_brand_master_pdf')}}" class="btn btn-primary btn-xs">PDF</a>
+                    <button class="btn btn-primary btn-xs" formaction="{{route('sub_brand_master_excel')}}" id="btn" type="submit">Excel</button>
                 </div>
                
                 <div class="table-responsive col-md-12 form-group" style="padding-top:1px;">
                     <table class="mytable table table-bordered" id="example" class="display nowrap">
                         <thead style="position: sticky;top: 0" class="thead-dark">
                             <tr>
-                                <th class="header" scope="col"></th>
                                 <th class="header" scope="col">Sr. No</th>
                                 <th class="header" scope="col">Code</th>
                                 <th class="header" scope="col">Name</th>
-                                <th class="header" scope="col">Category</th>
-                                		
+                                <th class="header" scope="col">Manufacturer</th>		
                                 <th class="header" scope="col">Status</th>
                                 <th class="header" scope="col">Created By</th>
                                 <th class="header" scope="col">Created Date and Time</th>
                                 <th class="header" scope="col">Updated Date and Time</th>
                             </tr>
                         </thead>
-                               
+                        <tbody>
+                            @if(count($brandData) < 1)
+                                <tr>
+                                    <td colspan="8">No Record Found.</td>
+                                </tr>
+                            @else
+                            @php $srNo=0; @endphp
+                            @foreach($brandData as $brand_value)
+                            <tr>
+                                <td>{{++$srNo}}</td>
+                                <td>{{$brand_value->brand_code}}</td>
+                                <td>{{$brand_value->brand_name}}</td>
+                                <td>{{$manftype[$brand_value->manufact_code]}}</td>
+                                <td>{{$arrOfStatus[$brand_value->status]}}</td>
+                                <td>{{$brand_value->created_by}}</td>
+                                <td>{{$brand_value->created_at}}</td>
+                                <td>{{$brand_value->updated_at}}</td>
+                            </tr>
+                            @endforeach
+                            @endif
+                        </tbody>      
                     </table>
                 </div>
             </div>
@@ -152,11 +194,6 @@
                        if(data.errors) 
                        {
                             toastr.error(data.errors);
-                            // $.each(data.errors, function(index, jsonObject) {
-                            //       $.each(jsonObject, function(key, val) { 
-                            //      toastr.error(val);
-                            //       });
-                            //    });
                        }
                        if(data.success) 
                        {
@@ -170,7 +207,7 @@
                     }
                  });
              });
-             $('#subcate_btn_submit').click(function(e){
+             $('#brand_btn_submit').click(function(e){
                  e.preventDefault();
                  $.ajaxSetup({
                      headers: {
@@ -178,7 +215,7 @@
                      }
                  });
                  $.ajax({
-                    url: "{{ url('sub_cate_master_post') }}",
+                    url: "{{ url('sub_brand_master_post') }}",
                     method: 'post',
                     data:form.serialize(),
                     success: function(data)
@@ -186,16 +223,11 @@
                        if(data.errors) 
                        {
                             toastr.error(data.errors);
-                            // $.each(data.errors, function(index, jsonObject) {
-                            //       $.each(jsonObject, function(key, val) { 
-                            //      toastr.error(val);
-                            //       });
-                            //    });
                        }
                        if(data.success) 
                        {
                             toastr.success('Data Saved Successfully');
-                            $('#cateMaster')[0].reset();
+                            $('#brandMaster')[0].reset();
                             location.reload();
                           
                        }
@@ -204,20 +236,16 @@
                     }
                  });
              });
-        });  
-        function isNumber(evt) 
-        {
-            var iKeyCode = (evt.which) ? evt.which : evt.keyCode
-            if (iKeyCode != 46 && iKeyCode > 31 && (iKeyCode < 48 || iKeyCode > 57) && iKeyCode != 9){
-            alert("Please Enter Numbers Only");
-                return false;
-            }
-            return true;
-        }
-        function CheckData(dataid)
-        {
-            return dataid;
-        }
+        });
+        
+        $('#btn_cancel').click(function(){
+            $('#brandMaster')[0].reset();
+            return false;
+        });
+        $('#btn_cancel_brand').click(function(){
+            $('#brandMaster')[0].reset();
+            return false;
+        });
       </script>
 
 @endsection

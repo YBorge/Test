@@ -11,7 +11,11 @@
             <div class="row">
                 <div class="col-md-2" class="form-group">
                     <label style="color:black;" >Code <span style="color:red;">*</span></label>
-                    <input type="text" name="cat_code" id="cat_code" class="form-control" placeholder="Code">
+                    @if($cateSeq=='Y')
+                    <input type="text" name="cat_code" id="cat_code" class="form-control" placeholder="Code" value="" readonly>
+                    @else
+                    <input type="text" name="cat_code" id="cat_code" class="form-control" placeholder="Code" value="" onkeypress="return isNumber(event)">
+                    @endif
                 </div>
                 <div class="col-md-3" class="form-group">
                     <label style="color:black;">Name <span style="color:red;">*</span></label>
@@ -112,7 +116,11 @@
             <div class="row">
                 <div class="col-md-2" class="form-group">
                     <label style="color:black;" >Code <span style="color:red;">*</span></label>
-                    <input type="text" name="sub_cat_code" id="sub_cat_code" class="form-control" placeholder="Code">
+                    @if($subCateSeq=='Y')
+                    <input type="text" name="sub_cat_code" id="sub_cat_code" class="form-control" placeholder="Code" value="" readonly>
+                    @else
+                    <input type="text" name="sub_cat_code" id="sub_cat_code" class="form-control" placeholder="Code" onkeypress="return isNumber(event)">
+                    @endif
                 </div>
                 <div class="col-md-4" class="form-group">
                     <label style="color:black;">Sub Ctegory Name <span style="color:red;">*</span></label>
@@ -120,7 +128,7 @@
                 </div>
                 <div class="col-md-3" class="form-group">
                     <label style="color:black;">Ctegory <span style="color:red;">*</span></label>
-                    <select name="cat_code" id="cat_code" class="form-control">
+                    <select name="pos_cat_code" id="pos_cat_code" class="form-control">
                         <option value="" id="yes" readonly>Select</option>
                         @foreach($cat_mater as $key => $cattype)
                         <option value="{{$key}}" >{{$cattype}}</option>

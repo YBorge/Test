@@ -89,6 +89,17 @@
 <!-- jQuery library -->
  
   <script type="text/javascript" src="{{asset('front_assets/js/jquery.smartmenus.js')}}"></script>
-  <script type="text/javascript" src="{{asset('front_assets/js/jquery.smartmenus.bootstrap.js')}}"></script>  
+  <script type="text/javascript" src="{{asset('front_assets/js/jquery.smartmenus.bootstrap.js')}}"></script>
+  <script>
+    function isNumber(evt) 
+    {
+        var iKeyCode = (evt.which) ? evt.which : evt.keyCode
+        if (iKeyCode != 46 && iKeyCode > 31 && (iKeyCode < 48 || iKeyCode > 57) && iKeyCode != 9){
+        alert("Please Enter Numbers Only");
+            return false;
+        }
+        return true;
+    }
+  </script>  
 </body>
 </html>

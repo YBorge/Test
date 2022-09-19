@@ -47,3 +47,9 @@ Route::post('sub_cate_master_excel', [cateMaster::class, 'sub_cate_master_excel'
 
 Route::get('brand_master', [manufacturerBrandMaster::class, 'index'])->name('brand_master');
 Route::post('brand_master_post', [manufacturerBrandMaster::class, 'store'])->name('brand_master_post');
+Route::post('sub_brand_master_post', [manufacturerBrandMaster::class, 'storeBrand'])->name('sub_brand_master_post');
+
+Route::get('brand_master_pdf', [manufacturerBrandMaster::class, 'brandMasterPdf'])->name('brand_master_pdf');
+Route::get('sub_brand_master_pdf', [manufacturerBrandMaster::class, 'subBrandMasterPdf'])->name('sub_brand_master_pdf');
+Route::post('brand_master_excel', [manufacturerBrandMaster::class, 'brandMasterExcel'])->name('brand_master_excel');
+Route::post('sub_brand_master_excel', [manufacturerBrandMaster::class, 'subBrandMasterExcel'])->name('sub_brand_master_excel');

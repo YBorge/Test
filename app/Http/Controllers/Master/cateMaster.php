@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\common_list_master;
 use App\Models\category_master;
 use App\Models\sub_category_master;
+use App\Models\parameters;
 use App\Exports\cateExport;
 use App\Exports\cateSubExport;
 use Response;
@@ -29,6 +30,14 @@ class cateMaster extends Controller
                     ->pluck('list_value','list_id');
         $this->category_master_data= category_master::all()->where('status','Y');
         $this->sub_category_master_data= sub_category_master::all()->where('status','Y');
+        $this->cateSeq=parameters::select('param_value','param_desc')
+                                    ->where('param_code', '=', 'USE_CAT_SEQ')
+                                    ->get();
+        $this->subCateSeq=parameters::select('param_value','param_desc')
+                                    ->where('param_code', '=', 'USE_SUB_CAT_SEQ')
+                                    ->get();
+        $this->Seq_cat_code=category_master::max('cat_code');
+        $this->Seq_sub_cat_code=sub_category_master::max('sub_cat_code');
     }
 
     public function index()
@@ -37,13 +46,23 @@ class cateMaster extends Controller
     	$food_type = $this->food_type;
         $category_master_data=$this->category_master_data;
         $sub_category_master_data=$this->sub_category_master_data;
-        return view('master.cate_master',['food_type' => $food_type,'cat_mater' => $cat_mater,'category_master_data' => $category_master_data,'sub_category_master_data' => $sub_category_master_data]);
+        $cateSeq=$this->cateSeq[0]['param_value'];
+        $subCateSeq=$this->subCateSeq[0]['param_value'];
+        return view('master.cate_master',['food_type' => $food_type,'cat_mater' => $cat_mater,'category_master_data' => $category_master_data,'sub_category_master_data' => $sub_category_master_data,'cateSeq' => $cateSeq,'subCateSeq' => $subCateSeq]);
     }
     public function store(Request $request)
     {
+        $cateSeq=$this->cateSeq[0]['param_value'];
+        if($cateSeq=='Y')
+        {   
+            $cateSeVal=0;
+            $Seq_cat_codeSave=$this->Seq_cat_code+1;
+        }else{
+            $cateSeVal=1;
+        }
         $validatedData = Validator::make($request->all(), 
         [
-            'cat_code' => 'required|unique:category_master',
+            'cat_code' => $cateSeVal==1 ? 'required|unique:category_master' : 'unique:category_master',
             'cat_name' => 'required',
             'cat_type' => 'required',
             'group' => 'required',
@@ -66,7 +85,7 @@ class cateMaster extends Controller
         if ($validatedData->passes()) 
         {
             category_master::create([
-                'cat_code' => $request->cat_code,
+                'cat_code' => $cateSeVal==1 ? $request->cat_code : $Seq_cat_codeSave,
                 'cat_name' => $request->cat_name,
                 'cat_type' => $request->cat_type,
                 'group' => $request->group,
@@ -80,11 +99,19 @@ class cateMaster extends Controller
     }
     public function subCateSave(Request $request)
     {
+        $subCateSeq=$this->subCateSeq[0]['param_value'];
+        if($subCateSeq=='Y')
+        {   
+            $subCateSeVal=0;
+            $Seq_sub_cat_codeSave=$this->Seq_sub_cat_code+1;
+        }else{
+            $subCateSeVal=1;
+        }
         $validatedData = Validator::make($request->all(), 
         [
-            'sub_cat_code' => 'required|unique:sub_category_master',
+            'sub_cat_code' => $subCateSeVal==1 ? 'required|unique:sub_category_master' : 'unique:sub_category_master',
             'sub_cat_name' => 'required',
-            'cat_code' => 'required',
+            'pos_cat_code' => 'required',
             'markup' => 'required',
             'markdown' => 'required',
             'shelf_life_p' => 'required',
@@ -94,7 +121,7 @@ class cateMaster extends Controller
             'sub_cat_code.required' => 'Please Enter Sub Ctegory Code',
             'sub_cat_code.unique' => 'Sub Ctegory Code Already Exist',
             'sub_cat_name.required' => 'Please Enter Sub Ctegory Name',
-            'cat_code.required' => 'Please Select Sub Category Type',
+            'pos_cat_code.required' => 'Please Select Sub Category Type',
             'markup.required' => 'Please Enter markup',
             'markdown.required' => 'Please Enter Markdown',
             'shelf_life_p.required' => 'Please Enter Shelf Life Peried',
@@ -108,9 +135,9 @@ class cateMaster extends Controller
         if ($validatedData->passes()) 
         {
             sub_category_master::create([
-                'sub_cat_code' => $request->sub_cat_code,
+                'sub_cat_code' => $subCateSeVal==1 ? $request->sub_cat_code : $Seq_sub_cat_codeSave,
                 'sub_cat_name' => $request->sub_cat_name,
-                'cat_code' => $request->cat_code,
+                'cat_code' => $request->pos_cat_code,
                 'markup' => $request->markup,
                 'markdown' => $request->markdown,
                 'shelf_life_p' => $request->shelf_life_p,
