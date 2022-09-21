@@ -8,7 +8,7 @@ use App\Http\Controllers\Master\branchMaster;
 use App\Http\Controllers\Master\PointofSale;
 use App\Http\Controllers\Master\cateMaster;
 use App\Http\Controllers\Master\manufacturerBrandMaster;
-
+use App\Http\Controllers\Master\paymentMaster;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,3 +53,8 @@ Route::get('brand_master_pdf', [manufacturerBrandMaster::class, 'brandMasterPdf'
 Route::get('sub_brand_master_pdf', [manufacturerBrandMaster::class, 'subBrandMasterPdf'])->name('sub_brand_master_pdf');
 Route::post('brand_master_excel', [manufacturerBrandMaster::class, 'brandMasterExcel'])->name('brand_master_excel');
 Route::post('sub_brand_master_excel', [manufacturerBrandMaster::class, 'subBrandMasterExcel'])->name('sub_brand_master_excel');
+
+Route::get('payment_master', [paymentMaster::class, 'index'])->name('payment_master');
+Route::post('payment_master_post', [paymentMaster::class, 'store'])->name('payment_master_post');
+Route::get('payment_master_pdf', [paymentMaster::class, 'paymentMasterPdf'])->name('payment_master_pdf');
+Route::post('payment_master_excel', [paymentMaster::class, 'paymentMasterExcel'])->name('payment_master_excel');
