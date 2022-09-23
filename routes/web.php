@@ -60,4 +60,5 @@ Route::post('payment_master_post', [paymentMaster::class, 'store'])->name('payme
 Route::get('payment_master_pdf', [paymentMaster::class, 'paymentMasterPdf'])->name('payment_master_pdf');
 Route::post('payment_master_excel', [paymentMaster::class, 'paymentMasterExcel'])->name('payment_master_excel');
 
-Route::get('item_master', [itemMaster::class, 'index'])->name('item_master');
+Route::get('item_master', [itemMaster::class, 'list'])->name('item_master');
+Route::get('item_master_add', [itemMaster::class, 'index'])->name('item_master_add');
