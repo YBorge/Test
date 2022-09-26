@@ -9,34 +9,34 @@
     <div class="row">
     <form id="vendorMaster" name="vendorMaster" method="POST">
         {{ csrf_field() }} 
-        <div class="col-md-2" class="form-group">
+        <div class="col-md-1" class="form-group">
             <label style="color:black;" >Vendor Code <span style="color:red;">*</span></label>
             @if($vendorCodeSeq=='Y')
-            <input type="text" name="loc_code" id="loc_code" class="form-control" placeholder="Vendor Code" readonly>
+            <input type="text" name="vend_code" id="vend_code" class="form-control" placeholder="Vendor Code" readonly>
             @else
-            <input type="text" name="loc_code" id="loc_code" class="form-control" placeholder="Vendor Code">
+            <input type="text" name="vend_code" id="vend_code" class="form-control" placeholder="Vendor Code">
             @endif
         </div>
-        <div class="col-md-2" class="form-group">
-            <label style="color:black;">Vendor Name <span style="color:red;">*</span></label>
-            <input type="text" name="loc_no" id="loc_no" placeholder="Vendor Name" class="form-control" onkeypress="return isNumber(event)">
-        </div>
         <div class="col-md-3" class="form-group">
+            <label style="color:black;">Vendor Name <span style="color:red;">*</span></label>
+            <input type="text" name="vend_name" id="vend_name" placeholder="Vendor Name" class="form-control">
+        </div>
+        <div class="col-md-2" class="form-group">
             <label style="color:black;">Type <span style="color:red;">*</span></label>
-            <select name="" id="" class="form-control">
+            <select name="type" id="type" class="form-control">
                 <option value="">Select</option>
                 @foreach($suply_type as $typkey => $suptype)
                 <option value="{{$typkey}}">{{$suptype}}</option>
                 @endforeach
             </select>	
         </div>
-        <div class="col-md-3" class="form-group">
+        <div class="col-md-2" class="form-group">
             <label>Credit Days</label>
-            <input type="text" name="txt_creditdays" id="txt_creditdays" placeholder="Credit Days" class="form-control" onkeypress="return isNumber(event)">	
+            <input type="text" name="credit_day" id="credit_day" placeholder="Credit Days" class="form-control" onkeypress="return isNumber(event)">	
         </div>
         <div class="col-md-2" class="form-group">
             <label style="color:black;">Address 1 <span style="color:red;">*</span></label>
-            <input type="text" name="addr1" id="addr1" class="form-control" placeholder="Address 1"value="">	
+            <input type="text" name="aadr1" id="aadr1" class="form-control" placeholder="Address 1"value="">	
         </div>
         <div class="col-md-2" class="form-group">
             <label style="color:black;">Address 2</label>
@@ -67,7 +67,11 @@
         </div>
         <div class="col-md-2" class="form-group">
             <label style="color:black;">Phone No</label>
-            <input type="text" name="phone_no" id="phone_no" class="form-control" placeholder="Phone No"value="" onkeypress="return isNumber(event)">		
+            <input type="text" name="phone" id="phone" class="form-control" placeholder="Phone No"value="" onkeypress="return isNumber(event)">		
+        </div>
+         <div class="col-md-2" class="form-group">
+            <label style="color:black;">Email</label>
+            <input type="text" name="email" id="email" class="form-control" placeholder="Email"value="">     
         </div>
         <div class="col-md-2" class="form-group">
             <label style="color:black;">GSTIN</label>
@@ -75,22 +79,23 @@
         </div>
         <div class="col-md-2" class="form-group">
             <label>FSSAI No </label>
-            <input type="text" name="txt_fssaino" id="txt_fssaino" class="form-control" placeholder="FSSAI No"value="" style='text-transform:uppercase'>		
+            <input type="text" name="fassi_no" id="fassi_no" class="form-control" placeholder="FSSAI No"value="" style='text-transform:uppercase'>		
         </div>
         <div class="col-md-2" class="form-group">
             <label>Aadhar No </label>
-            <input type="text" name="txt_adhar" id="txt_adhar" placeholder="Aadhar No" class="form-control" maxlength="12" onkeypress="return isNumber(event)">		
+            <input type="text" name="aadhar_no" id="aadhar_no" placeholder="Aadhar No" class="form-control" maxlength="12" onkeypress="return isNumber(event)">		
         </div>
         <div class="col-md-2" class="form-group">
             <label>PAN</label>
-            <input type="text" name="txt_pan" id="txt_pan" class="form-control" placeholder="PAN"value="" style='text-transform:uppercase'>		
+            <input type="text" name="pan_no" id="pan_no" class="form-control" placeholder="PAN"value="" style='text-transform:uppercase'>		
         </div>
         <div class="col-md-2" class="form-group">
             <label>Contact Person</label>
-            <input type="text" name="txt_contact" id="txt_contact" placeholder="Contact" class="form-control">
+            <input type="text" name="contact_person" id="contact_person" placeholder="Contact" class="form-control">
         </div>
         <div class="col-md-2" class="form-group" style="padding-top:22px;">
-            <input type="submit" name="btn_submit" id="btn_submit" value="Add" class="btn btn-success">	
+            <input type="submit" name="btn_submit" id="btn_submit" value="Add" class="btn btn-success">
+            <input type="submit" name="btn_cancel_payment" id="btn_cancel_payment" value="Clear" class="btn btn-danger">	
         </div>
     </div>
     </div>
@@ -109,11 +114,12 @@
         <table class="mytable table table-bordered" id="example" class="display nowrap" style="width:100%">
             <thead style="position: sticky;top: 0" class="thead-dark">
                 <tr>
+                    <th class="header" scope="col">Edit</th>
                     <th class="header" scope="col">Sr. No</th>
-                    <th class="header" scope="col">Location  Code</th>
-                    <th class="header" scope="col">Location  No</th>
-                    <th class="header" scope="col">Location  Name</th>
-                    <th class="header" scope="col">Company</th>
+                    <th class="header" scope="col">Code</th>
+                    <th class="header" scope="col">Name</th>
+                    <th class="header" scope="col">Type</th>
+                    <th class="header" scope="col">Credit Days</th>
                     <th class="header" scope="col">Address 1</th>
                     <th class="header" scope="col">Address 2</th>
                     <th class="header" scope="col">City</th>
@@ -121,15 +127,48 @@
                     <th class="header" scope="col">Country</th>
                     <th class="header" scope="col">Pin Code</th>
                     <th class="header" scope="col">Phone No</th>
+                    <th class="header" scope="col">Email</th>
                     <th class="header" scope="col">GSTIN</th>
-                    <th class="header" scope="col">Bank Name</th>
-                    <th class="header" scope="col">Bank A/C No</th>
+                    <th class="header" scope="col">FASSI No</th>
+                    <th class="header" scope="col">Aadhar No</th>
+                    <th class="header" scope="col">Pan No</th>
+                    <th class="header" scope="col">Contact Person</th>
+                    <th class="header" scope="col">Status</th>
                     <th class="header" scope="col">Created By</th>
                     <th class="header" scope="col">Created Date and Time</th>
+                    <th class="header" scope="col">Updated By</th>
                     <th class="header" scope="col">Updated Date and Time</th>
                 </tr>
             </thead>
-                        
+                @php $srNo=0; @endphp
+                @foreach($vendor_master_data as $venKey => $venvalue)
+                <tr>
+                    <th></th>
+                    <th>{{++$srNo}}</th>
+                    <th>{{$venvalue->vend_code}}</th>
+                    <th>{{$venvalue->vend_name}}</th>
+                    <th>{{$venvalue->type}}</th>
+                    <th>{{$venvalue->credit_day}}</th>
+                    <th>{{$venvalue->aadr1}}</th>
+                    <th>{{$venvalue->addr2}}</th>
+                    <th>{{$venvalue->city}}</th>
+                    <th>{{$venvalue->state}}</th>
+                    <th>{{$venvalue->country}}</th>
+                    <th>{{$venvalue->pin}}</th>
+                    <th>{{$venvalue->phone}}</th>
+                    <th>{{$venvalue->email}}</th>
+                    <th>{{$venvalue->gstin}}</th>
+                    <th>{{$venvalue->fassi_no}}</th>
+                    <th>{{$venvalue->aadhar_no}}</th>
+                    <th>{{$venvalue->pan_no}}</th>
+                    <th>{{$venvalue->contact_person}}</th>
+                    <th>{{$venvalue->status}}</th>
+                    <th>{{$venvalue->created_by}}</th>
+                    <th>{{$venvalue->created_at}}</th>
+                    <th>{{$venvalue->t_user}}</th>
+                    <th>{{$venvalue->updated_at}}</th>
+                </tr>
+                @endforeach    
             </table>                   
         </div>  
     </div>
@@ -137,7 +176,7 @@
 </form>
 <script>
          $(document).ready(function(){
-            var form=$("#branchMaster");
+            var form=$("#vendorMaster");
             $('#btn_submit').click(function(e){
                  e.preventDefault();
                  $.ajaxSetup({
@@ -146,7 +185,7 @@
                      }
                  });
                  $.ajax({
-                    url: "{{ url('branch_master_post') }}",
+                    url: "{{ url('vendor_master_store') }}",
                     method: 'post',
                     data:form.serialize(),
                     success: function(data)
@@ -154,16 +193,11 @@
                        if(data.errors) 
                        {
                             toastr.error(data.errors);
-                            // $.each(data.errors, function(index, jsonObject) {
-                            //       $.each(jsonObject, function(key, val) { 
-                            //      toastr.error(val);
-                            //       });
-                            //    });
                        }
                        if(data.success) 
                        {
                             toastr.success('Data Saved Successfully');
-                            $('#branchMaster')[0].reset();
+                            $('#vendorMaster')[0].reset();
                             location.reload();
                           
                        }
@@ -180,7 +214,7 @@
                      }
                  });
                  $.ajax({
-                    url: "{{ url('company_master_city') }}",
+                    url: "{{ url('vendor_city_change') }}",
                     method: 'post',
                     data:form.serialize(),
                      success: function(data)
@@ -206,15 +240,11 @@
                  });
              });
          });
-        function isNumber(evt) 
-        {
-            var iKeyCode = (evt.which) ? evt.which : evt.keyCode
-            if (iKeyCode != 46 && iKeyCode > 31 && (iKeyCode < 48 || iKeyCode > 57) && iKeyCode != 9){
-            alert("Please Enter Numbers Only");
-                return false;
-            }
-            return true;
-        }
+        
+        $('#btn_cancel_payment').click(function(){
+            $('#vendorMaster')[0].reset();
+            return false;
+        });
       </script>
 
 @endsection
