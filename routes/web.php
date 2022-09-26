@@ -10,6 +10,7 @@ use App\Http\Controllers\Master\cateMaster;
 use App\Http\Controllers\Master\manufacturerBrandMaster;
 use App\Http\Controllers\Master\paymentMaster;
 use App\Http\Controllers\Master\itemMaster;
+use App\Http\Controllers\Master\vendorMaster;
 
 /*
 |--------------------------------------------------------------------------
@@ -67,3 +68,5 @@ Route::post('item_master_brand', [itemMaster::class, 'itemBrand'])->name('item_m
 Route::post('item_master_store', [itemMaster::class, 'store'])->name('item_master_store');
 Route::get('item_master_pdf', [itemMaster::class, 'itemMasterPdf'])->name('item_master_pdf');
 Route::post('item_master_excel', [itemMaster::class, 'itemMasterExcel'])->name('item_master_excel');
+
+Route::get('vendor_master', [vendorMaster::class, 'index'])->name('vendor_master');
