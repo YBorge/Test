@@ -1,3 +1,4 @@
 INSERT INTO `categories` (`id`, `category_name`, `category_slug`, `parent_category_id`, `category_image`, `is_home`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'Branch Master', 'branch_master', '2', '1613553407.jpg', '1', '1', '2021-02-17 03:46:07', '2021-02-17 03:46:47');
 
 ALTER TABLE `location_master` ADD `updated_at` TIMESTAMP NULL DEFAULT NULL AFTER `t_date`, ADD `created_at` TIMESTAMP NULL DEFAULT NULL AFTER `updated_at`;
+INSERT INTO `categories` (`id`, `category_name`, `category_slug`, `parent_category_id`, `category_image`, `is_home`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'Vendor Master', 'vendor_master', '2', '1613553407.jpg', '1', '1', '2021-02-17 03:46:07', '2021-02-17 03:46:47');
