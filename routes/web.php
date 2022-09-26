@@ -70,3 +70,5 @@ Route::get('item_master_pdf', [itemMaster::class, 'itemMasterPdf'])->name('item_
 Route::post('item_master_excel', [itemMaster::class, 'itemMasterExcel'])->name('item_master_excel');
 
 Route::get('vendor_master', [vendorMaster::class, 'index'])->name('vendor_master');
+Route::post('vendor_city_change', [vendorMaster::class, 'vendorCityChange'])->name('vendor_city_change');
+Route::post('vendor_master_store', [vendorMaster::class, 'store'])->name('vendor_master_store');
