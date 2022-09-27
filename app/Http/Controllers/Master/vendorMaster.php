@@ -11,6 +11,7 @@ use App\Models\state;
 use App\Models\city;
 use App\Models\parameters;
 use App\Models\vendor_master;
+use App\Exports\vendorExport;
 use Illuminate\Support\Facades\Validator;
 use Response;
 use PDF;
@@ -23,6 +24,8 @@ class vendorMaster extends Controller
     public $suply_type;
     public $max_vendor_code;
     public $vendor_master_data;
+    public $state_master;
+    public $country_master;
     public function __construct()
     {
         $this->city_master = city::pluck('city_name','city_id');
@@ -42,7 +45,9 @@ class vendorMaster extends Controller
         $suply_type=$this->suply_type;
         $city_master=$this->city_master;
         $vendor_master_data=$this->vendor_master_data;
-        return view('Master.vendor_master',['vendorCodeSeq' => $vendorCodeSeq,'suply_type' => $suply_type,'city_master' =>$city_master,'vendor_master_data' => $vendor_master_data]);
+        $state_master=$this->state_master;
+        $country_master=$this->country_master;
+        return view('Master.vendor_master',['vendorCodeSeq' => $vendorCodeSeq,'suply_type' => $suply_type,'city_master' =>$city_master,'vendor_master_data' => $vendor_master_data,'state_master' => $state_master,'country_master' => $country_master]);
     }
 
     public function vendorCityChange(Request $request)
@@ -124,5 +129,46 @@ class vendorMaster extends Controller
            
             return Response::json(['success' => true]);
         }
+    }
+
+    public function vendorPdf()
+    {
+        $suply_type=$this->suply_type;
+        $city_master=$this->city_master;
+        $vendor_master_data=$this->vendor_master_data;
+        $state_master=$this->state_master;
+        $country_master=$this->country_master;
+       
+        $mpdf= new \Mpdf\Mpdf();
+        $html=\View::make('Master.vendor_master_pdf')->with(compact('suply_type','city_master','vendor_master_data','state_master','country_master'));
+        
+        $mpdf->SetHTMLFooter('<table width="100%" style="font-size:12px;"> 
+            <tr> <td colspan="2" align="center">|{PAGENO} of {nbpg}|</td>  </tr>
+             </table>');
+        $html=$html->render();
+        $mpdf->WriteHTML($html);
+        $mpdf->output('vendorMaster.pdf','I');
+    }
+    
+    public function vendorMasterExcel()
+    {
+        $suply_type=$this->suply_type;
+        $city_master=$this->city_master;
+        $vendor_master_data=$this->vendor_master_data;
+        $state_master=$this->state_master;
+        $country_master=$this->country_master;
+        return Excel::download(new vendorExport($suply_type,$city_master,$vendor_master_data,$state_master,$country_master),'vendorMaster.xlsx');
+    }
+
+    public function vendorMasterGetExcel($suply_type,$city_master,$vendor_master_data,$state_master,$country_master)
+    {
+        $arrOfStatus=array(); $arrOfStatus['Y']='Active'; $arrOfStatus['N']='In-Active';
+        $srNo=0;
+        foreach($vendor_master_data as $venvalue)
+        {
+            $result[]=array(++$srNo,$venvalue->vend_code,$venvalue->vend_name,$suply_type[$venvalue->type],$venvalue->credit_day,$venvalue->aadr1,$venvalue->aadr2,$city_master[$venvalue->city],$state_master[$venvalue->state],$country_master[$venvalue->country],$venvalue->pin,$venvalue->phone,$venvalue->email,$venvalue->gstin,$venvalue->fassi_no,$venvalue->aadhar_no,$venvalue->pan_no,$venvalue->contact_person,$arrOfStatus[$venvalue->status],$venvalue->created_by,$venvalue->created_at,$venvalue->t_user,$venvalue->updated_at);
+        }
+
+        return $result;
     }
 }

@@ -73,11 +73,11 @@
             <label style="color:black;">Email</label>
             <input type="text" name="email" id="email" class="form-control" placeholder="Email"value="">     
         </div>
-        <div class="col-md-2" class="form-group">
+        <div class="col-md-1" class="form-group">
             <label style="color:black;">GSTIN</label>
             <input type="text" name="gstin" id="gstin" class="form-control" placeholder="GST NO"value="" style='text-transform:uppercase'>		
         </div>
-        <div class="col-md-2" class="form-group">
+        <div class="col-md-1" class="form-group">
             <label>FSSAI No </label>
             <input type="text" name="fassi_no" id="fassi_no" class="form-control" placeholder="FSSAI No"value="" style='text-transform:uppercase'>		
         </div>
@@ -93,9 +93,11 @@
             <label>Contact Person</label>
             <input type="text" name="contact_person" id="contact_person" placeholder="Contact" class="form-control">
         </div>
-        <div class="col-md-2" class="form-group" style="padding-top:22px;">
+        <div class="col-md-4" class="form-group" style="padding-top:22px;">
             <input type="submit" name="btn_submit" id="btn_submit" value="Add" class="btn btn-success">
-            <input type="submit" name="btn_cancel_payment" id="btn_cancel_payment" value="Clear" class="btn btn-danger">	
+            <input type="submit" name="btn_cancel_payment" id="btn_cancel_payment" value="Clear" class="btn btn-danger">
+            <a href="{{route('vendor_master_pdf')}}" target="_blank" class="btn btn-primary">PDF</a>
+            <button class="btn btn-primary" formaction="{{route('vendor_master_excel')}}" id="btn" type="submit">Excel</button>	
         </div>
     </div>
     </div>
@@ -140,20 +142,20 @@
                     <th class="header" scope="col">Updated Date and Time</th>
                 </tr>
             </thead>
-                @php $srNo=0; @endphp
+                @php $srNo=0; $arrOfStatus=array(); $arrOfStatus['Y']='Active'; $arrOfStatus['N']='In-Active';@endphp
                 @foreach($vendor_master_data as $venKey => $venvalue)
                 <tr>
                     <th></th>
                     <th>{{++$srNo}}</th>
                     <th>{{$venvalue->vend_code}}</th>
                     <th>{{$venvalue->vend_name}}</th>
-                    <th>{{$venvalue->type}}</th>
+                    <th>{{$suply_type[$venvalue->type]}}</th>
                     <th>{{$venvalue->credit_day}}</th>
                     <th>{{$venvalue->aadr1}}</th>
                     <th>{{$venvalue->addr2}}</th>
-                    <th>{{$venvalue->city}}</th>
-                    <th>{{$venvalue->state}}</th>
-                    <th>{{$venvalue->country}}</th>
+                    <th>{{$city_master[$venvalue->city]}}</th>
+                    <th>{{$state_master[$venvalue->state]}}</th>
+                    <th>{{$country_master[$venvalue->country]}}</th>
                     <th>{{$venvalue->pin}}</th>
                     <th>{{$venvalue->phone}}</th>
                     <th>{{$venvalue->email}}</th>
@@ -162,7 +164,7 @@
                     <th>{{$venvalue->aadhar_no}}</th>
                     <th>{{$venvalue->pan_no}}</th>
                     <th>{{$venvalue->contact_person}}</th>
-                    <th>{{$venvalue->status}}</th>
+                    <th>{{$arrOfStatus[$venvalue->status]}}</th>
                     <th>{{$venvalue->created_by}}</th>
                     <th>{{$venvalue->created_at}}</th>
                     <th>{{$venvalue->t_user}}</th>
