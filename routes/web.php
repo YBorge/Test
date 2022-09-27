@@ -11,6 +11,8 @@ use App\Http\Controllers\Master\manufacturerBrandMaster;
 use App\Http\Controllers\Master\paymentMaster;
 use App\Http\Controllers\Master\itemMaster;
 use App\Http\Controllers\Master\vendorMaster;
+use App\Http\Controllers\Master\taxMaster;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -74,3 +76,6 @@ Route::post('vendor_city_change', [vendorMaster::class, 'vendorCityChange'])->na
 Route::post('vendor_master_store', [vendorMaster::class, 'store'])->name('vendor_master_store');
 Route::get('vendor_master_pdf', [vendorMaster::class, 'vendorPdf'])->name('vendor_master_pdf');
 Route::post('vendor_master_excel', [vendorMaster::class, 'vendorMasterExcel'])->name('vendor_master_excel');
+
+Route::get('tax_master', [taxMaster::class, 'index'])->name('tax_master');
+Route::post('tax_master_store',[taxMaster::class, 'store'])->name('tax_master_store');
