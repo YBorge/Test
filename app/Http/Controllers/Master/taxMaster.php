@@ -11,9 +11,15 @@ use PDF;
 use Excel;
 class taxMaster extends Controller
 {
+    public $tax_master_data;
+    public function __construct()
+    {
+        $this->tax_master_data= tax_master::all()->where('status','Y');
+    }
     public function index()
     {
-        return view('Master.tax_master');
+        $tax_master_data=$this->tax_master_data;
+        return view('Master.tax_master',['tax_master_data' => $tax_master_data]);
     }
 
     public function store(Request $request)
