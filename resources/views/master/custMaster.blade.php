@@ -18,7 +18,7 @@
                             @endforeach       
                         </select>
                     </div>
-                    <div class="col-md-2" class="form-group">
+                    <div class="col-md-1" class="form-group">
                         <label style="color:black;" >Code <span style="color:red;">*</span></label>
                         @if($custSeq[0]['param_value']=='Y')
                         <input type="text" name="cust_code" id="cust_code" class="form-control" placeholder="Code" value="{{$custcode}}" readonly>
@@ -219,11 +219,6 @@
                        if(data.errors) 
                        {
                             toastr.error(data.errors);
-                            // $.each(data.errors, function(index, jsonObject) {
-                            //       $.each(jsonObject, function(key, val) { 
-                            //      toastr.error(val);
-                            //       });
-                            //    });
                        }
                        if(data.success) 
                        {
@@ -239,20 +234,6 @@
              });
              
              });
-        });  
-        function isNumber(evt) 
-        {
-            var iKeyCode = (evt.which) ? evt.which : evt.keyCode
-            if (iKeyCode != 46 && iKeyCode > 31 && (iKeyCode < 48 || iKeyCode > 57) && iKeyCode != 9){
-            alert("Please Enter Numbers Only");
-                return false;
-            }
-            return true;
-        }
-        function CheckData(dataid)
-        {
-            return dataid;
-        }
 
         $('#city').change(function(e){
                  e.preventDefault();
