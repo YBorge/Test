@@ -5,6 +5,7 @@ use Session;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\tax_master;
+use App\Exports\taxExport;
 use Illuminate\Support\Facades\Validator;
 use Response;
 use PDF;
@@ -18,8 +19,7 @@ class taxMaster extends Controller
     }
     public function index()
     {
-        $tax_master_data=$this->tax_master_data;
-        return view('Master.tax_master',['tax_master_data' => $tax_master_data]);
+        return view('Master.tax_master',['tax_master_data' => $this->tax_master_data]);
     }
 
     public function store(Request $request)
@@ -65,5 +65,37 @@ class taxMaster extends Controller
            
             return Response::json(['success' => true]);
         }
+    }
+
+    public function taxPdf()
+    {
+        $tax_master_data=$this->tax_master_data;
+       
+        $mpdf= new \Mpdf\Mpdf();
+        $html=\View::make('Master.tax_master_pdf')->with(compact('tax_master_data'));
+        
+        $mpdf->SetHTMLFooter('<table width="100%" style="font-size:12px;"> 
+            <tr> <td colspan="2" align="center">|{PAGENO} of {nbpg}|</td>  </tr>
+             </table>');
+        $html=$html->render();
+        $mpdf->WriteHTML($html);
+        $mpdf->output('taxMaster.pdf','I');
+    }
+
+    public function taxMasterExcel()
+    {
+        return Excel::download(new taxExport($this->tax_master_data),'taxMaster.xlsx');
+    }
+    public function taxMasterGetExcel($tax_master_data)
+    {
+        $arrOfType=array(); $arrOfType['G']='GST'; $arrOfType['V']='Vat';
+        $arrOfStatus=array(); $arrOfStatus['Y']='Active'; $arrOfStatus['N']='In-Active';
+        $srNo=0;
+        foreach($tax_master_data as $taxValue)
+        {
+            $result[]=array(++$srNo,$arrOfType[$taxValue->tax_type],$taxValue->tax_code,$taxValue->tax_name,$taxValue->tax_per,$taxValue->tax_indicator,$taxValue->igst,$taxValue->sgst,$taxValue->cgst,$taxValue->utgst,$taxValue->cess,$taxValue->cessperpiece,$arrOfStatus[$taxValue->status],$taxValue->created_by,$taxValue->created_at,$taxValue->t_user,$taxValue->updated_at);
+        }
+
+        return $result;
     }
 }

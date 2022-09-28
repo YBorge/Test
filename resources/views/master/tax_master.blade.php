@@ -60,8 +60,8 @@
         <div class="col-md-4" class="form-group" style="padding-top:22px;">
             <input type="submit" name="btn_submit" id="btn_submit" value="Add" class="btn btn-success">
             <input type="submit" name="btn_cancel_payment" id="btn_cancel_payment" value="Clear" class="btn btn-danger">
-            <a href="{{route('vendor_master_pdf')}}" target="_blank" class="btn btn-primary">PDF</a>
-            <button class="btn btn-primary" formaction="{{route('vendor_master_excel')}}" id="btn" type="submit">Excel</button>	
+            <a href="{{route('tax_master_pdf')}}" target="_blank" class="btn btn-primary">PDF</a>
+            <button class="btn btn-primary" formaction="{{route('tax_master_excel')}}" id="btn" type="submit">Excel</button>	
         </div>
     </div>
     </div>
@@ -80,7 +80,6 @@
         <table class="mytable table table-bordered" id="example" class="display nowrap" style="width:100%">
             <thead style="position: sticky;top: 0" class="thead-dark">
                 <tr>
-                    
                     <th class="header" scope="col">Sr. No</th>
                     <th class="header" scope="col">Type</th>
                     <th class="header" scope="col">Name</th>
