@@ -12,7 +12,7 @@ use App\Http\Controllers\Master\paymentMaster;
 use App\Http\Controllers\Master\itemMaster;
 use App\Http\Controllers\Master\vendorMaster;
 use App\Http\Controllers\Master\taxMaster;
-
+use App\Http\Controllers\Master\custMaster;
 
 /*
 |--------------------------------------------------------------------------
@@ -81,3 +81,5 @@ Route::get('tax_master', [taxMaster::class, 'index'])->name('tax_master');
 Route::post('tax_master_store',[taxMaster::class, 'store'])->name('tax_master_store');
 Route::get('tax_master_pdf', [taxMaster::class, 'taxPdf'])->name('tax_master_pdf');
 Route::post('tax_master_excel', [taxMaster::class, 'taxMasterExcel'])->name('tax_master_excel');
+
+Route::get('customer_master', [custMaster::class, 'index'])->name('customer_master');
