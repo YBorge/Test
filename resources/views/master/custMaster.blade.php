@@ -21,9 +21,9 @@
                     <div class="col-md-1" class="form-group">
                         <label style="color:black;" >Code <span style="color:red;">*</span></label>
                         @if($custSeq[0]['param_value']=='Y')
-                        <input type="text" name="cust_code" id="cust_code" class="form-control" placeholder="Code" value="{{$custcode}}" readonly>
+                        <input type="text" name="cust_code" id="cust_code" class="form-control" placeholder="Cust Code" value="" readonly>
                         @else
-                        <input type="text" name="cust_code" id="cust_code" class="form-control" placeholder="Code" value="0" onkeypress="return isNumber(event)">
+                        <input type="text" name="cust_code" id="cust_code" class="form-control" placeholder="Cust Code" value="0" onkeypress="return isNumber(event)">
                         @endif
                     </div>
                     <div class="col-md-3" class="form-group">
@@ -53,11 +53,11 @@
                     </div>
                     <div class="col-md-3" class="form-group">
                         <label style="color:black;">Address1 <span style="color:red;">*</span></label>
-                        <input type="text" name="addr1" id="addr1" placeholder="Address-1" class="form-control">
+                        <input type="text" name="cust_addr1" id="cust_addr1" placeholder="Address-1" class="form-control">
                     </div>
                     <div class="col-md-3" class="form-group">
                         <label style="color:black;">Address2 <span style="color:red;">*</span></label>
-                        <input type="text" name="addr2" id="addr2" placeholder="Address-2" class="form-control">
+                        <input type="text" name="cust_addr2" id="cust_addr2" placeholder="Address-2" class="form-control">
                     </div>
                     <div class="col-md-2" class="form-group">
                         <label>City <span style="color:red;">*</span></label>
@@ -81,11 +81,11 @@
                     </div>
                     <div class="col-md-2" class="form-group">
                         <label style="color:black;">PinCode</label>
-                        <input type="text" name="std_code" id="std_code" class="form-control" placeholder="PinCode"value="" onkeypress="return isNumber(event)">		
+                        <input type="text" name="pincode" id="pincode" class="form-control" placeholder="PinCode"value="" onkeypress="return isNumber(event)">		
                     </div>
                     <div class="col-md-2" class="form-group">
                         <label style="color:black;">Mobile</label>
-                        <input type="text" name="mobile" id="mobile" class="form-control" placeholder="Mobile" value="">		
+                        <input type="text" name="Mobile" id="Mobile" class="form-control" placeholder="Mobile" value="">		
                     </div>
                     <div class="col-md-2" class="form-group">
                         <label style="color:black;">Email</label>
@@ -93,11 +93,11 @@
                     </div>
                     <div class="col-md-2" class="form-group">
                         <label style="color:black;">PAN</label>
-                        <input type="text" name="panno" id="panno" class="form-control" placeholder="PAN"value="" style='text-transform:uppercase'>		
+                        <input type="text" name="pan" id="pan" class="form-control" placeholder="PAN"value="" style='text-transform:uppercase'>		
                     </div>
                     <div class="col-md-2" class="form-group">
                         <label style="color:black;">Aadhar No</label>
-                        <input type="text" name="aadharno" id="aadharno" class="form-control" placeholder="Aadhar NO" value="" style='text-transform:uppercase'>		
+                        <input type="text" name="aadhar_no" id="aadhar_no" class="form-control" placeholder="Aadhar NO" value="" style='text-transform:uppercase'>		
                     </div>
                     <div class="col-md-2" class="form-group">
                         <label style="color:black;">GSTIN</label>
@@ -115,7 +115,7 @@
                     </div>
                     <div class="col-md-2" class="form-group">
                         <label style="color:black;" >Ref. Customer<span style="color:red;">*</span></label>
-                        <select name="ref_cust" id="ref_cust" class="form-control">
+                        <select name="ref_cust_code" id="ref_cust_code" class="form-control">
                             <option value="" >Select</option>
                             @foreach($ref_customer as $key => $owener)
                             <option value="{{$key}}" >{{$owener}}</option>
@@ -131,15 +131,18 @@
                         <label style="color:black;">CR Over days</label>
                         <input type="text" name="cr_overdue" id="cr_overdue" class="form-control" placeholder="Overdue days" value="" onkeypress="return isNumber(event)">		
                     </div>
-
+                    <div class="col-md-1" class="form-group">
+                        <label>Points</label>
+                         <input type="text" name="points" id="points" placeholder="Points" class="form-control" onkeypress="return isNumber(event)" maxlength="4">
+                    </div>
                     @php  
                     $arrOfYesNo=array(); $arrOfYesNo['Y']='Yes'; $arrOfYesNo['N']='No'; 
                     $arrOfStatus=array(); $arrOfStatus['Y']='Active'; $arrOfStatus['N']='In-Active';
                     @endphp
                 
-                    <div class="col-md-4" style="padding-top:22px;">
+                    <div class="col-md-3" style="padding-top:22px;">
                         <input type="submit" name="cust_btn_submit" id="cust_btn_submit" value="Add" class="btn btn-success ">&nbsp;
-                        <input type="submit" name="btn_cancel" id="btn_cancel" value="Clear" class="btn btn-danger "> 
+                        <input type="button" name="btn_cancel" id="btn_cancel" value="Clear" class="btn btn-danger "> 
                         <a href="#" target="_blank" class="btn btn-primary ">PDF</a>
                         <button class="btn btn-primary " formaction="#" id="btn" type="submit">Excel</button>
                     </div>
@@ -211,7 +214,7 @@
                      }
                  });
                  $.ajax({
-                    url: "{{ url('cust_master_post') }}",
+                    url: "{{ url('customer_master_store') }}",
                     method: 'post',
                     data:form.serialize(),
                     success: function(data)
@@ -228,13 +231,13 @@
                           
                        }
                     },
-                    error: function(data) {
+                    error: function(errors) 
+                    {
+                        toastr.error("Invalid Request.");
                     }
                  });
              });
              
-             });
-
         $('#city').change(function(e){
                  e.preventDefault();
                  $.ajaxSetup({
@@ -243,7 +246,7 @@
                      }
                  });
                  $.ajax({
-                    url: "{{ url('company_master_city') }}",
+                    url: "{{ url('customer_master_city') }}",
                     method: 'post',
                     data:form.serialize(),
                      success: function(data)
@@ -268,6 +271,10 @@
                      }
                  });
              });
+            });
+        $("#btn_cancel").click(function(e){
+            $('#custMaster')[0].reset();
+        });
       </script>
 
 @endsection

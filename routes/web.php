@@ -83,3 +83,5 @@ Route::get('tax_master_pdf', [taxMaster::class, 'taxPdf'])->name('tax_master_pdf
 Route::post('tax_master_excel', [taxMaster::class, 'taxMasterExcel'])->name('tax_master_excel');
 
 Route::get('customer_master', [custMaster::class, 'index'])->name('customer_master');
+Route::post('customer_master_city', [custMaster::class, 'cityChange'])->name('customer_master_city');
+Route::post('customer_master_store', [custMaster::class, 'store'])->name('customer_master_store');
