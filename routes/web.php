@@ -86,3 +86,4 @@ Route::get('customer_master', [custMaster::class, 'index'])->name('customer_mast
 Route::post('customer_master_city', [custMaster::class, 'cityChange'])->name('customer_master_city');
 Route::post('customer_master_store', [custMaster::class, 'store'])->name('customer_master_store');
 Route::get('cust_master_pdf', [custMaster::class, 'custPdf'])->name('cust_master_pdf');
+Route::post('cust_master_excel', [custMaster::class, 'custMasterExcel'])->name('cust_master_excel');
