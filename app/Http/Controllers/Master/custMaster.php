@@ -90,7 +90,6 @@ class custMaster extends Controller
             'cust_addr1'    => 'required',
             'cust_addr2' => 'required',
             'city'    => 'required',
-            'cust_name' => 'required',
             'cust_type'    => 'required',
             'ref_cust_code'  => 'required'
         ],
@@ -148,5 +147,23 @@ class custMaster extends Controller
         catch (Exception $exception) {
             return Response::json(['errors' => $exception->getMessage()]);
         }
+    }
+
+    public function custPdf()
+    {
+        $cust_masterdata=$this->cust_masterdata;
+        $state_master=$this->state_master;
+        $country_master=$this->country_master;
+        $cust_type_master=$this->cust_type_master;
+        $ref_customer=$this->ref_customer;
+        $mpdf= new \Mpdf\Mpdf();
+        $html=\View::make('Master.cust_master_pdf')->with(compact('cust_masterdata','state_master','country_master','cust_type_master','ref_customer'));
+        
+        $mpdf->SetHTMLFooter('<table width="100%" style="font-size:12px;"> 
+            <tr> <td colspan="2" align="center">|{PAGENO} of {nbpg}|</td>  </tr>
+             </table>');
+        $html=$html->render();
+        $mpdf->WriteHTML($html);
+        $mpdf->output('custMaster.pdf','I');
     }
 }

@@ -143,7 +143,7 @@
                     <div class="col-md-3" style="padding-top:22px;">
                         <input type="submit" name="cust_btn_submit" id="cust_btn_submit" value="Add" class="btn btn-success ">&nbsp;
                         <input type="button" name="btn_cancel" id="btn_cancel" value="Clear" class="btn btn-danger "> 
-                        <a href="#" target="_blank" class="btn btn-primary ">PDF</a>
+                        <a href="{{route('cust_master_pdf')}}" target="_blank" class="btn btn-primary ">PDF</a>
                         <button class="btn btn-primary " formaction="#" id="btn" type="submit">Excel</button>
                     </div>
                     
@@ -163,6 +163,7 @@
                     <table class="mytable table table-bordered" id="example" class="display nowrap">
                         <thead style="position: sticky;top: 0" class="thead-dark">
                             <tr>
+                                <th></th>
                                 <th class="header" scope="col">Sr. No</th>
                                 <th class="header" scope="col">Code</th>
                                 <th class="header" scope="col">Name</th>
@@ -187,6 +188,7 @@
                                 <th class="header" scope="col">Ref-Cust</th>
                                 <th class="header" scope="col">CR Limit</th>
                                 <th class="header" scope="col">CR Overdue Days</th>
+                                <th class="header" scope="col">Points</th>
                                 <th class="header" scope="col">Status</th>
                                 <th class="header" scope="col">Created By</th>
                                 <th class="header" scope="col">Created Date</th>
@@ -194,7 +196,43 @@
                                 <th class="header" scope="col">Updated Date</th>
                             </tr>
                         </thead>
-                        
+                        @php $srNo=0; $arrOfStatus=array(); $arrOfStatus['Y']='Active'; $arrOfStatus['N']='In-Active';  @endphp
+                        @foreach($cust_masterdata as $custKey => $custVal)
+                            <tr>
+                                <td></td>
+                                <td>{{++$srNo}}</td>
+                                <td>{{$custVal->cust_code}}</td>
+                                <td>{{$custVal->cust_name}}</td>
+                                <td>{{$custVal->gender}}</td>
+                                <td>{{$custVal->barcode?? '-'}}</td>
+                                <td>{{$custVal->birth_date}}</td>
+                                <td>{{$custVal->join_date}}</td>
+                                <td>{{$custVal->cust_addr1}}</td>
+                                <td>{{$custVal->cust_addr2}}</td>
+                                <td>{{$custVal->city}}</td>
+                                <td>{{$custVal->state}}</td>
+                                <td>{{$state_master[$custVal->state]}}</td>
+                                <td>{{$custVal->country}}</td>
+                                <td>{{$country_master[$custVal->country]}}</td>
+                                
+                                <td>{{$custVal->pincode}}</td>
+                                <td>{{$custVal->Mobile}}</td>
+                                <td>{{$custVal->email}}</td>
+                                <td>{{$custVal->pan}}</td>
+                                <td>{{$custVal->aadhar_no}}</td>
+                                <td>{{$custVal->gstin}}</td>
+                                <td>{{$cust_type_master[$custVal->cust_type]}}</td>
+                                <td>{{$ref_customer[$custVal->ref_cust_code]}}</td>
+                                <td>{{$custVal->cr_limit}}</td>
+                                <td>{{$custVal->cr_overdue_days}}</td>
+                                <td>{{$custVal->points}}</td>
+                                <td>{{$arrOfStatus[$custVal->status]}}</td>
+                                <td>{{$custVal->created_by}}</td>
+                                <td>{{$custVal->created_at}}</td>
+                                <td>{{$custVal->updated_by}}</td>
+                                <td>{{$custVal->updated_at}}</td>
+                            </tr>
+                        @endforeach
                     </table>
                 </div>
             </div>
