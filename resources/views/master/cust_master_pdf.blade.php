@@ -44,19 +44,19 @@
                 <th class="header" scope="col">Updated Date</th>
             </tr>
         
-            @php $srNo=0; $arrOfStatus=array(); $arrOfStatus['Y']='Active'; $arrOfStatus['N']='In-Active';  @endphp
+            @php $srNo=0; $arrOfStatus=array(); $arrOfStatus['Y']='Active'; $arrOfStatus['N']='In-Active'; $arrOfGendor=array(); $arrOfGendor['M']='Male'; $arrOfGendor['F']='Female'; $arrOfGendor['T']='Transgender'; @endphp
             @foreach($cust_masterdata as $custKey => $custVal)
                 <tr>
                     <td>{{++$srNo}}</td>
                     <td>{{$custVal->cust_code}}</td>
                     <td>{{$custVal->cust_name}}</td>
-                    <td>{{$custVal->gender}}</td>
+                    <td>{{$arrOfGendor[$custVal->gender]}}</td>
                     <td>{{$custVal->barcode?? '-'}}</td>
                     <td>{{$custVal->birth_date}}</td>
                     <td>{{$custVal->join_date}}</td>
                     <td>{{$custVal->cust_addr1}}</td>
                     <td>{{$custVal->cust_addr2}}</td>
-                    <td>{{$custVal->city}}</td>
+                    <td>{{$city_master[$custVal->city]}}</td>
                     <td>{{$custVal->state}}</td>
                     <td>{{$state_master[$custVal->state]}}</td>
                     <td>{{$custVal->country}}</td>

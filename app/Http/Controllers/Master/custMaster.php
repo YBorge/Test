@@ -13,6 +13,7 @@ use App\Models\state;
 use App\Models\city;
 use App\Models\location_master;
 use App\Models\company_master;
+use App\Exports\customerExport;
 
 use Response;
 use PDF;
@@ -156,8 +157,9 @@ class custMaster extends Controller
         $country_master=$this->country_master;
         $cust_type_master=$this->cust_type_master;
         $ref_customer=$this->ref_customer;
+        $city_master=$this->city_master;
         $mpdf= new \Mpdf\Mpdf();
-        $html=\View::make('Master.cust_master_pdf')->with(compact('cust_masterdata','state_master','country_master','cust_type_master','ref_customer'));
+        $html=\View::make('Master.cust_master_pdf')->with(compact('cust_masterdata','state_master','country_master','cust_type_master','ref_customer','city_master'));
         
         $mpdf->SetHTMLFooter('<table width="100%" style="font-size:12px;"> 
             <tr> <td colspan="2" align="center">|{PAGENO} of {nbpg}|</td>  </tr>
@@ -165,5 +167,22 @@ class custMaster extends Controller
         $html=$html->render();
         $mpdf->WriteHTML($html);
         $mpdf->output('custMaster.pdf','I');
+    }
+
+    public function custMasterExcel()
+    {
+        return Excel::download(new customerExport($this->cust_masterdata,$this->state_master,$this->country_master,$this->cust_type_master,$this->ref_customer,$this->city_master),'CustomerMaster.xlsx');
+    }
+
+    public function custMasterGetExcel($cust_masterdata,$state_master,$country_master,$cust_type_master,$ref_customer,$city_master)
+    {
+        $srNo=0;
+        $arrOfStatus=array(); $arrOfStatus['Y']='Active'; $arrOfStatus['N']='In-Active';
+        $arrOfGendor=array(); $arrOfGendor['M']='Male'; $arrOfGendor['F']='Female'; $arrOfGendor['T']='Transgender';
+        foreach($cust_masterdata as $custKey => $custVal)
+        {
+            $result[]= array(++$srNo,$custVal->cust_code,$custVal->cust_name,$arrOfGendor[$custVal->gender],$custVal->barcode?? '-',$custVal->birth_date,$custVal->join_date,$custVal->cust_addr1,$custVal->cust_addr2,$city_master[$custVal->city],$custVal->state,$state_master[$custVal->state],$custVal->country,$country_master[$custVal->country],$custVal->pincode,$custVal->Mobile,$custVal->email,$custVal->pan,$custVal->aadhar_no,$custVal->gstin,$cust_type_master[$custVal->cust_type],$ref_customer[$custVal->ref_cust_code],$custVal->cr_limit,$custVal->cr_overdue_days,$custVal->points,$arrOfStatus[$custVal->status],$custVal->created_by,$custVal->created_at,$custVal->updated_by,$custVal->updated_at);
+        }
+        return $result;
     }
 }
