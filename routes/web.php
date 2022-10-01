@@ -13,6 +13,7 @@ use App\Http\Controllers\Master\itemMaster;
 use App\Http\Controllers\Master\vendorMaster;
 use App\Http\Controllers\Master\taxMaster;
 use App\Http\Controllers\Master\custMaster;
+use App\Http\Controllers\Master\userMaster;
 
 /*
 |--------------------------------------------------------------------------
@@ -87,3 +88,6 @@ Route::post('customer_master_city', [custMaster::class, 'cityChange'])->name('cu
 Route::post('customer_master_store', [custMaster::class, 'store'])->name('customer_master_store');
 Route::get('cust_master_pdf', [custMaster::class, 'custPdf'])->name('cust_master_pdf');
 Route::post('cust_master_excel', [custMaster::class, 'custMasterExcel'])->name('cust_master_excel');
+
+Route::get('user_master', [userMaster::class, 'index'])->name('user_master');
+Route::post('user_master_store',[userMaster::class,'store'])->name('user_master_store');

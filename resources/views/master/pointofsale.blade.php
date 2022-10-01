@@ -15,12 +15,11 @@
         <div class="col-md-9" style="background-color: #cfccc9;">
            <table width="100%">
               <tr>
-                <th>Location </th>
-                <th>Bill Date </th>
-                <th>Bill No </th>
-                <th>Bill Date </th>
-                <th>Cashier </th>
-                <th>Machine </th>
+                <th>Location: <input type="text" name="loc_Code" id="loc_Code" class="form-control" value="{{ Session::get('companyname')}}" readonly></th>
+                <th>Bill Date: <input type="text" name="Bill Date" id="Bill_Date" class="form-control" value="{{ Session::get('companyname')}}" readonly></th>
+                <th>Bill No: <input type="text" name="Bill No" id="Bill_No" class="form-control" value="{{ Session::get('companyname')}}" readonly></th>
+                <th>Cashier: <input type="text" name="Cashier" id="Cashier" class="form-control" value="{{ Session::get('companyname')}}" readonly></th>
+                <th>Machine: <input type="text" name="Machine" id="Machine" class="form-control" value="{{ Session::get('companyname')}}" readonly></th>
               </tr>
             </table>
         </div><br>
@@ -28,25 +27,22 @@
           
         </div>
         <div class="col-md-9">
-          <b> Mobile <span style="color:red;">*</span></b> <input type="text" name="" placeholder="Mobile" style="width: 83px;"><b>Cust-Id <span style="color:red;">*</span> </b><input type="text" name="" placeholder="Customer Id" > <input type="text" name="" placeholder="Customer Name"> <a href="#" class="btn btn-xs btn-primary"> New Cust</a>  
-            <b>HD <span style="color:red;">*</span> </b>
+          <br>
+          <b> Mobile: <span style="color:red;">*</span></b> <input type="text" name="" placeholder="Mobile" style="width: 85px;"><b>  Cust-Id: <span style="color:red;">*</span> </b><input type="text" name="" style="width: 80px;" placeholder="Customer Id" ><input type="text" name="" style="width: 250px;" placeholder="Customer Name"> <a href="#" class="btn btn-xs btn-primary">New Cust</a><b>  Points: </b><input type="text" name="" style="width: 80px;" placeholder="Points">
+          <b> Home-Delivery: <span style="color:red;"></span> </b>
               <select name="">
                 <option value="Y">Select</option>
                 <option value="Y">YES</option>
                 <option value="N">NO</option>
-              </select>
+              </select><b>  Last Bill No: </b><input type="text" name="" align="center" style="width: 155px;" placeholder="Last Bill No" ><br>
+            <b> Address: </b> <input type="text" name="" style="width: 440px;" placeholder="Address">
+            <b> Disc: </b><input type="text" name="" style="width: 60px;" placeholder="Amt"><input type="text" name="" style="width: 50px;" placeholder="%"><b>
+            <b> Oth Chrg: </b><input type="text" name="" style="width: 60px;" placeholder="Amt"><input type="text" name="" style="width: 50px;" placeholder="%">
+            <b> Last Bill Amt/Change: </b><input type="text" name="" style="width: 100px;" placeholder="Last Bill Amt" ><input type="text" name="" style="width: 60px;" placeholder="Change">
+            <br><br>
             
-            <b>Points </b><input type="text" name="" placeholder="Points" class="point" class="point">
-            <b>Disc </b><input type="text" name="" placeholder="Amt" class="point"> 
-            <input type="text" name="" class="point" placeholder="%"><br>
-            <b>Address</b> <input type="text" name="" placeholder="Address">
-            <b>Last Bill No </b><input type="text" name="" class="point" placeholder="Last Bill No" >
-            <b>Last Bill Amt. </b><input type="text" name="" class="point" placeholder="Last Bill Amt" >
-            <b>Last Bill Charges </b><input type="text" name="" class="point" placeholder="Last Bill Charges" >
-            <b>Other Charges </b><input type="text" name="" class="point" placeholder="Amt"> 
-            <input type="text" name="" class="point" placeholder="%"><br><br>
-            <b>Scan Barcode</b><input type="text" name=""  placeholder="" value="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <b>SEARCH SKU</b><input type="text" name=""  placeholder="" value=""><br><br>
+            <b>Scan Barcode:</b><input type="text" name=""  placeholder="" value="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <b>SEARCH SKU:</b><input type="text" name=""  placeholder="" value=""><br><br>
             <table width="100%" border="1">
               <tr>
                 <th>Sku </th>
@@ -71,46 +67,46 @@
             </table>
         </div>
         <div class="col-md-3">
-          <table width="100%" border="1">
+            <table width="80%" border="1">
               <tr>
                 <th><b>Sku Count</b> </th>
-                <th><input type="text" name="" class="point" placeholder="" value="1"> </th>
+                <th><input type="text" name="" class="point" style="text-align:center" placeholder="" value="1"> </th>
                 <th><b>Total Qty</b> </th>
-                <th><input type="text" name="" class="point" placeholder="" value="1.00"> </th>
-                
+                <th><input type="text" name="" class="point" style="text-align:center" placeholder="" value="1.00"> </th>
               </tr>
+            </table>
+            <table width="80%" border="1">  
+              <br>
               <tr>
                 <td colspan="4" align="center"><b>Payable Value </b></td>
               </tr>
               <tr>
                 <td colspan="4" align="center">
-                <input type="text" name="" style="text-align: " class="" placeholder="" value="95.00"></td>
+                <input type="text" name="" style="text-align:center" class="" placeholder="" value="95.00"></td>
+              </tr>
+              </table>
+            <table width="80%" border="1">  
+              <br>
+              <tr>
+                <td colspan="4" ><b >Total MRP :</b>  <input type="text" name="" class="" style="text-align:right" placeholder="" value="100.00"></td>
               </tr>
               <tr>
-                <td colspan="4" ><b>Total MRP</b>  <input type="text" name="" class="" placeholder="" value="100.00"></td>
-              </tr>
-              <tr>
-                <td colspan="4" ><b>Save </b><input type="text" name="" class="" placeholder="" value="5.00"></td>
+                <td colspan="4" ><b>Save :</b><input type="text" name="" class="" style="text-align:right" placeholder="" value="5.00"></td>
               </tr>
                <tr>
-                <td colspan="4" ><b>Amount </b>  <input type="text" name="" class="" placeholder="" value="95.00"></td>
+                <td colspan="4" ><b>Amount :</b>  <input type="text" name="" class="" style="text-align:right" placeholder="" value="95.00"></td>
               </tr>
                <tr>
-                <td colspan="4" ><b>Pmt. Chrg </b>  <input type="text" name="" class="" placeholder="" value=".00"></td>
+                <td colspan="4" ><b>Pmt. Chrg :</b>  <input type="text" name="" class="" style="text-align:right" placeholder="" value=".00"></td>
               </tr>
               <tr>
-                <td colspan="4" ><b>Item Disc</b>  <input type="text" name="" class="" placeholder="" value=".00"></td>
+                <td colspan="4" ><b>Item Disc :</b>  <input type="text" name="" class="" style="text-align:right" placeholder="" value=".00"></td>
               </tr>
               <tr>
-                <td colspan="4" ><b>Bill Disc</b>  <input type="text" name="" class="" placeholder="" value=".00"></td>
+                <td colspan="4" ><b>Bill Disc :</b>  <input type="text" name="" class="" style="text-align:right" placeholder="" value=".00"></td>
               </tr>
               <tr>
-                <td colspan="4" ><b>Round Off</b>  <input type="text" name="" class="" placeholder="" value="0.00"></td>
-              </tr>
-              <tr>
-                <td colspan="4" >
-                <a href="#" class="btn btn-xs btn-primary"> Re-Print Bill</a>&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-xs btn-success"> Cancel Bill</a>
-                </td>
+                <td colspan="4" ><b>Round Off :</b>  <input type="text" name="" class="" style="text-align:right" placeholder="" value="0.00"></td>
               </tr>
             </table>
         </div>
@@ -119,6 +115,7 @@
           <a href="#" class="btn btn-xs btn-success"> Block Change</a>&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-xs btn-success"> Query Mode</a>&nbsp;&nbsp;&nbsp;
           <a href="#" class="btn btn-xs btn-success"> Display / Show</a>&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-xs btn-success"> Sku List-LOV</a>&nbsp;&nbsp;&nbsp;
           <a href="#" class="btn btn-xs btn-success"> Hold Bill</a>&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-xs btn-success">Pop Hold Bill </a>
+          <a href="#" class="btn btn-xs btn-primary"> Re-Print Bill</a>&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-xs btn-success"> Cancel Bill</a>
         </div>  
       </form>
     </div>
