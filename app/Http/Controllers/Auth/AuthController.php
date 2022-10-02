@@ -86,8 +86,16 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
             session(['useremail' => $request->email]);
-            session(['companyname' => $request->txt_company]);
-            session(['companylocation' => $request->txt_location]);
+            $CompDetails = company_master::select('comp_name','comp_code')
+                           ->where('comp_code', '=', $request->txt_company)
+                           ->get();
+            session(['companyname' => $CompDetails[0]['comp_name']]);
+            session(['companycode' => $CompDetails[0]['comp_code']]);
+            $LocationDetails = location_master::select('loc_name','loc_code')
+                            ->where('loc_code', '=', $request->txt_location)
+                            ->get();
+            session(['companylocation' => $LocationDetails[0]['loc_name']]);
+            session(['companyloc_code' => $LocationDetails[0]['loc_code']]);
             return redirect()->intended('dashboard')
                         ->withSuccess('You have Successfully logged-In');
         }

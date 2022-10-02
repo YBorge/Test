@@ -14,6 +14,7 @@ use App\Http\Controllers\Master\vendorMaster;
 use App\Http\Controllers\Master\taxMaster;
 use App\Http\Controllers\Master\custMaster;
 use App\Http\Controllers\Master\userMaster;
+use App\Http\Controllers\Master\openStock;
 
 /*
 |--------------------------------------------------------------------------
@@ -93,3 +94,6 @@ Route::get('user_master', [userMaster::class, 'index'])->name('user_master');
 Route::post('user_master_store',[userMaster::class,'store'])->name('user_master_store');
 Route::get('user_master_pdf', [userMaster::class, 'userPdf'])->name('user_master_pdf');
 Route::post('user_master_excel',[userMaster::class,'userMasterExcel'])->name('user_master_excel');
+
+Route::get('open_stock', [openStock::class, 'index'])->name('open_stock');
+

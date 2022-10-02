@@ -8,3 +8,6 @@ INSERT INTO `categories` (`id`, `category_name`, `category_slug`, `parent_catego
 INSERT INTO `categories` (`id`, `category_name`, `category_slug`, `parent_category_id`, `category_image`, `is_home`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'User Master', '#', '2', '1613553407.jpg', '1', '1', '2021-02-17 03:46:07', '2021-02-17 03:46:47');
 
 INSERT INTO `categories` (`id`, `category_name`, `category_slug`, `parent_category_id`, `category_image`, `is_home`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'Tax Master', 'tax_master', '2', '1613553407.jpg', '1', '1', '2021-02-17 03:46:07', '2021-02-17 03:46:47');
+
+--10-2-22
+INSERT INTO `categories` (`id`, `category_name`, `category_slug`, `parent_category_id`, `category_image`, `is_home`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'Opening Stock', 'open_stock', '20', '1613553509.jpg', '1', '1', '2021-02-17 03:31:24', '2021-02-17 03:48:29');
