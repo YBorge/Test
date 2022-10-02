@@ -2,13 +2,13 @@
 <html>
 <head>
     <title>Inventory - APP</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{asset('front_assets/css/bootstrap.min.css')}}">
     <link href="{{asset('front_assets/css/font-awesome.css')}}" rel="stylesheet">
     <link href="{{asset('front_assets/css/bootstrap.css')}}" rel="stylesheet">   
     <link href="{{asset('front_assets/css/jquery.smartmenus.bootstrap.css')}}" rel="stylesheet">    
     <link href="{{asset('front_assets/css/style.css')}}" rel="stylesheet">
     <link href="{{asset('front_assets/css/toastr.min.css')}}" rel="stylesheet">     
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="{{asset('front_assets/js/jquery.min.js')}}"></script>
     <script src="{{asset('front_assets/js/toastr.min.js')}}"></script> 
     <script src="{{asset('front_assets/js/bootstrap.js')}}"></script> 
     <!-- Google Font -->

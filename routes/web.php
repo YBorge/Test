@@ -91,3 +91,5 @@ Route::post('cust_master_excel', [custMaster::class, 'custMasterExcel'])->name('
 
 Route::get('user_master', [userMaster::class, 'index'])->name('user_master');
 Route::post('user_master_store',[userMaster::class,'store'])->name('user_master_store');
+Route::get('user_master_pdf', [userMaster::class, 'userPdf'])->name('user_master_pdf');
+Route::post('user_master_excel',[userMaster::class,'userMasterExcel'])->name('user_master_excel');

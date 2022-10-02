@@ -46,8 +46,8 @@
         <div class="col-md-2" class="form-group" style="padding-top:22px;">
             <input type="submit" name="btn_submit" id="btn_submit" value="Add" class="btn btn-success btn-xs">
             <input type="submit" name="btn_cancel_payment" id="btn_cancel_payment" value="Clear" class="btn btn-danger btn-xs">
-            <a href="{{route('payment_master_pdf')}}" class="btn btn-primary btn-xs">PDF</a>
-            <button class="btn btn-primary btn-xs" formaction="{{route('payment_master_excel')}}" id="btn" type="submit">Excel</button>	
+            <a href="{{route('user_master_pdf')}}" target="_blank" class="btn btn-primary btn-xs">PDF</a>
+            <button class="btn btn-primary btn-xs" formaction="{{route('user_master_excel')}}" id="btn" type="submit">Excel</button>	
         </div>
     </div>
     </div>
@@ -68,19 +68,41 @@
                 <tr>
                     <th class="header" scope="col">Edit</th>
                     <th class="header" scope="col">Sr. No</th>
-                    <th class="header" scope="col">Payment  Code</th>
-                    <th class="header" scope="col">Payment  Name</th>
-                    <th class="header" scope="col">CalCulate On</th>
-                    <th class="header" scope="col">Charges (%)</th>
-                    <th class="header" scope="col">Allow Multi</th>
-                    <th class="header" scope="col">Bill Copy</th>
+                    <th class="header" scope="col">User Code</th>
+                    <th class="header" scope="col">User Name</th>
+                    <th class="header" scope="col">Role</th>
+                    <th class="header" scope="col">Mobile</th>
+                    <th class="header" scope="col">Email</th>
                     <th class="header" scope="col">Status</th>
                     <th class="header" scope="col">Created By</th>
                     <th class="header" scope="col">Created Date and Time</th>
+                    <th class="header" scope="col">Updated By</th>
                     <th class="header" scope="col">Updated Date and Time</th>
                 </tr>
             </thead>
-               
+            @if(count($user_data) < 0)
+                <tr>
+                    <td colspan="11" style="color: red">No Record Found..!</td>
+                </tr>
+            @else
+                @php $srNo=0; $arrOfStatus=array(); $arrOfStatus['Y']='Active';  @endphp
+                @foreach($user_data as $usKey => $user)
+                <tr>
+                    <td></td>
+                    <td>{{++$srNo}}</td>
+                    <td>{{$user->user_code}}</td>
+                    <td>{{$user->uname}}</td>
+                    <td>{{$user_role[$user->role]?? '-'}}</td>
+                    <td>{{$user->mobile}}</td>
+                    <td>{{$user->email}}</td>
+                    <td>{{$arrOfStatus[$user->status]}}</td>
+                    <td>{{$user->created_by}}</td>
+                    <td>{{$user->created_at}}</td>
+                    <td>{{$user->t_user}}</td>
+                    <td>{{$user->updated_at}}</td>
+                </tr>
+                @endforeach
+            @endif
             </table>                   
         </div>  
     </div>
