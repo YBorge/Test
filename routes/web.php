@@ -96,4 +96,5 @@ Route::get('user_master_pdf', [userMaster::class, 'userPdf'])->name('user_master
 Route::post('user_master_excel',[userMaster::class,'userMasterExcel'])->name('user_master_excel');
 
 Route::get('open_stock', [openStock::class, 'index'])->name('open_stock');
-
+Route::post('open_stock_store', [openStock::class, 'store'])->name('open_stock_store');
+Route::post('get_barcode_data', [openStock::class, 'getBarcode'])->name('get_barcode_data');
