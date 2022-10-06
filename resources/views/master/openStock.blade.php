@@ -12,12 +12,15 @@
         
         <div class="col-md-1" class="form-group">
             <label>Location <span style="color:red;">*</span></label>
-            <input type="text" name="loc_Code" id="loc_Code" class="form-control" value="{{ Session::get('companyname')}}" readonly>
+            <input type="text" name="loc_Code" id="loc_Code" class="form-control" value="{{ Session::get('companyloc_code')}}" readonly>
         </div>
         <div class="col-md-2" class="form-group">
             <label style="color:black;">Barcode/Hotkey <span style="color:red;">*</span></label>
-            <input type="text" name="barcode" id="barcode" placeholder="Scan Barcode" class="form-control">
+            <input type="text" name="barcode" id="barcode" placeholder="Scan Barcode" class="form-control" style='text-transform:uppercase;margin-top: 0%'>
         </div>
+        <div class="col-md-1 form-group"> 
+            <label></label>
+            <input type="submit" name="btn_barcode" id="btn_barcode" class="btn btn-primary"></div>
         <div class="col-md-1" class="form-group">
             <label style="color:black;">Code <span style="color:red;">*</span></label>
             <input type="text" name="item_code" id="item_code" class="form-control" placeholder="Item Code" value="" onkeypress="return isNumber(event)" readonly>	
@@ -30,7 +33,7 @@
             <label style="color:black;">Markup (%)<span style="color:red;">*</span></label>
             <input type="text" name="markup" id="markup" placeholder="Markup (%)" class="form-control" onkeypress="return isNumber(event)" readonly>
         </div>
-        <div class="col-md-1" class="form-group">
+        <div class="col-md-2" class="form-group">
             <label style="color:black;">Markdown (%)<span style="color:red;">*</span></label>
             <input type="text" name="markdown" id="markdown" placeholder="Markdown (%)" class="form-control" onkeypress="return isNumber(event)" readonly>
         </div>
@@ -52,7 +55,7 @@
         </div>
         <div class="col-md-1" class="form-group">
             <label>Department <span style="color:red;">*</span></label>
-            <select name="loc_code" id="loc_code" class="form-control">
+            <select name="dept_code" id="dept_code" class="form-control">
                 <option value="" >Select</option>
                 @foreach($dept_code as $key => $dept_value)
                 <option value="{{$key}}" >{{$dept_value}}</option>
@@ -61,13 +64,13 @@
         </div>        
         <div class="col-md-2" class="form-group">
             <label style="color:black;">Expiry Date<span style="color:red;">*</span></label>
-            <input type="date" name="expiry" id="expiry" placeholder="Expiry Date" class="form-control">
+            <input type="date" name="expiry_date" id="expiry_date" placeholder="Expiry Date" class="form-control">
         </div>
         <div class="col-md-4" style="padding-top:22px;">
-            <input type="submit" name="manu_btn_submit" id="manu_btn_submit" value="Add" class="btn btn-success">&nbsp;
+            <input type="submit" name="btn_submit" id="btn_submit" value="Add" class="btn btn-success">&nbsp;
             <input type="submit" name="btn_cancel" id="btn_cancel" value="Clear" class="btn btn-danger"> 
-            <a href="#" target="_blank" class="btn btn-primary">PDF</a>
-            <button class="btn btn-primary" formaction="#" id="btn" type="submit">Excel</button>
+            <!-- <a href="#" target="_blank" class="btn btn-primary">PDF</a>
+            <button class="btn btn-primary" formaction="#" id="btn" type="submit">Excel</button> -->
         </div>
     </div>
     </div>
@@ -115,6 +118,79 @@
 
 </div>
 </form>
+<script>
+        $(document).ready(function(){
+            var form=$("#openStock");
+            $('#btn_submit').click(function(e){
+                 e.preventDefault();
+                 $.ajaxSetup({
+                     headers: {
+                         'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                     }
+                 });
+                 $.ajax({
+                    url: "{{ url('open_stock_store') }}",
+                    method: 'post',
+                    data:form.serialize(),
+                    success: function(data)
+                    {
+                       if(data.errors) 
+                       {
+                            toastr.error(data.errors);
+                       }
+                       if(data.success) 
+                       {
+                            toastr.success('Data Saved Successfully');
+                            $('#openStock')[0].reset();
+                            location.reload();
+                          
+                       }
+                    },
+                    error: function(errors) 
+                    {
+                        toastr.error("Invalid Request.");
+                    }
+                 });
+             });
 
+            $('#btn_barcode').click(function(e){
+                 e.preventDefault();
+                 $.ajaxSetup({
+                     headers: {
+                         'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                     }
+                 });
+                 $.ajax({
+                    url: "{{ url('get_barcode_data') }}",
+                    method: 'post',
+                    data:form.serialize(),
+                    success: function(data)
+                    {
+                       if(data.errors) 
+                       {
+                            toastr.error(data.errors);
+                       }
+                       if(data.success) 
+                       {
+                            toastr.success('Data Saved Successfully');
+                            $('#openStock')[0].reset();
+                            location.reload();
+                          
+                       }
+                    },
+                    error: function(errors) 
+                    {
+                        toastr.error("Invalid Request.");
+                    }
+                 });
+             });
+
+         });
+        
+        $('#btn_cancel').click(function(){
+            $('#openStock')[0].reset();
+            return false;
+        });
+</script>
 
 @endsection
