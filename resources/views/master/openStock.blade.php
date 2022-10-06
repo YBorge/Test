@@ -36,6 +36,7 @@
         <div class="col-md-2" class="form-group">
             <label style="color:black;">Markdown (%)<span style="color:red;">*</span></label>
             <input type="text" name="markdown" id="markdown" placeholder="Markdown (%)" class="form-control" onkeypress="return isNumber(event)" readonly>
+            <input type="hidden" name="item_type" id="item_type">
         </div>
         <div class="col-md-1" class="form-group">
             <label style="color:black;">Quantity<span style="color:red;">*</span></label>
@@ -166,17 +167,26 @@
                     data:form.serialize(),
                     success: function(data)
                     {
-                       if(data.errors) 
-                       {
-                            toastr.error(data.errors);
-                       }
-                       if(data.success) 
-                       {
-                            toastr.success('Data Saved Successfully');
-                            $('#openStock')[0].reset();
-                            location.reload();
-                          
-                       }
+                        if(data.jsonData.item_code) 
+                        {
+                            $("#item_code").val(data.jsonData.item_code);
+                        }
+                        if(data.jsonData.item_name) 
+                        {
+                            $("#item_name").val(data.jsonData.item_name);
+                        }
+                        if(data.jsonData.markup) 
+                        {
+                            $("#markup").val(data.jsonData.markup);
+                        }
+                        if(data.jsonData.markdown) 
+                        {
+                            $("#markdown").val(data.jsonData.markdown);
+                        }
+                        if(data.jsonData.item_type)
+                        {
+                            $("#item_type").val(data.jsonData.item_type);
+                        }
                     },
                     error: function(errors) 
                     {
