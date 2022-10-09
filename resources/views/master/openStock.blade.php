@@ -112,7 +112,30 @@
                     <th class="header" scope="col">Updated Date</th>
                 </tr>
             </thead>
-                
+                @php $srNo=0; $arrOfStatus=array(); $arrOfStatus['Y']='Active'; $arrOfStatus['N']='In-Active'; @endphp
+                @foreach($open_stockdata as $key => $value)
+                <tr>
+                    <td>{{++$srNo}}</td>
+                    <td>{{$value->loc_code}}</td>
+                    <td>{{$value->barcode}}</td>
+                    <td>{{$value->item_code}}</td>
+                    <td>{{$item_data[$value->item_code]}}</td>
+                    <td>{{$value->qty}}</td>
+                    <td>{{$value->mrp}}</td>
+                    <td>{{$value->sale_rate}}</td>
+                    <td>{{$value->cost_rate}}</td>
+                    <td>{{$dept_code[$value->dept_code]}}</td>
+                    <td>{{$value->expiry_date}}</td>
+                    <td>{{$value->batch_no}}</td>
+                    <td>{{$value->doc_type}}</td>
+                    <td>{{Session::get('companyname')}}</td>
+                    <td>{{$arrOfStatus[$value->status]}}</td>
+                    <td>{{$value->created_by}}</td>
+                    <td>{{$value->created_at}}</td>
+                    <td></td>
+                    <td>{{$value->updated_at}}</td>
+                </tr>
+                @endforeach
             </table>                   
         </div>  
     </div>

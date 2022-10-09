@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Carbon;
 use App\Models\open_stock;
 use App\Models\dept_master;
 use App\Models\item_barcode;
@@ -21,15 +22,18 @@ class openStock extends Controller
 {
     public $dept_code;
     public $open_stockdata;
-   
+    public $timeStamp;
+    public $item_data;
     public function __construct()
     {
         $this->dept_code = dept_master::where('status', '=', 'Y')->pluck('dept_name','dept_code');
+        $this->item_data = item_master::where('status', '=', 'Y')->pluck('item_name','item_code');
         $this->open_stockdata= open_stock::all();
+        $this->timeStamp = Carbon::now()->format('YmdHms');
     }
     public function index()
     {
-        return view('master.openStock',['open_stockdata'  => $this->open_stockdata,'dept_code' => $this->dept_code]);
+        return view('master.openStock',['open_stockdata'  => $this->open_stockdata,'dept_code' => $this->dept_code,'item_data' => $this->item_data]);
     }
 
     public function store(Request $request)
@@ -51,7 +55,7 @@ class openStock extends Controller
             'sale_rate.required' => 'Please Enter Sale Rate',
             'cost_rate.required' => 'Please Enter Cost Rate',
             'dept_code.required' => 'Please Enter Department Code',
-            'expiry_date.required' => 'Please Enter Department Code'
+            'expiry_date.required' => 'Please Select Expiry Date'
             
         ]);
         if($validatedData->fails())
@@ -117,7 +121,7 @@ class openStock extends Controller
                     'item_code' => $request->item_code,
                     'dept_code' => $request->dept_code,
                     'doc_type' => 'OB',
-                    'recd_date' => null,
+                    'recd_date' => $this->timeStamp,
                     'recd_qty' => $request->qty,
                     'trf_in_qty' => null,
                     'oth_in_qty' => null,
@@ -125,16 +129,15 @@ class openStock extends Controller
                     'trf_out_qty' => null,
                     'oth_out_qty' => null,
                     'bal_qty' => null,
-                    'cost_rate' => null,
-                    'sale_rate' => null,
-                    'mrp' => null,
-                    'expiry_date' => null,
+                    'cost_rate' => $request->cost_rate,
+                    'sale_rate' => $request->sale_rate,
+                    'mrp' => $request->mrp,
+                    'expiry_date' => $request->expiry_date,
                     'ven_code' => null,
-                    'expiry_date' => null,
                     'oth_loc_code' => null,
                     'oth_batch_no' => null,
                     'oth_ref_date' => null,
-                    'comp_code' => null,
+                    'comp_code' => Session::get('companycode'),
                     'sch_narration' => null
                 ]);
 
@@ -196,7 +199,7 @@ class openStock extends Controller
                         'item_code' => $request->item_code,
                         'dept_code' => $request->dept_code,
                         'doc_type' => 'OB',
-                        'recd_date' => null,
+                        'recd_date' => $this->timeStamp,
                         'recd_qty' => $request->qty,
                         'trf_in_qty' => null,
                         'oth_in_qty' => null,
@@ -204,18 +207,17 @@ class openStock extends Controller
                         'trf_out_qty' => null,
                         'oth_out_qty' => null,
                         'bal_qty' => null,
-                        'cost_rate' => null,
-                        'sale_rate' => null,
-                        'mrp' => null,
-                        'expiry_date' => null,
+                        'cost_rate' => $request->cost_rate,
+                        'sale_rate' => $request->sale_rate,
+                        'mrp' => $request->mrp,
+                        'expiry_date' => $request->expiry_date,
                         'ven_code' => null,
-                        'expiry_date' => null,
                         'oth_loc_code' => null,
                         'oth_batch_no' => null,
                         'oth_ref_date' => null,
-                        'comp_code' => null,
+                        'comp_code' => Session::get('companycode'),
                         'sch_narration' => null
-                    ]);
+                        ]);
 
                     return Response::json(['success' => true]);
                 }
