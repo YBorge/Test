@@ -100,4 +100,4 @@ Route::get('open_stock', [openStock::class, 'index'])->name('open_stock');
 Route::post('open_stock_store', [openStock::class, 'store'])->name('open_stock_store');
 Route::post('get_barcode_data', [openStock::class, 'getBarcode'])->name('get_barcode_data');
 
-Route::get('payment_group_master',[pmtinclexclMaster::class, 'index']);
+Route::get('payment_group_master',[pmtinclexclMaster::class, 'index'])->name('payment_group_master');

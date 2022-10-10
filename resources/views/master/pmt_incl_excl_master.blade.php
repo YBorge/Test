@@ -108,85 +108,44 @@
 </div>
 </form>
 <script>
-         $(document).ready(function(){
-            var form=$("#pmtinclexclMaster");
-            $('#btn_submit').click(function(e){
-                 e.preventDefault();
-                 $.ajaxSetup({
-                     headers: {
-                         'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-                     }
-                 });
-                 $.ajax({
-                    url: "{{ url('pmt_incl_excl_master_post') }}",
-                    method: 'post',
-                    data:form.serialize(),
-                    success: function(data)
-                    {
-                       if(data.errors) 
-                       {
-                            toastr.error(data.errors);
-                            // $.each(data.errors, function(index, jsonObject) {
-                            //       $.each(jsonObject, function(key, val) { 
-                            //      toastr.error(val);
-                            //       });
-                            //    });
-                       }
-                       if(data.success) 
-                       {
-                            toastr.success('Data Saved Successfully');
-                            $('#pmtinclexclMaster')[0].reset();
-                            location.reload();
-                          
-                       }
-                    },
-                    error: function(data) {
-                    }
-                 });
-             });
-            $('#city').change(function(e){
-                 e.preventDefault();
-                 $.ajaxSetup({
-                     headers: {
-                         'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-                     }
-                 });
-                 $.ajax({
-                    url: "{{ url('company_master_city') }}",
-                    method: 'post',
-                    data:form.serialize(),
-                     success: function(data)
-                     {
-                        if(data.StateCount.state)
-                        {
-                            $("#state").val(data.StateCount.state);
-                        }
-                        if(data.StateCount.comp_country)
-                        {
-                            $("#country").val(data.StateCount.comp_country);
-                        }
-                        if(data.StateCount.statecode)
-                        {
-                            $("#statepost").val(data.StateCount.statecode);
-                        }
-                        if(data.StateCount.countrycode)
-                        {
-                            $("#countrypost").val(data.StateCount.countrycode);
-                        }
-                        
-                     }
-                 });
-             });
-         });
-        function isNumber(evt) 
-        {
-            var iKeyCode = (evt.which) ? evt.which : evt.keyCode
-            if (iKeyCode != 46 && iKeyCode > 31 && (iKeyCode < 48 || iKeyCode > 57) && iKeyCode != 9){
-            alert("Please Enter Numbers Only");
-                return false;
+    $(document).ready(function(){
+        var form=$("#pmtinclexclMaster");
+        $('#btn_submit').click(function(e){
+        e.preventDefault();
+        $.ajaxSetup({
+                headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             }
-            return true;
-        }
-      </script>
+        });
+            $.ajax({
+                url: "{{ url('pmt_incl_excl_master_post') }}",
+                method: 'post',
+                data:form.serialize(),
+                success: function(data)
+                {
+                    if(data.errors) 
+                    {
+                        toastr.error(data.errors);
+                        // $.each(data.errors, function(index, jsonObject) {
+                        //       $.each(jsonObject, function(key, val) { 
+                        //      toastr.error(val);
+                        //       });
+                        //    });
+                    }
+                    if(data.success) 
+                    {
+                        toastr.success('Data Saved Successfully');
+                        $('#pmtinclexclMaster')[0].reset();
+                        location.reload();
+                        
+                    }
+                },
+                error: function(data) {
+                }
+            });
+        });
+    });
+        
+</script>
 
 @endsection
