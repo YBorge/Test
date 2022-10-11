@@ -44,11 +44,11 @@
         </div>
         <div class="col-md-1" class="form-group">
             <label style="color:black;">MRP<span style="color:red;">*</span></label>
-            <input type="text" name="mrp" id="mrp" placeholder="MRP" class="form-control" onkeypress="return isNumber(event)">
+            <input type="text" name="mrp" id="mrp" placeholder="MRP" class="form-control" onkeypress="return isNumber(event)" onkeyup="calculate()">
         </div>
         <div class="col-md-1" class="form-group">
             <label style="color:black;">Sale Rate<span style="color:red;">*</span></label>
-            <input type="text" name="sale_rate" id="sale_rate" placeholder="Sale Rate" class="form-control" onkeypress="return isNumber(event)">
+            <input type="text" name="sale_rate" id="sale_rate" placeholder="Sale Rate" class="form-control" onkeypress="return isNumber(event)" onkeyup="cal()">
         </div>
         <div class="col-md-1" class="form-group">
             <label style="color:black;">Cost Rate<span style="color:red;">*</span></label>
@@ -224,6 +224,45 @@
             $('#openStock')[0].reset();
             return false;
         });
+
+    function calculate()
+    {
+        var mrprate = document.getElementById('mrp').value;
+        var markdown = document.getElementById('markdown').value;
+        var salesrate = document.getElementById('sale_rate').value;
+        var markup = document.getElementById('markup').value;
+    
+        var salerate="";
+        if(isNaN(mrprate) || isNaN(markdown))
+        {
+        salerate=" ";
+        }
+        else{
+        // perc = ((markdown/mrprate) * 100).toFixed(3);
+        salerate = mrprate * (1- markdown/100);
+        }
+        var m = Number((Math.abs(salerate) * 100).toPrecision(15));
+        var valuex = Math.round(m) / 100 * Math.sign(salerate);
+        document.getElementById('sale_rate').value =  valuex ;
+        costrate = salerate / (1+ markup/100);//cost rate
+        var m1 = Number((Math.abs(costrate) * 100).toPrecision(15));
+        var valuex1 = Math.round(m1) / 100 * Math.sign(costrate);
+        document.getElementById('cost_rate').value =  valuex1 ;
+        var salesrate2 = document.getElementById('sale_rate').value;    
+            
+    }
+    function cal()
+    { 
+        var salesrate1 = document.getElementById('sale_rate').value;
+        var mrprate1 = document.getElementById('mrp').value;
+        var costrate1 = document.getElementById('cost_rate').value;           
+        if(salesrate1 > mrprate1)
+        {
+            alert("Sale-Rate Can't More Than MRP.");
+            exit();
+            //var salesrate1 = document.getElementById('txt_salerate').value;
+        }     
+    }
 </script>
 
 @endsection
