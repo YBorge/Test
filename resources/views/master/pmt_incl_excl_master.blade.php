@@ -32,17 +32,20 @@
                     </div>        
                     <div class="col-md-3" class="form-group">
                         <label style="color:black;">Transaction <span style="color:red;">*</span></label>
-                        <input type="text" name="trans_name" id="trans_name" class="form-control" placeholder="Transaction Name"value="">	
+                        <select name="trans_code" id="trans_code" class="form-control">
+                            <option value="">Select</option>
+                            
+                        </select>	
                     </div>        
-                    <div class="col-md-1" class="form-group">
+                    <div class="col-md-2" class="form-group">
                         <label style="color:black;">Include/Exclude <span style="color:red;">*</span></label>
-                        <select name="type" id="type" class="form-control">
+                        <select name="incl_excl" id="incl_excl" class="form-control">
                             <option value="">Select</option>
                             <option value="I">Include</option>
                             <option value="E">Exclude</option>
                         </select>
                     </div>        
-                    <div class="col-md-4" class="form-group" style="padding-top:22px;">
+                    <div class="col-md-3" class="form-group" style="padding-top:22px;">
                         <input type="submit" name="btn_submit" id="btn_submit" value="Add" class="btn btn-success">	
                         <input type="submit" name="btn_cancel" id="btn_cancel" value="Clear" class="btn btn-danger "> 
                     </div>
@@ -90,8 +93,7 @@
                                     <td></td>
                                     <td>{{$mast_value->trans_type}}</td>
                                     <td>{{$mast_value->trans_code}}</td>
-                                    <td>{{$state_master[$mast_value->trans_name]}}</td>
-                                    <td>{{$comp_city[$mast_value->incl_excl]}}</td>
+                                    <td>{{$mast_value->incl_excl}}</td>
                                     <td>{{$mast_value->status}}</td>
                                     <td>{{$mast_value->created_by}}</td>
                                     <td>{{$mast_value->created_at}}</td>
@@ -110,13 +112,13 @@
 <script>
     $(document).ready(function(){
         var form=$("#pmtinclexclMaster");
-        $('#btn_submit').click(function(e){
-        e.preventDefault();
-        $.ajaxSetup({
-                headers: {
-                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-            }
-        });
+            $('#btn_submit').click(function(e){
+            e.preventDefault();
+            $.ajaxSetup({
+                    headers: {
+                    'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                }
+            });
             $.ajax({
                 url: "{{ url('pmt_incl_excl_master_post') }}",
                 method: 'post',
@@ -141,6 +143,29 @@
                     }
                 },
                 error: function(data) {
+                }
+            });
+        });
+
+        $('#trans_type').change(function(e){
+            e.preventDefault();
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                }
+            });
+            $.ajax({
+            url: "{{ url('trans_type_change') }}",
+            method: 'post',
+            data:form.serialize(),
+                success: function(data)
+                {
+                    $.each(data.tranStypeData, function(index, value){
+                    $('#trans_code').append(`<option value="${index}">
+                                       ${value}
+                                  </option>`);
+                    });
+                
                 }
             });
         });

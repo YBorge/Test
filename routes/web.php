@@ -101,3 +101,5 @@ Route::post('open_stock_store', [openStock::class, 'store'])->name('open_stock_s
 Route::post('get_barcode_data', [openStock::class, 'getBarcode'])->name('get_barcode_data');
 
 Route::get('payment_group_master',[pmtinclexclMaster::class, 'index'])->name('payment_group_master');
+Route::post('pmt_incl_excl_master_post', [pmtinclexclMaster::class, 'store'])->name('pmt_incl_excl_master_post');
+Route::post('trans_type_change',[pmtinclexclMaster::class, 'trnasTypeChange'])->name('trans_type_change');
