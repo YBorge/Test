@@ -13,7 +13,7 @@
                         <label>Payment <span style="color:red;">*</span></label>
                         <select name="pmt_code" id="pmt_code" class="form-control">
                             <option value="" >Select</option>
-                            @foreach($pmt_code as $key => $pmt_value)
+                            @foreach($pmt_code_master as $key => $pmt_value)
                             <option value="{{$key}}" >{{$pmt_value}}</option>
                             @endforeach       
                         </select>
@@ -69,8 +69,8 @@
                             <th class="header" scope="col">Payment  Code</th>
                             <th class="header" scope="col">Payment  Name</th>
                             <th class="header" scope="col">Trans-Type</th>
-                            <th class="header" scope="col">Trans-Code</th>
-                            <th class="header" scope="col">Trans-Name</th>
+                            <th class="header" scope="col">Transaction / Trans-Code</th>
+                            {{-- <th class="header" scope="col">Trans-Name</th> --}}
                             <th class="header" scope="col">Incl/Excl</th>
                             <th class="header" scope="col">Status</th>
                             <th class="header" scope="col">Created By</th>
@@ -84,17 +84,39 @@
                                     <td>No Details Found.</td>
                                 </tr>
                                 @else
-                                @php $srNo=0; @endphp
+                                @php $srNo=0; $arrOfActive=array(); $arrOfActive['Y']='Active'; $arrOfActive['N']='In-Active'; $arrOfIncludeEx=array(); $arrOfIncludeEx['I']='Include'; $arrOfIncludeEx['E']='Exclude'; $arrOfTranType=array(); $arrOfTranType['CT']='Category'; $arrOfTranType['SC']='Sub-Category'; $arrOfTranType['M']='Manufacturer'; $arrOfTranType['B']='Brand'; $arrOfTranType['I']='Item Code'; @endphp
                                 @foreach($comp_pmt_incl_excl_master as $mast_value)
                                 <tr>
                                     <td>{{++$srNo}}</td>
-                                    <td>{{$mast_value->lpmt_code}}</td>
-                                    <td>{{$mast_value->pmt_name}}</td>
-                                    <td></td>
-                                    <td>{{$mast_value->trans_type}}</td>
-                                    <td>{{$mast_value->trans_code}}</td>
-                                    <td>{{$mast_value->incl_excl}}</td>
-                                    <td>{{$mast_value->status}}</td>
+                                    <td>{{$mast_value->pmt_code}}</td>
+                                    <td>{{$pmt_code_master[$mast_value->pmt_code]}}</td>
+                                    {{-- <td></td> --}}
+                                    <td>{{$arrOfTranType[$mast_value->trans_type]}}</td>
+                                    @php 
+                                        if($mast_value->trans_type=='CT')
+                                        {
+                                            $tranStypeData=$cat_master[$mast_value->trans_code]; 
+                                        }
+                                        elseif($mast_value->trans_type=='SC')
+                                        {
+                                            $tranStypeData=sub_cat_master[$mast_value->trans_code];
+                                        }
+                                        elseif ($mast_value->trans_type=='M') 
+                                        {
+                                            $tranStypeData=$manfacmaster[$mast_value->trans_code];
+                                        }
+                                        elseif ($mast_value->trans_type=='B') 
+                                        {
+                                            $tranStypeData=$brandmaster[$mast_value->trans_code];
+                                        }
+                                        elseif ($mast_value->trans_type=='I') 
+                                        {
+                                            $tranStypeData=$item_master[$mast_value->trans_code];
+                                        }
+                                    @endphp
+                                    <td>{{$tranStypeData?? '-'}}</td>
+                                    <td>{{$arrOfIncludeEx[$mast_value->incl_excl]}}</td>
+                                    <td>{{$arrOfActive[$mast_value->status]}}</td>
                                     <td>{{$mast_value->created_by}}</td>
                                     <td>{{$mast_value->created_at}}</td>
                                     <td>{{$mast_value->updated_by}}</td>
@@ -128,11 +150,6 @@
                     if(data.errors) 
                     {
                         toastr.error(data.errors);
-                        // $.each(data.errors, function(index, jsonObject) {
-                        //       $.each(jsonObject, function(key, val) { 
-                        //      toastr.error(val);
-                        //       });
-                        //    });
                     }
                     if(data.success) 
                     {
@@ -160,12 +177,13 @@
             data:form.serialize(),
                 success: function(data)
                 {
+                    $("#trans_code").empty();
+                    $('#trans_code').append(`<option value="">Select</option>`);
                     $.each(data.tranStypeData, function(index, value){
                     $('#trans_code').append(`<option value="${index}">
                                        ${value}
                                   </option>`);
                     });
-                
                 }
             });
         });
