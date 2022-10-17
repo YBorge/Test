@@ -16,6 +16,7 @@ use App\Http\Controllers\Master\custMaster;
 use App\Http\Controllers\Master\userMaster;
 use App\Http\Controllers\Master\openStock;
 use App\Http\Controllers\Master\pmtinclexclMaster;
+use App\Http\Controllers\Master\itemtaxMaster;
 
 /*
 |--------------------------------------------------------------------------
@@ -103,3 +104,6 @@ Route::post('get_barcode_data', [openStock::class, 'getBarcode'])->name('get_bar
 Route::get('payment_group_master',[pmtinclexclMaster::class, 'index'])->name('payment_group_master');
 Route::post('pmt_incl_excl_master_post', [pmtinclexclMaster::class, 'store'])->name('pmt_incl_excl_master_post');
 Route::post('trans_type_change',[pmtinclexclMaster::class, 'trnasTypeChange'])->name('trans_type_change');
+
+Route::get('item_tax_master',[itemtaxMaster::class,'index'])->name('item_tax_master');
+Route::post('item_tax_master_post',[itemtaxMaster::class,'store'])->name('item_tax_master_post');
