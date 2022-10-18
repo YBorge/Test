@@ -15,11 +15,11 @@
         <div class="col-md-9" style="background-color: #cfccc9;">
            <table width="100%">
               <tr>
-                <th>Location: <input type="text" name="loc_Code" id="loc_Code" class="form-control" value="{{ Session::get('companyname')}}" readonly></th>
-                <th>Bill Date: <input type="text" name="Bill Date" id="Bill_Date" class="form-control" value="{{ Session::get('companyname')}}" readonly></th>
-                <th>Bill No: <input type="text" name="Bill No" id="Bill_No" class="form-control" value="{{ Session::get('companyname')}}" readonly></th>
-                <th>Cashier: <input type="text" name="Cashier" id="Cashier" class="form-control" value="{{ Session::get('companyname')}}" readonly></th>
-                <th>Machine: <input type="text" name="Machine" id="Machine" class="form-control" value="{{ Session::get('companyname')}}" readonly></th>
+                <th>Location: <input type="text" name="loc_Code" id="loc_Code" class="form-control" value="{{ Session::get('companyloc_code')}}" readonly></th>
+                <th>Bill Date: <input type="text" name="Bill Date" id="Bill_Date" class="form-control" value="" readonly></th>
+                <th>Bill No: <input type="text" name="Bill No" id="Bill_No" class="form-control" value="" readonly></th>
+                <th>Cashier: <input type="text" name="Cashier" id="Cashier" class="form-control" value="{{ Session::get('useremail')}}" readonly></th>
+                <th>Machine: <input type="text" name="Machine" id="Machine" class="form-control" value="{{$macAddr}}" readonly></th>
               </tr>
             </table>
         </div><br>
@@ -28,14 +28,14 @@
         </div>
         <div class="col-md-9">
           <br>
-          <b> Mobile: <span style="color:red;">*</span></b> <input type="text" name="" placeholder="Mobile" style="width: 85px;"><b>  Cust-Id: <span style="color:red;">*</span> </b><input type="text" name="" style="width: 80px;" placeholder="Customer Id" ><input type="text" name="" style="width: 250px;" placeholder="Customer Name"> <a href="#" class="btn btn-xs btn-primary">New Cust</a><b>  Points: </b><input type="text" name="" style="width: 80px;" placeholder="Points">
+          <b> Mobile: <span style="color:red;">*</span></b> <input type="text" name="" placeholder="Mobile" style="width: 85px;"><b>  Cust-Id: <span style="color:red;">*</span> </b><input type="text" name="" style="width: 80px;" placeholder="Customer Id" ><input type="text" name="" style="width: 147px;" placeholder="Customer Name"> <a href="{{route('customer_master')}}" target="_blank" class="btn btn-xs btn-primary">New Cust</a><b>  Points: </b><input type="text" name="" style="width: 80px;" placeholder="Points">
           <b> Home-Delivery: <span style="color:red;"></span> </b>
               <select name="">
                 <option value="Y">Select</option>
                 <option value="Y">YES</option>
                 <option value="N">NO</option>
-              </select><b>  Last Bill No: </b><input type="text" name="" align="center" style="width: 155px;" placeholder="Last Bill No" ><br>
-            <b> Address: </b> <input type="text" name="" style="width: 440px;" placeholder="Address">
+              </select><b>  Last Bill No: </b><input type="text" name="" align="center" style="width: 120px;" placeholder="Last Bill No" ><br>
+            <b> Address: </b> <input type="text" name="" style="width: 301px;" placeholder="Address">
             <b> Disc: </b><input type="text" name="" style="width: 60px;" placeholder="Amt"><input type="text" name="" style="width: 50px;" placeholder="%"><b>
             <b> Oth Chrg: </b><input type="text" name="" style="width: 60px;" placeholder="Amt"><input type="text" name="" style="width: 50px;" placeholder="%">
             <b> Last Bill Amt/Change: </b><input type="text" name="" style="width: 100px;" placeholder="Last Bill Amt" ><input type="text" name="" style="width: 60px;" placeholder="Change">

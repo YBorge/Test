@@ -9,6 +9,9 @@ class PointofSale extends Controller
 {
     public function index()
     {
-        return view('master.pointofsale');
+        $macAddr = exec('getmac');
+        //echo php_uname();
+        //echo $host = request()->getHttpHost();
+        return view('master.pointofsale',['macAddr' => $macAddr]);
     }
 }

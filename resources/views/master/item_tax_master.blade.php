@@ -9,7 +9,7 @@
     <div class="row">
     <form id="itemtaxMaster" name="itemtaxMaster" method="POST">
         {{ csrf_field() }} 
-        <div class="col-md-4" class="form-group">
+        <div class="col-md-2" class="form-group">
             <label style="color:black;">Item <span style="color:red;">*</span></label>
             <select name="item_code" id="item_code" class="form-control">
                 <option value="" id="yes" readonly>Select</option>
@@ -36,10 +36,10 @@
             <input type="date" name="end_date" id="end_date" placeholder="End Date" class="form-control" readonly>
         </div>
         <div class="col-md-2" class="form-group">
-            <label>State </label>
-            <input type="text" name="state_code" id="state_code" placeholder="Default '0'" class="form-control">
+            <label>State<span style="color:red;">*</span> </label>
+            <input type="text" name="state_code" id="state_code" placeholder="Default '0'" class="form-control" value="0">
         </div>
-        <div class="col-md-4" class="form-group" style="padding-top:22px;">
+        <div class="col-md-2" class="form-group" style="padding-top:22px;">
             <input type="submit" name="btn_submit" id="btn_submit" value="Add" class="btn btn-success">
             <input type="submit" name="btn_cancel_payment" id="btn_cancel_payment" value="Clear" class="btn btn-danger">
         </div>
@@ -72,10 +72,11 @@
                     <th class="header" scope="col">Created Date</th>
                     <th class="header" scope="col">Updated By</th>
                     <th class="header" scope="col">Updated Date</th>
+                    <th class="header" scope="col">Action</th>
                 </tr>
             </thead>
                 @php $srNo=0; $arrOfStatus=array(); $arrOfStatus['Y']='Active'; $arrOfStatus['N']='In-Active'; @endphp
-                {{-- @foreach($item_tax_master_data as $taxKey => $taxValue)
+                @foreach($item_tax_master_data as $taxKey => $taxValue)
                 <tr>
                     <td>{{++$srNo}}</td>
                     <td>{{$taxValue->item_code}}</td>
@@ -89,8 +90,9 @@
                     <td>{{$taxValue->created_at}}</td>
                     <td>{{$taxValue->updated_by}}</td>
                     <td>{{$taxValue->updated_at}}</td>
+                    <td><a href="#" target="_blank" rel="noopener noreferrer"><img src="{{asset('front_assets/img/delete.png')}}" alt=""></a> &nbsp;<a href="#" target="_blank" rel="noopener noreferrer"><img src="{{asset('front_assets/img/edit.png')}}" alt=""></a></td>
                 </tr>
-                @endforeach --}}
+                @endforeach
             </table>                   
         </div>  
     </div>
@@ -121,7 +123,6 @@
                             toastr.success('Data Saved Successfully');
                             $('#itemtaxMaster')[0].reset();
                             location.reload();
-                          
                        }
                     },
                     error: function(data) {

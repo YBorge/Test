@@ -34,6 +34,7 @@ class itemtaxMaster extends Controller
 
     public function store(Request $request)
     {
+        
         $validatedData = Validator::make($request->all(), 
         [
             'item_code' => 'required|unique:item_tax_master',
@@ -42,8 +43,8 @@ class itemtaxMaster extends Controller
             'state_code' => 'required'
         ],
         [
-            'item_code.required' => 'Please Enter Item Code',
-            'tax_code.required' => 'Please Enter Tax Code',
+            'item_code.required' => 'Please Select Item Code',
+            'tax_code.required' => 'Please Select Tax Code',
             'start_date.required' => 'Please Enter Start Date',
             'state_code.required' => 'Please Enter Zone'
         ]);
