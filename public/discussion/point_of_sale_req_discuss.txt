@@ -1,0 +1,27 @@
+Location: login location / branch
+Bill Date: System Date (Temp)[d-m-y]
+Bill No: auto genrated start from one   after->[POS_[branch_code]_seq  EX POS_KMTH_1]
+Cashier: Login User
+Machine : Mac-Id
+
+-----
+Mobile:[not comp] -> if mobile exist then fetch[customer_master] cust-id,name and add point -> 
+
+else not found enter customer name[*] and add 
+-----
+new customer -> customer master
+
+Home-Delivery -> Yes then cust-id must
+
+----------
+Disc -> billing form authorized permission [enable]
+
+Disc: readonly 
+
+block change to discount-
+
+--
+Oth Chrg -> 
+
+
+
