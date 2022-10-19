@@ -16,7 +16,7 @@
            <table width="100%">
               <tr>
                 <th>Location: <input type="text" name="loc_Code" id="loc_Code" class="form-control" value="{{ Session::get('companyloc_code')}}" readonly></th>
-                <th>Bill Date: <input type="text" name="Bill Date" id="Bill_Date" class="form-control" value="" readonly></th>
+                <th>Bill Date: <input type="text" name="Bill Date" id="Bill_Date" class="form-control" value="{{$sysDate}}" readonly></th>
                 <th>Bill No: <input type="text" name="Bill No" id="Bill_No" class="form-control" value="" readonly></th>
                 <th>Cashier: <input type="text" name="Cashier" id="Cashier" class="form-control" value="{{ Session::get('useremail')}}" readonly></th>
                 <th>Machine: <input type="text" name="Machine" id="Machine" class="form-control" value="{{$macAddr}}" readonly></th>
@@ -28,7 +28,7 @@
         </div>
         <div class="col-md-9">
           <br>
-          <b> Mobile: <span style="color:red;">*</span></b> <input type="text" name="" placeholder="Mobile" style="width: 85px;"><b>  Cust-Id: <span style="color:red;">*</span> </b><input type="text" name="" style="width: 80px;" placeholder="Customer Id" ><input type="text" name="" style="width: 147px;" placeholder="Customer Name"> <a href="{{route('customer_master')}}" target="_blank" class="btn btn-xs btn-primary">New Cust</a><b>  Points: </b><input type="text" name="" style="width: 80px;" placeholder="Points">
+          <b> Mobile: </b> <input type="text" name="Mobile" id="Mobile" placeholder="Mobile" style="width: 85px;" maxlength="10" onkeypress="return isNumber(event)"><b>  Cust-Id: <span style="color:red;">*</span> </b><input type="text" name="CustId" id="CustId" style="width: 80px;" placeholder="Customer Id" onkeypress="return isNumber(event)" maxlength="12" ><input type="text" name="cust_name" style="width: 147px;" placeholder="Customer Name" maxlength="60"> <a href="{{route('customer_master')}}" target="_blank" class="btn btn-xs btn-primary">New Cust</a><b>  Points: </b><input type="text" name="" style="width: 80px;" placeholder="Points">
           <b> Home-Delivery: <span style="color:red;"></span> </b>
               <select name="">
                 <option value="Y">Select</option>
@@ -124,7 +124,7 @@
 
 <script>
          $(document).ready(function(){
-            var form=$("#companyMaster");
+            var form=$("#posTransaction");
             $('#btn_submit').click(function(e){
                  e.preventDefault();
                  $.ajaxSetup({
@@ -137,33 +137,9 @@
                     method: 'post',
                     data:form.serialize(),
                      success: function(data){
-                       if(data.errors) {
-                           if(data.errors.txt_code){
-                               $( '#txtcode-error' ).html("Please Enter Code" );
-                           }else{
-                               $( '#txtcode-error' ).html("");
-                           }
-
-                           if(data.errors.txt_comname){
-                               $( '#txt_comname-error' ).html( "Please Enter Company Name" );
-                           }else{
-                               $( '#txt_comname-error' ).html( "");
-                           }
-                           if(data.errors.type){
-                               $( '#txt_type-error' ).html("Please Select Type");
-                           }else{
-                               $( '#txt_type-error' ).html("");
-                           }
-                           if(data.errors.addr1){
-                               $( '#txt_addr1-error' ).html( "Please Enter Address" );
-                           }else{
-                               $( '#txt_addr1-error' ).html( "");
-                           }
-                           if(data.errors.city){
-                               $( '#txt_city-error' ).html( "Please Select City" );
-                           }else{
-                               $( '#txt_city-error' ).html( "");
-                           }
+                       if(data.errors) 
+                       {
+                           
 
                        }
                        if(data.success) {
@@ -182,7 +158,7 @@
                      }
                  });
              });
-            $('#city').change(function(e){
+            $('#Mobile').change(function(e){
                  e.preventDefault();
                  $.ajaxSetup({
                      headers: {
