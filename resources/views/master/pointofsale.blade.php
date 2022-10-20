@@ -28,14 +28,14 @@
         </div>
         <div class="col-md-9">
           <br>
-          <b> Mobile: </b> <input type="text" name="Mobile" id="Mobile" placeholder="Mobile" style="width: 85px;" maxlength="10" onkeypress="return isNumber(event)"><b>  Cust-Id: <span style="color:red;">*</span> </b><input type="text" name="CustId" id="CustId" style="width: 80px;" placeholder="Customer Id" onkeypress="return isNumber(event)" maxlength="12" ><input type="text" name="cust_name" style="width: 147px;" placeholder="Customer Name" maxlength="60"> <a href="{{route('customer_master')}}" target="_blank" class="btn btn-xs btn-primary">New Cust</a><b>  Points: </b><input type="text" name="" style="width: 80px;" placeholder="Points">
+          <b> Mobile: </b> <input type="text" name="Mobile" id="Mobile" placeholder="Mobile" style="width: 85px;" maxlength="10" onkeypress="return isNumber(event)"><b>  Cust-Id: <span style="color:red;">*</span> </b><input type="text" name="CustId" id="CustId" style="width: 80px;" placeholder="Customer Id" onkeypress="return isNumber(event)" maxlength="12" ><input type="text" name="cust_name" id="cust_name" style="width: 147px;" placeholder="Customer Name" maxlength="60"> <a href="{{route('customer_master')}}" target="_blank" class="btn btn-xs btn-primary">New Cust</a><b>  Points: </b><input type="text" name="points" id="points" style="width: 80px;" placeholder="Points">
           <b> Home-Delivery: <span style="color:red;"></span> </b>
               <select name="">
                 <option value="Y">Select</option>
                 <option value="Y">YES</option>
                 <option value="N">NO</option>
               </select><b>  Last Bill No: </b><input type="text" name="" align="center" style="width: 120px;" placeholder="Last Bill No" ><br>
-            <b> Address: </b> <input type="text" name="" style="width: 301px;" placeholder="Address">
+            <b> Address: </b> <input type="text" name="cust_addr1" id="cust_addr1" style="width: 301px;" placeholder="Address">
             <b> Disc: </b><input type="text" name="" style="width: 60px;" placeholder="Amt"><input type="text" name="" style="width: 50px;" placeholder="%"><b>
             <b> Oth Chrg: </b><input type="text" name="" style="width: 60px;" placeholder="Amt"><input type="text" name="" style="width: 50px;" placeholder="%">
             <b> Last Bill Amt/Change: </b><input type="text" name="" style="width: 100px;" placeholder="Last Bill Amt" ><input type="text" name="" style="width: 60px;" placeholder="Change">
@@ -158,7 +158,7 @@
                      }
                  });
              });
-            $('#Mobile').change(function(e){
+            $('#Mobile').mouseleave(function(e){
                  e.preventDefault();
                  $.ajaxSetup({
                      headers: {
@@ -166,20 +166,31 @@
                      }
                  });
                  $.ajax({
-                    url: "{{ url('company_master_city') }}",
+                    url: "{{ url('pointofsaleMobile_change') }}",
                     method: 'post',
                     data:form.serialize(),
                      success: function(data)
                      {
-                        if(data.StateCount.state)
+                      if(data.errors) 
+                       {
+                            toastr.error(data.errors);
+                       }
+                        if(data.custData.cust_code)
                         {
-                            $("#state").val(data.StateCount.state);
+                          $("#CustId").val(data.custData.cust_code);
                         }
-                        if(data.StateCount.comp_country)
+                        if(data.custData.cust_name)
                         {
-                            $("#country").val(data.StateCount.comp_country);
+                          $("#cust_name").val(data.custData.cust_name);
                         }
-                        
+                        if(data.custData.cust_addr1)
+                        {
+                          $("#cust_addr1").val(data.custData.cust_addr1);
+                        }
+                        if(data.custData.points)
+                        {
+                          $("#points").val(data.custData.points);
+                        }
                      }
                  });
              });

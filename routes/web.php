@@ -18,6 +18,7 @@ use App\Http\Controllers\Master\openStock;
 use App\Http\Controllers\Master\pmtinclexclMaster;
 use App\Http\Controllers\Master\itemtaxMaster;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -41,6 +42,7 @@ Route::post('company_master_post', [companyMaster::class, 'store'])->name('compa
 Route::post('company_master_city', [companyMaster::class, 'cityChange'])->name('company_master_city');
 
 Route::get('pointofsale', [PointofSale::class, 'index'])->name('pointofsale');
+Route::post('pointofsaleMobile_change',[PointofSale::class, 'posCustomerData'])->name('pointofsaleMobile_change');
 
 Route::get('branch_master', [branchMaster::class, 'index'])->name('branch_master');
 Route::post('branch_master_post', [branchMaster::class, 'store'])->name('branch_master_post');
