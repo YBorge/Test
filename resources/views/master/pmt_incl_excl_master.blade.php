@@ -99,7 +99,7 @@
                                         }
                                         elseif($mast_value->trans_type=='SC')
                                         {
-                                            $tranStypeData=sub_cat_master[$mast_value->trans_code];
+                                            $tranStypeData=$sub_cat_master[$mast_value->trans_code];
                                         }
                                         elseif ($mast_value->trans_type=='M') 
                                         {

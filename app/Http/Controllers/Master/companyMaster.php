@@ -33,6 +33,11 @@ class companyMaster extends Controller
     {
         
         $city_get=$request->city;
+        if ($city_get=='') 
+        {
+            return Response::json(['StateCount' => 'emptycity']);
+            exit();
+        }
         $comp_state_code = city::select('state_code')
                             ->where('city_id', '=', $city_get)
                             ->get();
@@ -50,8 +55,8 @@ class companyMaster extends Controller
     {
         $validatedData = Validator::make($request->all(), 
         [
-            'comp_code' => 'required|unique:company_master',
-            'txt_comname' => 'required',
+            'comp_code' => 'required|unique:company_master|max:5',
+            'txt_comname' => 'required|unique:company_master',
             'type' => 'required',
             'addr1' => 'required',
             'city' => 'required'
@@ -60,6 +65,7 @@ class companyMaster extends Controller
             'comp_code.required' => 'Please Enter Code',
             'comp_code.unique' => 'Code Already Exist',
             'txt_comname.required' => 'Please Enter Company Name',
+            'txt_comname.unique' => 'Company Name Already Exist',
             'type.required' => 'Please Select Type',
             'addr1.required' => 'Please Enter Address',
             'city.required' => 'Please Select city'

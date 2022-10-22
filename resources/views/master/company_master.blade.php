@@ -1,7 +1,8 @@
 @extends('layout')
   
 @section('content')
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css" rel="stylesheet" />
 <div class="container-fluid">
 <div class="panel panel-primary">
 <div class="panel-heading" style="padding: 10px;"><b>Add Company Details</b></div>
@@ -11,12 +12,12 @@
         {{ csrf_field() }} 
         <div class="col-md-1" class="form-group">
             <label style="color:black;" >Code <span style="color:red;">*</span></label>
-            <input type="text" name="comp_code" id="comp_code" class="form-control">
+            <input type="text" name="comp_code" id="comp_code" class="form-control" maxlength="5" onkeypress="return isNumber(event)">
             <span class="text-danger"><strong id="txtcode-error"></strong></span>
         </div>
         <div class="col-md-4" class="form-group">
             <label style="color:black;">Company Name <span style="color:red;">*</span></label>
-            <input type="text" name="txt_comname" id="txt_comname" placeholder="Company Name" class="form-control" style='text-transform:uppercase'>
+            <input type="text" name="txt_comname" id="txt_comname" placeholder="Company Name" class="form-control" style='text-transform: capitalize'>
             <span class="text-danger"><strong id="txt_comname-error"></strong></span>
         </div>
         <div class="col-md-2" class="form-group">
@@ -31,20 +32,20 @@
         </div>
         <div class="col-md-3" class="form-group">
             <label style="color:black;">Address 1<span style="color:red;">*</span></label>
-            <input type="text" name="addr1" id="addr1" class="form-control" placeholder="Address 1"value="">
+            <input type="text" name="addr1" id="addr1" class="form-control" placeholder="Address 1"value="" style='text-transform: capitalize'>
             <span class="text-danger"><strong id="txt_addr1-error"></strong></span>	
         </div>
         <div class="col-md-2" class="form-group">
             <label style="color:black;">Address 2</label>
-            <input type="text" name="addr2" id="addr2" class="form-control" placeholder="Address 2"value="">	
+            <input type="text" name="addr2" id="addr2" class="form-control" placeholder="Address 2"value="" style='text-transform: capitalize'>	
         </div>
         <div class="col-md-2" class="form-group">
             <label style="color:black;">Address 3</label>
-            <input type="text" name="addr3" id="addr3" class="form-control" placeholder="Address 3"value="">	
+            <input type="text" name="addr3" id="addr3" class="form-control" placeholder="Address 3"value="" style='text-transform: capitalize'>	
         </div>
         <div class="col-md-2" class="form-group">
             <label>City <span style="color:red;">*</span></label>
-            <select name="city" id="city" class="form-control">
+            <select name="city" id="city" class="form-control selectpicker" data-live-search="true">
                 <option value="" >Select</option>
                 @foreach($city_master as $key => $city_value)
                 <option value="{{$key}}" >{{$city_value}}</option>
@@ -64,23 +65,23 @@
         </div>
         <div class="col-md-2" class="form-group">
             <label style="color:black;">STD Code</label>
-            <input type="text" name="std_code" id="std_code" class="form-control" placeholder="STD Code"value="" onkeypress="return isNumber(event)">		
+            <input type="text" name="std_code" id="std_code" class="form-control" placeholder="STD Code"value="" maxlength="10" onkeypress="return isNumber(event)">		
         </div>
         <div class="col-md-2" class="form-group">
             <label style="color:black;">Telephone</label>
-            <input type="text" name="phone" id="phone" class="form-control" placeholder="Telephone"value=""onkeypress="return isNumber(event)">		
+            <input type="text" name="phone" id="phone" class="form-control" placeholder="Telephone"value="" maxlength="12" onkeypress="return isNumber(event)">		
         </div>
         <div class="col-md-2" class="form-group">
             <label style="color:black;">Mobile</label>
-            <input type="text" name="mobile" id="mobile" class="form-control" placeholder="Mobile"value="">		
+            <input type="text" name="mobile" id="mobile" class="form-control" placeholder="Mobile"value="" maxlength="12">		
         </div>
         <div class="col-md-2" class="form-group">
             <label style="color:black;">GSTIN</label>
-            <input type="text" name="gstin" id="gstin" class="form-control" placeholder="GST NO"value="" style='text-transform:uppercase'>		
+            <input type="text" name="gstin" id="gstin" class="form-control" placeholder="GST NO"value="" maxlength="15" style='text-transform:uppercase'>		
         </div>
         <div class="col-md-2" class="form-group">
             <label style="color:black;">FSSAI No</label>
-            <input type="text" name="fassano" id="fassano" class="form-control" placeholder="FSSAI No"value="" style='text-transform:uppercase'>		
+            <input type="text" name="fassano" id="fassano" class="form-control" placeholder="FSSAI No"value="" maxlength="14" style='text-transform:uppercase'>		
         </div>
         <div class="col-md-2" class="form-group">
             <label style="color:black;">CIN No</label>
@@ -88,11 +89,11 @@
         </div>
         <div class="col-md-2" class="form-group">
             <label style="color:black;">PAN</label>
-            <input type="text" name="panno" id="panno" class="form-control" placeholder="PAN"value="" style='text-transform:uppercase'>		
+            <input type="text" name="panno" id="panno" class="form-control" placeholder="PAN"value="" style='text-transform:uppercase' maxlength="10">		
         </div>
         <div class="col-md-2" class="form-group">
             <label style="color:black;">TAN No</label>
-            <input type="text" name="tanno" id="tanno" class="form-control" placeholder="TAN No"value=""style='text-transform:uppercase'>		
+            <input type="text" name="tanno" id="tanno" class="form-control" placeholder="TAN No"value=""style='text-transform:uppercase' maxlength="10">		
         </div>
         <div class="col-md-2" class="form-group">
             <label style="color:black;">LST/TIN/TPIN No</label>
@@ -266,6 +267,10 @@
                     data:form.serialize(),
                      success: function(data)
                      {
+                        if (data.StateCount.emptycity) 
+                        {
+                            $("#state").val("");$("#country").val("");
+                        }
                         if(data.StateCount.state)
                         {
                             $("#state").val(data.StateCount.state);
@@ -283,10 +288,14 @@
                             $("#countrypost").val(data.StateCount.countrycode);
                         }
                         
+
                      }
                  });
              });
          });
+         $(function() {
+          $('.selectpicker').selectpicker();
+        });
       </script>
 
 @endsection
