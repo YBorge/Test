@@ -9,4 +9,5 @@ class parameters extends Model
 {
     use HasFactory;
     protected $table = 'parameters';
+    protected $guarded = [];
 }

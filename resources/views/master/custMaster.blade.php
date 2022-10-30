@@ -41,7 +41,7 @@
                     </div>
                     <div class="col-md-2" class="form-group">
                         <label style="color:black;">Barcode <span style="color:red;">*</span></label>
-                        <input type="text" name="barcode" id="barcode" placeholder="Card" class="form-control">
+                        <input type="text" name="barcode" id="barcode" placeholder="Barcode" class="form-control">
                     </div>  
                     <div class="col-md-2" class="form-group">
                         <label style="color:black;">Birth Date <span style="color:red;">*</span></label>

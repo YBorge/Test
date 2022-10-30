@@ -28,19 +28,18 @@
         </div>
         <div class="col-md-9">
           <br>
-          <b> Mobile: </b> <input type="text" name="Mobile" id="Mobile" placeholder="Mobile" style="width: 85px;" maxlength="10" onkeypress="return isNumber(event)"><b>  Cust-Id: <span style="color:red;">*</span> </b><input type="text" name="CustId" id="CustId" style="width: 80px;" placeholder="Customer Id" onkeypress="return isNumber(event)" maxlength="12" ><input type="text" name="cust_name" id="cust_name" style="width: 147px;" placeholder="Customer Name" maxlength="60"> <a href="{{route('customer_master')}}" target="_blank" class="btn btn-xs btn-primary">New Cust</a><b>  Points: </b><input type="text" name="points" id="points" style="width: 80px;" placeholder="Points">
+          <b> Mobile: </b> <input type="text" name="Mobile" id="Mobile" placeholder="Mobile" style="width: 85px;" maxlength="10" onkeypress="return isNumber(event)"><b>  Cust-Id: <span style="color:red;">*</span> </b><input type="text" name="CustId" id="CustId" style="width: 80px;" placeholder="Customer Id" disabled="" onkeypress="return isNumber(event)" maxlength="12" ><input type="text" name="cust_name" id="cust_name" style="width: 147px;" placeholder="Customer Name" maxlength="60"> <a href="{{route('customer_master')}}" target="_blank" class="btn btn-xs btn-primary">New Cust</a><b>  Points: </b><input type="text" name="points" id="points" style="width: 80px;" placeholder="Points">
           <b> Home-Delivery: <span style="color:red;"></span> </b>
-              <select name="">
-                <option value="Y">Select</option>
-                <option value="Y">YES</option>
+              <select name="homedel" id="homedel">
+                <option value="">Select</option>
+                <option value="Y" selected="selected">YES</option>
                 <option value="N">NO</option>
-              </select><b>  Last Bill No: </b><input type="text" name="" align="center" style="width: 120px;" placeholder="Last Bill No" ><br>
-            <b> Address: </b> <input type="text" name="cust_addr1" id="cust_addr1" style="width: 301px;" placeholder="Address">
+              </select><b>  Last Bill No: </b><input type="text" name="" align="center" style="width: 93px;" placeholder="Last Bill No" ><br>
+            <b> Address: </b> <input type="text" name="cust_addr1" id="cust_addr1" style="width: 270px;" placeholder="Address">
             <b> Disc: </b><input type="text" name="" style="width: 60px;" placeholder="Amt"><input type="text" name="" style="width: 50px;" placeholder="%"><b>
             <b> Oth Chrg: </b><input type="text" name="" style="width: 60px;" placeholder="Amt"><input type="text" name="" style="width: 50px;" placeholder="%">
-            <b> Last Bill Amt/Change: </b><input type="text" name="" style="width: 100px;" placeholder="Last Bill Amt" ><input type="text" name="" style="width: 60px;" placeholder="Change">
-            <br><br>
-            
+            <b> Last Bill Amt/Change: </b><input type="text" name="" style="width: 100px;" placeholder="Last Bill Amt" ><input type="text" name="" style="width: 60px;" placeholder="Change"><br>
+            <input type="text" name="existCust" id="existCust" value="" placeholder="existCust">
             <b>Scan Barcode:</b><input type="text" name=""  placeholder="" value="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <b>SEARCH SKU:</b><input type="text" name=""  placeholder="" value=""><br><br>
             <table width="100%" border="1">
@@ -115,7 +114,7 @@
           <a href="#" class="btn btn-xs btn-success"> Block Change</a>&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-xs btn-success"> Query Mode</a>&nbsp;&nbsp;&nbsp;
           <a href="#" class="btn btn-xs btn-success"> Display / Show</a>&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-xs btn-success"> Sku List-LOV</a>&nbsp;&nbsp;&nbsp;
           <a href="#" class="btn btn-xs btn-success"> Hold Bill</a>&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-xs btn-success">Pop Hold Bill </a>
-          <a href="#" class="btn btn-xs btn-primary"> Re-Print Bill</a>&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-xs btn-success"> Cancel Bill</a>
+          <a href="#" id="btn_submit" class="btn btn-xs btn-primary"> Re-Print Bill</a>&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-xs btn-success"> Cancel Bill</a>
         </div>  
       </form>
     </div>
@@ -133,14 +132,13 @@
                      }
                  });
                  $.ajax({
-                    url: "{{ url('company_master_post') }}",
+                    url: "{{ url('pointofsale_store') }}",
                     method: 'post',
                     data:form.serialize(),
                      success: function(data){
                        if(data.errors) 
-                       {
-                           
-
+                       {  
+                          toastr.error(data.errors);
                        }
                        if(data.success) {
                             alert("Data Saved..!");
@@ -171,10 +169,15 @@
                     data:form.serialize(),
                      success: function(data)
                      {
-                      if(data.errors) 
-                       {
-                            toastr.error(data.errors);
-                       }
+                        if(data.errors) 
+                        {
+                          toastr.error(data.errors);
+                          $("#CustId").val("");
+                          $("#cust_name").val("");
+                          $("#cust_addr1").val("");
+                          $("#points").val("");
+                          $("#existCust").val("");
+                        }
                         if(data.custData.cust_code)
                         {
                           $("#CustId").val(data.custData.cust_code);
@@ -191,6 +194,12 @@
                         {
                           $("#points").val(data.custData.points);
                         }
+
+                        if(data.custData.existCust)
+                        {
+                          $("#existCust").val(data.custData.existCust);
+                        }
+                        
                      }
                  });
              });
