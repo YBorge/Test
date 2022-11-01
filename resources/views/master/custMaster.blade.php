@@ -203,33 +203,33 @@
                                 <td>{{++$srNo}}</td>
                                 <td>{{$custVal->cust_code}}</td>
                                 <td>{{$custVal->cust_name}}</td>
-                                <td>{{$arrOfGendor[$custVal->gender]}}</td>
+                                <td>{{$arrOfGendor[$custVal->gender?? '-']?? '-'}}</td>
                                 <td>{{$custVal->barcode?? '-'}}</td>
-                                <td>{{$custVal->birth_date}}</td>
-                                <td>{{$custVal->join_date}}</td>
-                                <td>{{$custVal->cust_addr1}}</td>
-                                <td>{{$custVal->cust_addr2}}</td>
-                                <td>{{$city_master[$custVal->city]}}</td>
+                                <td>{{$custVal->birth_date?? '-'}}</td>
+                                <td>{{$custVal->join_date?? '-'}}</td>
+                                <td>{{$custVal->cust_addr1?? '-'}}</td>
+                                <td>{{$custVal->cust_addr2?? '-'}}</td>
+                                <td>{{$city_master[$custVal->city?? '-']?? '-'}}</td>
                                 <td>{{$custVal->state}}</td>
-                                <td>{{$state_master[$custVal->state]}}</td>
-                                <td>{{$custVal->country}}</td>
-                                <td>{{$country_master[$custVal->country]}}</td>
-                                <td>{{$custVal->pincode}}</td>
-                                <td>{{$custVal->Mobile}}</td>
-                                <td>{{$custVal->email}}</td>
-                                <td>{{$custVal->pan}}</td>
-                                <td>{{$custVal->aadhar_no}}</td>
-                                <td>{{$custVal->gstin}}</td>
-                                <td>{{$cust_type_master[$custVal->cust_type]}}</td>
-                                <td>{{$ref_customer[$custVal->ref_cust_code]}}</td>
-                                <td>{{$custVal->cr_limit}}</td>
-                                <td>{{$custVal->cr_overdue_days}}</td>
-                                <td>{{$custVal->points}}</td>
-                                <td>{{$arrOfStatus[$custVal->status]}}</td>
-                                <td>{{$custVal->created_by}}</td>
-                                <td>{{$custVal->created_at}}</td>
-                                <td>{{$custVal->updated_by}}</td>
-                                <td>{{$custVal->updated_at}}</td>
+                                <td>{{$state_master[$custVal->state?? '-']?? '-'}}</td>
+                                <td>{{$custVal->country?? '-'}}</td>
+                                <td>{{$country_master[$custVal->country?? '-']?? '-'}}</td>
+                                <td>{{$custVal->pincode?? '-'}}</td>
+                                <td>{{$custVal->Mobile?? '-'}}</td>
+                                <td>{{$custVal->email?? '-'}}</td>
+                                <td>{{$custVal->pan?? '-'}}</td>
+                                <td>{{$custVal->aadhar_no?? '-'}}</td>
+                                <td>{{$custVal->gstin?? '-'}}</td>
+                                <td>{{$cust_type_master[$custVal->cust_type?? '-']?? '-'}}</td>
+                                <td>{{$ref_customer[$custVal->ref_cust_code?? '-']?? '-'}}</td>
+                                <td>{{$custVal->cr_limit?? '-'}}</td>
+                                <td>{{$custVal->cr_overdue_days?? '-'}}</td>
+                                <td>{{$custVal->points?? '-'}}</td>
+                                <td>{{$arrOfStatus[$custVal->status?? '-']?? '-'}}</td>
+                                <td>{{$custVal->created_by?? '-'}}</td>
+                                <td>{{$custVal->created_at?? '-'}}</td>
+                                <td>{{$custVal->updated_by?? '-'}}</td>
+                                <td>{{$custVal->updated_at?? '-'}}</td>
                             </tr>
                         @endforeach
                     </table>

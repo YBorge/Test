@@ -18,18 +18,16 @@ class PointofSale extends Controller
     public function __cunstruct()
     {
         $this->custcode=cust_master::max('cust_code');
-        $this->sysDate= Carbon::now()->format('d-m-Y');
+        $this->sysDate= Carbon::now("Asia/Kolkata")->format('d-m-Y');
+         //$sysDate=$currentTime->toDateTimeString();
     }
     public function index()
     {
-        // $bc=parameters::select('param_value','param_desc')
-        //                             ->where('param_code', '=', 'USE_CUSTOMER_SEQ')
-        //                             ->get();
+        $sysDate = Carbon::now()->format('d-m-Y');
         $macAddr = exec('getmac');
         //echo php_uname();
         //echo $host = request()->getHttpHost();
-        return view('master.pointofsale',['macAddr' => $macAddr,'sysDate' => $this->sysDate]);
-
+        return view('master.pointofsale',['macAddr' => $macAddr,'sysDate' => $sysDate]);
     }
 
     public function posCustomerData(Request $request)
@@ -53,7 +51,7 @@ class PointofSale extends Controller
     {
         $Mobile=$request->Mobile;
         $homedel=$request->homedel;
-        echo"hiii".$existCust=$request->existCust;
+        $existCust=$request->existCust;
         $custSeq=parameters::select('param_value')
                                     ->where('param_code', '=', 'USE_CUSTOMER_SEQ')
                                     ->first();
@@ -66,7 +64,7 @@ class PointofSale extends Controller
         {
             $MobileValid=1;
         }
-        if($this->custSeq->param_value=='Y')
+        if($custSeq->param_value=='Y')
         {
             $autoCode=false;
             $custcode=$this->custcode+1;
@@ -74,7 +72,10 @@ class PointofSale extends Controller
         else{
             $autoCode=true;
         }
-
+        if ($homedel=='Y' and $existCust=='') 
+        {
+            $autoCode=true;
+        }
         $validatedData = Validator::make($request->all(), 
         [
             'Mobile' => 'required',
@@ -85,6 +86,7 @@ class PointofSale extends Controller
         [
             'Mobile.required' => 'Please Enter Mobile No..!',
             'cust_code.required' => 'Please Enter Code..!',
+            'cust_code.unique' => 'Code Already Exist..!',
             'cust_name.required' => 'Please Enter Name..!',
             'cust_addr1.required' => 'Please Enter Address..!'
         ]);
@@ -95,26 +97,29 @@ class PointofSale extends Controller
 
         if ($existCust=='') 
         {
+            $sysDate = Carbon::now()->format('d-m-Y');
             $getLocData=location_master::select('city','pin','state_code','country_code')
                         ->where('loc_code','=', Session::get('companyloc_code'))
                         ->where('status','=', 'Y')
                         ->get();
-            dd($getLocData);
             try {
                 cust_master::create([
                     'cust_code' => $autoCode==true ? $request->cust_code : $custcode,
                     'cust_name' => $request->cust_name,
                     'barcode' => $request->barcode,
-                    'join_date' => $this->sysDate,
+                    'join_date' => $sysDate,
                     'cust_addr1' => $request->cust_addr1,
-                    'city' => $request->city,
-                    'state' => $request->statepost,
-                    'country' => $request->countrypost,
-                    'pincode' => $request->pincode,
+                    'city' => $getLocData[0]['city'],
+                    'state' => $getLocData[0]['state_code'],
+                    'country' => $getLocData[0]['country_code'],
+                    'pincode' => $getLocData[0]['pin'],
                     'Mobile' => $request->Mobile,
                     'points' => $request->points,
                     'status' =>'Y',
-                    'created_by' => Session::get('useremail')
+                    'created_by' => Session::get('useremail'),
+                    'updated_by' => Session::get('useremail'),
+                    'created_at' => $sysDate,
+                    'updated_at' => $sysDate
                 ]);
                
                 return Response::json(['success' => true]);

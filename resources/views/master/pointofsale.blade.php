@@ -28,20 +28,20 @@
         </div>
         <div class="col-md-9">
           <br>
-          <b> Mobile: </b> <input type="text" name="Mobile" id="Mobile" placeholder="Mobile" style="width: 85px;" maxlength="10" onkeypress="return isNumber(event)"><b>  Cust-Id: <span style="color:red;">*</span> </b><input type="text" name="CustId" id="CustId" style="width: 80px;" placeholder="Customer Id" disabled="" onkeypress="return isNumber(event)" maxlength="12" ><input type="text" name="cust_name" id="cust_name" style="width: 147px;" placeholder="Customer Name" maxlength="60"> <a href="{{route('customer_master')}}" target="_blank" class="btn btn-xs btn-primary">New Cust</a><b>  Points: </b><input type="text" name="points" id="points" style="width: 80px;" placeholder="Points">
+          <b> Mobile: </b> <input type="text" name="Mobile" id="Mobile" placeholder="Mobile" style="width: 85px;" maxlength="10" onkeypress="return isNumber(event)"><b>  Cust-Id: <span style="color:red;">*</span> </b><input type="text" name="cust_code" id="cust_code" style="width: 80px;" placeholder="Customer Id" readonly="" onkeypress="return isNumber(event)" maxlength="12" ><input type="text" name="cust_name" id="cust_name" style="width: 147px;" placeholder="Customer Name" maxlength="60"> <a href="{{route('customer_master')}}" target="_blank" class="btn btn-xs btn-primary">New Cust</a><b>  Points: </b><input type="text" name="points" id="points" style="width: 80px;" placeholder="Points" readonly>
           <b> Home-Delivery: <span style="color:red;"></span> </b>
               <select name="homedel" id="homedel">
                 <option value="">Select</option>
                 <option value="Y" selected="selected">YES</option>
                 <option value="N">NO</option>
-              </select><b>  Last Bill No: </b><input type="text" name="" align="center" style="width: 93px;" placeholder="Last Bill No" ><br>
+              </select><b>  Last Bill No: </b><input type="text" name="" align="center" style="width: 93px;" placeholder="Last Bill No" readonly><br>
             <b> Address: </b> <input type="text" name="cust_addr1" id="cust_addr1" style="width: 270px;" placeholder="Address">
             <b> Disc: </b><input type="text" name="" style="width: 60px;" placeholder="Amt"><input type="text" name="" style="width: 50px;" placeholder="%"><b>
             <b> Oth Chrg: </b><input type="text" name="" style="width: 60px;" placeholder="Amt"><input type="text" name="" style="width: 50px;" placeholder="%">
-            <b> Last Bill Amt/Change: </b><input type="text" name="" style="width: 100px;" placeholder="Last Bill Amt" ><input type="text" name="" style="width: 60px;" placeholder="Change"><br>
-            <input type="text" name="existCust" id="existCust" value="" placeholder="existCust">
-            <b>Scan Barcode:</b><input type="text" name=""  placeholder="" value="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <b>SEARCH SKU:</b><input type="text" name=""  placeholder="" value=""><br><br>
+            <b> Last Bill Amt/Change: </b><input type="text" name="" style="width: 100px;" placeholder="Last Bill Amt" readonly><input type="text" name="" style="width: 60px;" placeholder="Change"><br>
+            <input type="hidden" name="existCust" id="existCust" value="" placeholder="existCust">
+            <b>Scan Barcode:</b><input type="text" name="barcode" id="barcode" placeholder="Barcode" value="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <b>SEARCH SKU:</b><input type="text" name="skusearch" id="skusearch" placeholder="SKU" value="">&nbsp;&nbsp;<input type="button" class="btn btn-primary btn-xs" id="getItem" name="getItem " value="Get Item Details"><br><br>
             <table width="100%" border="1">
               <tr>
                 <th>Sku </th>
@@ -140,18 +140,11 @@
                        {  
                           toastr.error(data.errors);
                        }
-                       if(data.success) {
-                            alert("Data Saved..!");
-                               $( '#txtcode-error' ).html( "");
-                               $( '#txt_comname-error' ).html( "");
-                               $( '#txt_type-error' ).html( "");
-                               $( '#txt_addr1-error' ).html( "");
-                           $('#success-msg5').removeClass('hide');
-                           setInterval(function(){ 
-                               $('#success-msg5').addClass('hide');
-                           }, 4000);
-
-                          
+                       if(data.success) 
+                       {   
+                          toastr.success('Data Saved Successfully');
+                          //$('#posTransaction')[0].reset();
+                          //location.reload();
                        }
                      }
                  });
@@ -172,15 +165,17 @@
                         if(data.errors) 
                         {
                           toastr.error(data.errors);
-                          $("#CustId").val("");
+                          $("#cust_code").val("");
                           $("#cust_name").val("");
                           $("#cust_addr1").val("");
                           $("#points").val("");
                           $("#existCust").val("");
+                          $("#cust_code").attr('readonly',false);
                         }
                         if(data.custData.cust_code)
                         {
-                          $("#CustId").val(data.custData.cust_code);
+                          $("#cust_code").attr('readonly',true);
+                          $("#cust_code").val(data.custData.cust_code);
                         }
                         if(data.custData.cust_name)
                         {
