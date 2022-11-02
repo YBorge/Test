@@ -10,7 +10,7 @@
   <div class="panel panel-primary">
     <div class="panel-heading" style="padding: 10px;"><b>Point-of-Sale (Counter Sale)</b></div>
     <div class="panel-body" >
-      <form id="posTransaction" name="posTransaction" method="POST">
+      <form id="posTransaction" name="posTransaction" method="POST" autocomplete="off">
         {{ csrf_field() }}
         <div class="col-md-9" style="background-color: #cfccc9;">
            <table width="100%">
@@ -28,15 +28,15 @@
         </div>
         <div class="col-md-9">
           <br>
-          <b> Mobile: </b> <input type="text" name="Mobile" id="Mobile" placeholder="Mobile" style="width: 85px;" maxlength="10" onkeypress="return isNumber(event)"><b>  Cust-Id: <span style="color:red;">*</span> </b><input type="text" name="cust_code" id="cust_code" style="width: 80px;" placeholder="Customer Id" readonly="" onkeypress="return isNumber(event)" maxlength="12" ><input type="text" name="cust_name" id="cust_name" style="width: 147px;" placeholder="Customer Name" maxlength="60"> <a href="{{route('customer_master')}}" target="_blank" class="btn btn-xs btn-primary">New Cust</a><b>  Points: </b><input type="text" name="points" id="points" style="width: 80px;" placeholder="Points" readonly>
+          <b> Mobile: </b> <input type="text" name="Mobile" id="Mobile" placeholder="Mobile" style="width: 85px;" maxlength="10" onkeypress="return isNumber(event)"><b>  Cust-Id: <span style="color:red;">*</span> </b><input type="text" name="cust_code" id="cust_code" style="width: 80px;" placeholder="Customer Id" onkeypress="return isNumber(event)" maxlength="50" ><input type="text" name="cust_name" id="cust_name" style="width: 147px;" placeholder="Customer Name" maxlength="60"> <a href="{{route('customer_master')}}" target="_blank" class="btn btn-xs btn-primary">New Cust</a><b>  Points: </b><input type="text" name="points" id="points" style="width: 80px;" placeholder="Points" readonly>
           <b> Home-Delivery: <span style="color:red;"></span> </b>
               <select name="homedel" id="homedel">
                 <option value="">Select</option>
-                <option value="Y" selected="selected">YES</option>
+                <option value="Y">YES</option>
                 <option value="N">NO</option>
               </select><b>  Last Bill No: </b><input type="text" name="" align="center" style="width: 93px;" placeholder="Last Bill No" readonly><br>
             <b> Address: </b> <input type="text" name="cust_addr1" id="cust_addr1" style="width: 270px;" placeholder="Address">
-            <b> Disc: </b><input type="text" name="" style="width: 60px;" placeholder="Amt"><input type="text" name="" style="width: 50px;" placeholder="%"><b>
+            <b> Disc: </b><input type="text" name="discAmt" id="discAmt" onclick="openmodal(this);" style="width: 60px;" placeholder="Amt"><input type="text" name="" style="width: 50px;" placeholder="%"><b>
             <b> Oth Chrg: </b><input type="text" name="" style="width: 60px;" placeholder="Amt"><input type="text" name="" style="width: 50px;" placeholder="%">
             <b> Last Bill Amt/Change: </b><input type="text" name="" style="width: 100px;" placeholder="Last Bill Amt" readonly><input type="text" name="" style="width: 60px;" placeholder="Change"><br>
             <input type="hidden" name="existCust" id="existCust" value="" placeholder="existCust">
@@ -121,8 +121,30 @@
   </div>
 </div>
 
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Modal Header</h4>
+      </div>
+      <div class="modal-body">
+        <a class="hello" data-id="2">2</p>
+    <a class="hello" data-id="3">3</p>
+    <a class="hello" data-id="4">4</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
 <script>
-         $(document).ready(function(){
+        $(document).ready(function(){
             var form=$("#posTransaction");
             $('#btn_submit').click(function(e){
                  e.preventDefault();
@@ -198,7 +220,71 @@
                      }
                  });
              });
-         });
+             $('#cust_code').mouseleave(function(e){
+                 e.preventDefault();
+                 $.ajaxSetup({
+                     headers: {
+                         'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                     }
+                 });
+                 $.ajax({
+                    url: "{{ url('pointofsalecust_code_change') }}",
+                    method: 'post',
+                    data:form.serialize(),
+                     success: function(data)
+                     {
+                        if(data.errors) 
+                        {
+                          toastr.error(data.errors);
+                          $("#cust_code").val("");
+                          $("#cust_name").val("");
+                          $("#cust_addr1").val("");
+                          $("#points").val("");
+                          $("#existCust").val("");
+                          $("#Mobile").val("");
+                          $("#cust_code").attr('readonly',false);
+                        }
+                        if(data.custData.cust_code)
+                        {
+                          //$("#cust_code").attr('readonly',true);
+                          $("#cust_code").val(data.custData.cust_code);
+                        }
+                        if(data.custData.cust_name)
+                        {
+                          $("#cust_name").val(data.custData.cust_name);
+                        }
+                        if(data.custData.cust_addr1)
+                        {
+                          $("#cust_addr1").val(data.custData.cust_addr1);
+                        }
+                        if(data.custData.points)
+                        {
+                          $("#points").val(data.custData.points);
+                        }
+                        // if(data.custData.Mobile)
+                        // {
+                        //   $("#Mobile").val(data.custData.Mobile);
+                        // }
+                        if(data.custData.existCust)
+                        {
+                          $("#existCust").val(data.custData.existCust);
+                        }
+                        
+                     }
+                 });
+             });
+        });
+        function openmodal(e) {
+      //prevent(default);
+      //document.getElementById("demo").innerHTML = "YOU CLICKED ME!";
+      $('#myModal').modal('show');
+      $(document).on("click", ".hello", function(event){
+          event.preventDefault();
+          e.value=$(this).attr("data-id");
+    	  alert(e.value);
+    	  $('#myModal').modal('hide');
+      });
+    }
       </script>
 
 @endsection

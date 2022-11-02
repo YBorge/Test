@@ -46,7 +46,24 @@ class PointofSale extends Controller
             return Response::json(['custData' => $custData]);
         }
     }
-
+    public function posCustomerDataOnId(Request $request)
+    {
+        $cust_code=$request->cust_code;
+        $getcustData=cust_master::select('cust_code','cust_name','cust_addr1','points','Mobile')
+                                    ->where('cust_code','=', $cust_code)
+                                    ->orWhere('barcode','=', $cust_code)
+                                    ->first();
+       
+        if(blank($getcustData))
+        {
+            $Message="Invalid customer-id..!";
+            return Response::json(['errors' => $Message]);
+        }
+        else{
+            $custData=array('cust_code' => $getcustData->cust_code,'cust_name' => $getcustData->cust_name,'cust_addr1' => $getcustData->cust_addr1,'points' => $getcustData->points,'Mobile' => $getcustData->Mobile,'existCust' => '1');
+            return Response::json(['custData' => $custData]);
+        }
+    }
     public function store(Request $request)
     {
         $Mobile=$request->Mobile;

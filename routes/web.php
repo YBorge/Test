@@ -43,6 +43,7 @@ Route::post('company_master_city', [companyMaster::class, 'cityChange'])->name('
 
 Route::get('pointofsale', [PointofSale::class, 'index'])->name('pointofsale');
 Route::post('pointofsaleMobile_change',[PointofSale::class, 'posCustomerData'])->name('pointofsaleMobile_change');
+Route::post('pointofsalecust_code_change',[PointofSale::class, 'posCustomerDataOnId'])->name('pointofsalecust_code_change');
 Route::post('pointofsale_store',[PointofSale::class, 'store'])->name('pointofsale_store');
 
 Route::get('branch_master', [branchMaster::class, 'index'])->name('branch_master');
