@@ -36,9 +36,9 @@
                 <option value="N">NO</option>
               </select><b>  Last Bill No: </b><input type="text" name="" align="center" style="width: 93px;" placeholder="Last Bill No" readonly><br>
             <b> Address: </b> <input type="text" name="cust_addr1" id="cust_addr1" style="width: 270px;" placeholder="Address">
-            <b> Disc: </b><input type="text" name="discAmt" id="discAmt" onclick="openmodal(this);" style="width: 60px;" placeholder="Amt"><input type="text" name="" style="width: 50px;" placeholder="%"><b>
-            <b> Oth Chrg: </b><input type="text" name="" style="width: 60px;" placeholder="Amt"><input type="text" name="" style="width: 50px;" placeholder="%">
-            <b> Last Bill Amt/Change: </b><input type="text" name="" style="width: 100px;" placeholder="Last Bill Amt" readonly><input type="text" name="" style="width: 60px;" placeholder="Change"><br>
+            <b> Disc: </b><input type="text" name="discAmt" id="discAmt" onclick="openmodal(this);" style="width: 60px;" placeholder="Amt" onkeypress="return isNumber(event)" readonly><input type="text" name="discPercent" id="discPercent" onkeypress="return isNumber(event)" readonly style="width: 50px;" placeholder="%"><b>
+            <b> Oth Chrg: </b><input type="text" name="" onkeypress="return isNumber(event)" style="width: 60px;" placeholder="Amt"><input type="text" name="" onkeypress="return isNumber(event)" style="width:50px;" placeholder="%">
+            <b> Last Bill Amt/Change: </b><input type="text" name="" onkeypress="return isNumber(event)" style="width: 100px;" placeholder="Last Bill Amt" readonly><input type="text" name="" style="width: 60px;" onkeypress="return isNumber(event)" placeholder="Change"><br>
             <input type="hidden" name="existCust" id="existCust" value="" placeholder="existCust">
             <b>Scan Barcode:</b><input type="text" name="barcode" id="barcode" placeholder="Barcode" value="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <b>SEARCH SKU:</b><input type="text" name="skusearch" id="skusearch" placeholder="SKU" value="">&nbsp;&nbsp;<input type="button" class="btn btn-primary btn-xs" id="getItem" name="getItem " value="Get Item Details"><br><br>
@@ -128,15 +128,17 @@
     <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Modal Header</h4>
+        
+        <h4 class="modal-title"><b>User Authentication</b></h4>
       </div>
       <div class="modal-body">
-        <a class="hello" data-id="2">2</p>
-    <a class="hello" data-id="3">3</p>
-    <a class="hello" data-id="4">4</p>
+        @if ($otpCop=='Y')
+        <label for="">OTP</label><input type="text" name="uotp" id="uotp">
+        @else
+        <label for="">User-Code</label><input type="text" name="usercode" id="usercode"> <label for="">Password</label><input type="password" name="upass" id="upass"><br> @endif  <b> Disc: </b><input type="text" name="discAmt" id="discAmt" onclick="openmodal(this);" style="width: 60px;" placeholder="Amt" onkeypress="return isNumber(event)" readonly><input type="text" name="discPercent" id="discPercent" onkeypress="return isNumber(event)" readonly style="width: 50px;" placeholder="%">
       </div>
       <div class="modal-footer">
+        <button class="btn btn-primary">Apply</button>
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
       </div>
     </div>
@@ -275,16 +277,27 @@
              });
         });
         function openmodal(e) {
-      //prevent(default);
-      //document.getElementById("demo").innerHTML = "YOU CLICKED ME!";
-      $('#myModal').modal('show');
-      $(document).on("click", ".hello", function(event){
-          event.preventDefault();
-          e.value=$(this).attr("data-id");
-    	  alert(e.value);
-    	  $('#myModal').modal('hide');
-      });
-    }
+        //prevent(default);
+        //document.getElementById("demo").innerHTML = "YOU CLICKED ME!";
+          $('#myModal').modal('show');
+          $(document).on("click", ".hello", function(event){
+            event.preventDefault();
+            //e.value=$(this).attr("data-id");
+            //alert(e.value);
+            $('#myModal').modal('hide');
+          });
+        }
+        $('#homedel').change(function(e){
+          var hD= document.getElementById('homedel').value;
+          var cd= document.getElementById('cust_code').value;
+          if(hD=='Y' && (cd=='' || cd==null))
+          {
+            alert('Please Enter Cust-Id..!');
+            $('#cust_code').focus();
+            return false;
+          }
+        });
+        
       </script>
 
 @endsection

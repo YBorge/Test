@@ -18,3 +18,6 @@ INSERT INTO `categories` (`id`, `category_name`, `category_slug`, `parent_catego
 ----insert to office pc--
 INSERT INTO `categories` (`id`, `category_name`, `category_slug`, `parent_category_id`, `category_image`, `is_home`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'Payment Include/Exclude Master', 'payment_group_master', '2', '1613553407.jpg', '1', '1', '2021-02-17 03:46:07', '2021-02-17 03:46:47');
 -------done--
+
+---insert to home pc------
+INSERT INTO `parameters` (`param_id`, `param_code`, `param_value`, `param_desc`, `data_type`, `t_user`, `t_date`) VALUES (NULL, 'OTP_COMP', 'Y', 'Y - Compalsary, N - Not', 'C', 'Admin', '2022-08-13 08:07:38'); 

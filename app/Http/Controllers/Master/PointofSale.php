@@ -15,19 +15,22 @@ class PointofSale extends Controller
 {
     public $sysDate;
     public $custcode;
-    public function __cunstruct()
+    public $otpCop;
+    public function __construct()
     {
         $this->custcode=cust_master::max('cust_code');
         $this->sysDate= Carbon::now("Asia/Kolkata")->format('d-m-Y');
+        $this->otpCop= parameters::select('param_value')->where('param_code','=','OTP_COMP')->first();
          //$sysDate=$currentTime->toDateTimeString();
     }
     public function index()
     {
+         
         $sysDate = Carbon::now()->format('d-m-Y');
         $macAddr = exec('getmac');
         //echo php_uname();
         //echo $host = request()->getHttpHost();
-        return view('master.pointofsale',['macAddr' => $macAddr,'sysDate' => $sysDate]);
+        return view('master.pointofsale',['macAddr' => $macAddr,'sysDate' => $sysDate,'otpCop' => $this->otpCop->param_value]);
     }
 
     public function posCustomerData(Request $request)
@@ -89,10 +92,10 @@ class PointofSale extends Controller
         else{
             $autoCode=true;
         }
-        if ($homedel=='Y' and $existCust=='') 
-        {
-            $autoCode=true;
-        }
+        // if ($homedel=='Y' and $existCust=='') 
+        // {
+        //     $autoCode=true;
+        // }
         $validatedData = Validator::make($request->all(), 
         [
             'Mobile' => 'required',
