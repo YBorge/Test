@@ -6,10 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\cust_master;
 use App\Models\parameters;
 use App\Models\location_master;
+use App\Models\item_barcode;
+use App\Models\stock_detail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 use Response;
+
 
 class PointofSale extends Controller
 {
@@ -65,6 +69,34 @@ class PointofSale extends Controller
         else{
             $custData=array('cust_code' => $getcustData->cust_code,'cust_name' => $getcustData->cust_name,'cust_addr1' => $getcustData->cust_addr1,'points' => $getcustData->points,'Mobile' => $getcustData->Mobile,'existCust' => '1');
             return Response::json(['custData' => $custData]);
+        }
+    }
+    public function itemData(Request $request)
+    {
+        $barcode=$request->barcode;
+        $getItemCode=item_barcode::select('item_code')->where('barcode',$barcode)->first();
+        $stocDetails=DB::table('stock_detail')->select('item_code','batch_no','mrp','sale_rate','recd_date',DB::raw('SUM(bal_qty) AS sum_bal_qty'))->where('item_code',$getItemCode->item_code)->where('bal_qty','>',0)
+            ->groupBy('mrp')
+            ->groupBy('item_code')
+            ->groupBy('batch_no')
+            ->groupBy('sale_rate')
+            ->groupBy('recd_date')
+            ->orderBy('stock_id')
+            ->get();
+
+        foreach ($stocDetails as $key => $stockVal) 
+        {
+            $arrOfMrp[]=$stockVal->mrp;
+            $arrOfSaleRate[]=$stockVal->sale_rate;
+            $arrOfItemcode[]=$stockVal->item_code;
+            $arrOfBalQty[]=$stockVal->sum_bal_qty;
+        }
+
+        $arUniq=array_unique($arrOfBalQty);
+        //print_r($arUniq);
+        if (array_count_values($arrOfMrp) > 1) 
+        {
+           echo "string";
         }
     }
     public function store(Request $request)

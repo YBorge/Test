@@ -173,6 +173,31 @@
                      }
                  });
              });
+            $('#getItem').click(function(e){
+                 e.preventDefault();
+                 $.ajaxSetup({
+                     headers: {
+                         'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                     }
+                 });
+                 $.ajax({
+                    url: "{{ url('pointofsale_getItem') }}",
+                    method: 'post',
+                    data:form.serialize(),
+                     success: function(data){
+                       if(data.errors) 
+                       {  
+                          toastr.error(data.errors);
+                       }
+                       if(data.success) 
+                       {   
+                          toastr.success('Data Saved Successfully');
+                          //$('#posTransaction')[0].reset();
+                          //location.reload();
+                       }
+                     }
+                 });
+             });
             $('#Mobile').mouseleave(function(e){
                  e.preventDefault();
                  $.ajaxSetup({
