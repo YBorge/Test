@@ -53,16 +53,8 @@
                 <th>Rate </th>
                 <th>Amount </th>
               </tr>
-              <tr>
-                <td>1 </td>
-                <td>Roll </td>
-                <td>1 </td>
-                <td>100.00 </td>
-                <td>5.00 </td>
-                <td>1.00 </td>
-                <td>95.00</td>
-                <td>100.00 </td>
-              </tr>
+              <tbody id="tbdata">
+              </tbody>
             </table>
         </div>
         <div class="col-md-3">
@@ -195,7 +187,24 @@
                           //$('#posTransaction')[0].reset();
                           //location.reload();
                        }
-                     }
+                        if(data.ItemData)
+                        {
+                            $.each(data.ItemData, (index, row) => {
+                            const rowContent 
+                            = `<tr>
+                                <td><input type="hidden" value="${row.SrNo}"> ${row.SrNo}</td>
+                                <td>${row.itemName}</td>
+                                <td>${row.batch_no}</td>
+                                <td>${row.mrp}</td>
+                                <td>${row.disc}</td>
+                                <td>${row.qty}</td>
+                                <td>${row.mrp}</td>
+                                <td>${row.sale_rate}</td>
+                              </tr>`;
+                            $('#tbdata').append(rowContent);
+                          });
+                        }
+                      }
                  });
              });
             $('#Mobile').mouseleave(function(e){

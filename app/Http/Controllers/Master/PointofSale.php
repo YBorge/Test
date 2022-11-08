@@ -8,6 +8,7 @@ use App\Models\parameters;
 use App\Models\location_master;
 use App\Models\item_barcode;
 use App\Models\stock_detail;
+use App\Models\item_master;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
@@ -20,11 +21,13 @@ class PointofSale extends Controller
     public $sysDate;
     public $custcode;
     public $otpCop;
+    public $item_master_data;
     public function __construct()
     {
         $this->custcode=cust_master::max('cust_code');
         $this->sysDate= Carbon::now("Asia/Kolkata")->format('d-m-Y');
         $this->otpCop= parameters::select('param_value')->where('param_code','=','OTP_COMP')->first();
+        $this->item_master_data=item_master::pluck('item_name','item_code');
          //$sysDate=$currentTime->toDateTimeString();
     }
     public function index()
@@ -83,21 +86,30 @@ class PointofSale extends Controller
             ->groupBy('recd_date')
             ->orderBy('stock_id')
             ->get();
+            //dd($stocDetails);
+            $SrNo=0;
+            foreach($stocDetails as $value)
+            {
+                $discount=$value->mrp - $value->sale_rate;
+                $ItemData[]=array('batch_no' => $value->batch_no,'mrp' => $value->mrp,'disc' => $discount,'qty' => $value->sum_bal_qty,'sale_rate' => $value->sale_rate,'amt' => 100,'SrNo' => ++$SrNo,'itemName' => $this->item_master_data[$value->item_code]);
 
-        foreach ($stocDetails as $key => $stockVal) 
-        {
-            $arrOfMrp[]=$stockVal->mrp;
-            $arrOfSaleRate[]=$stockVal->sale_rate;
-            $arrOfItemcode[]=$stockVal->item_code;
-            $arrOfBalQty[]=$stockVal->sum_bal_qty;
-        }
+            }
+            
+        return Response::json(['ItemData' => $ItemData]);
+        // foreach ($stocDetails as $key => $stockVal) 
+        // {
+        //     $arrOfMrp[]=$stockVal->mrp;
+        //     $arrOfSaleRate[]=$stockVal->sale_rate;
+        //     $arrOfItemcode[]=$stockVal->item_code;
+        //     $arrOfBalQty[]=$stockVal->sum_bal_qty;
+        // }
 
-        $arUniq=array_unique($arrOfBalQty);
-        //print_r($arUniq);
-        if (array_count_values($arrOfMrp) > 1) 
-        {
-           echo "string";
-        }
+        // $arUniq=array_unique($arrOfBalQty);
+        // //print_r($arUniq);
+        // if (array_count_values($arrOfMrp) > 1) 
+        // {
+        //    echo "string";
+        // }
     }
     public function store(Request $request)
     {
