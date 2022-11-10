@@ -137,6 +137,40 @@
 
   </div>
 </div>
+<div id="myModal2" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        
+        <h4 class="modal-title"><b>Item Details</b></h4>
+      </div>
+      <div class="modal-body">
+       <table border="1">
+         <tr>
+          <th>SrNo</th>
+           <th>item code</th>
+           <th>Batch No</th>
+           <th>item name</th>
+           <th>MRP</th>
+           <th>Sale</th>
+           <th>Add</th>
+          
+         </tr>
+         <tbody id="tbdata1">
+           
+         </tbody>
+       </table>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary">Apply</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
 <script>
         $(document).ready(function(){
             var form=$("#posTransaction");
@@ -189,6 +223,7 @@
                        }
                         if(data.ItemData)
                         {
+
                             $.each(data.ItemData, (index, row) => {
                             const rowContent 
                             = `<tr>
@@ -198,11 +233,12 @@
                                 <td>${row.mrp}</td>
                                 <td>${row.disc}</td>
                                 <td>${row.qty}</td>
-                                <td>${row.mrp}</td>
+                                <td>${row.sale_rate}</td>
                                 <td>${row.sale_rate}</td>
                               </tr>`;
-                            $('#tbdata').append(rowContent);
+                            $('#tbdata1').append(rowContent);
                           });
+                          $('#myModal2').modal('show');
                         }
                       }
                  });
