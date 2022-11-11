@@ -78,24 +78,25 @@ class PointofSale extends Controller
     {
         $barcode=$request->barcode;
         $getItemCode=item_barcode::select('item_code')->where('barcode',$barcode)->first();
-        $stocDetails=DB::table('stock_detail')->select('item_code','batch_no','mrp','sale_rate','recd_date',DB::raw('SUM(bal_qty) AS sum_bal_qty'))->where('item_code',$getItemCode->item_code)->where('bal_qty','>',0)
+        $stocDetails=DB::table('stock_detail')->select('item_code','batch_no','mrp','sale_rate','recd_date','stock_id',DB::raw('SUM(bal_qty) AS sum_bal_qty'))->where('item_code',$getItemCode->item_code)->where('bal_qty','>',0)
             ->groupBy('mrp')
             ->groupBy('item_code')
             ->groupBy('batch_no')
             ->groupBy('sale_rate')
             ->groupBy('recd_date')
+            ->groupBy('stock_id')
             ->orderBy('stock_id')
             ->get();
             //dd($stocDetails);
-            $SrNo=0;
+            $SrNo=0;$ItemData=array();
             foreach($stocDetails as $value)
             {
                 $discount=$value->mrp - $value->sale_rate;
-                $ItemData[]=array('batch_no' => $value->batch_no,'mrp' => $value->mrp,'disc' => number_format((float)$discount, 2, '.', '')
-                ,'qty' => $value->sum_bal_qty,'sale_rate' => $value->sale_rate,'amt' => 100,'SrNo' => ++$SrNo,'itemName' => $this->item_master_data[$value->item_code]);
+                $ItemData[]=array('batch_no' => $value->batch_no,'mrp' => $value->mrp,'disc' => $discount,'qty' => $value->sum_bal_qty,'sale_rate' => $value->sale_rate,'amt' => 100,'SrNo' => ++$SrNo,'itemName' => $this->item_master_data[$value->item_code]);
 
             }
-            
+            //dd(count($stocDetails));
+          
         return Response::json(['ItemData' => $ItemData]);
         // foreach ($stocDetails as $key => $stockVal) 
         // {
