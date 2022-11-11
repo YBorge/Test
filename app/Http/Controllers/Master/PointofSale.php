@@ -91,7 +91,8 @@ class PointofSale extends Controller
             foreach($stocDetails as $value)
             {
                 $discount=$value->mrp - $value->sale_rate;
-                $ItemData[]=array('batch_no' => $value->batch_no,'mrp' => $value->mrp,'disc' => $discount,'qty' => $value->sum_bal_qty,'sale_rate' => $value->sale_rate,'amt' => 100,'SrNo' => ++$SrNo,'itemName' => $this->item_master_data[$value->item_code]);
+                $ItemData[]=array('batch_no' => $value->batch_no,'mrp' => $value->mrp,'disc' => number_format((float)$discount, 2, '.', '')
+                ,'qty' => $value->sum_bal_qty,'sale_rate' => $value->sale_rate,'amt' => 100,'SrNo' => ++$SrNo,'itemName' => $this->item_master_data[$value->item_code]);
 
             }
             

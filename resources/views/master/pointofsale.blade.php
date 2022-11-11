@@ -198,7 +198,7 @@
                                 <td>${row.mrp}</td>
                                 <td>${row.disc}</td>
                                 <td>${row.qty}</td>
-                                <td>${row.mrp}</td>
+                                <td>${row.sale_rate}</td>
                                 <td>${row.sale_rate}</td>
                               </tr>`;
                             $('#tbdata').append(rowContent);
