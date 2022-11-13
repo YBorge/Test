@@ -40,6 +40,7 @@
             <b> Oth Chrg: </b><input type="text" name="" onkeypress="return isNumber(event)" style="width: 60px;" placeholder="Amt"><input type="text" name="" onkeypress="return isNumber(event)" style="width:50px;" placeholder="%">
             <b> Last Bill Amt/Change: </b><input type="text" name="" onkeypress="return isNumber(event)" style="width: 100px;" placeholder="Last Bill Amt" readonly><input type="text" name="" style="width: 60px;" onkeypress="return isNumber(event)" placeholder="Change"><br>
             <input type="hidden" name="existCust" id="existCust" value="" placeholder="existCust">
+            <input type="text" name="itemCodeNew" id="itemCodeNew" value="" placeholder="itemCodeNew">
             <b>Scan Barcode:</b><input type="text" name="barcode" id="barcode" placeholder="Barcode" value="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <b>SEARCH SKU:</b><input type="text" name="skusearch" id="skusearch" placeholder="SKU" value="">&nbsp;&nbsp;<input type="button" class="btn btn-primary btn-xs" id="getItem" name="getItem " value="Get Item Details"><br><br>
             <table width="100%" border="1">
@@ -108,7 +109,7 @@
           <a href="#" class="btn btn-xs btn-success"> Hold Bill</a>&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-xs btn-success">Pop Hold Bill </a>
           <a href="#" id="btn_submit" class="btn btn-xs btn-primary"> Re-Print Bill</a>&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-xs btn-success"> Cancel Bill</a>
         </div>  
-      </form>
+      
     </div>
   </div>
 </div>
@@ -148,29 +149,30 @@
       </div>
       <div class="modal-body">
        <table border="1">
-         <tr>
-          <th>SrNo</th>
-           <th>item code</th>
-           <th>Batch No</th>
-           <th>item name</th>
-           <th>MRP</th>
-           <th>Sale</th>
-           <th>Add</th>
-          
-         </tr>
-         <tbody id="tbdata1">
-           
-         </tbody>
+          <tr>
+            <th>SrNo</th>
+            <th>item code</th>
+            <th>Batch No</th>
+            <th>item name</th>
+            <th>MRP</th>
+            <th>Sale</th>
+            <th>Bal Qty</th>
+            <th>Select</th>
+          </tr>
+          <tbody id="tbdata1">
+
+          </tbody>
        </table>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-primary">Apply</button>
+        <button type="button" class="btn btn-primary btn-submit">Save</button>
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
       </div>
     </div>
 
   </div>
 </div>
+</form>
 <script>
         $(document).ready(function(){
             var form=$("#posTransaction");
@@ -223,18 +225,37 @@
                        }
                         if(data.ItemData)
                         {
-
+                          if (data.countVal==1) 
+                          {
+                            $('#tbdata').empty();
+                              $.each(data.ItemData, (index, row) => {
+                              const rowContent 
+                              = `<tr>
+                                  <td><input type="hidden" value="${row.SrNo}"> ${row.SrNo}</td>
+                                  <td>${row.itemName}</td>
+                                  <td>${row.batch_no}</td>
+                                  <td>${row.mrp}</td>
+                                  <td>${row.disc}</td>
+                                  <td>${row.qty}</td>
+                                  <td>${row.sale_rate}</td>
+                                  <td>${row.sale_rate}</td>
+                                </tr>`;
+                              $('#tbdata').append(rowContent);
+                            });
+                            return true;
+                          }
+                          $('#tbdata1').empty();
                             $.each(data.ItemData, (index, row) => {
                             const rowContent 
                             = `<tr>
                                 <td><input type="hidden" value="${row.SrNo}"> ${row.SrNo}</td>
-                                <td>${row.itemName}</td>
+                                <td>${row.item_code}</td>
                                 <td>${row.batch_no}</td>
+                                <td>${row.itemName}</td>
                                 <td>${row.mrp}</td>
-                                <td>${row.disc}</td>
+                                <td>${row.sale_rate}</td>
                                 <td>${row.qty}</td>
-                                <td>${row.sale_rate}</td>
-                                <td>${row.sale_rate}</td>
+                                <td><input type="checkbox" class="cbCheck" value="${row.item_code}" name="itemCheck[]" id="itemCheck[]"></td>
                               </tr>`;
                             $('#tbdata1').append(rowContent);
                           });
@@ -243,6 +264,37 @@
                       }
                  });
              });
+
+            $(".btn-submit").click(function(){
+              var chkCount = $(".cbCheck:checked").length;
+             
+              if(chkCount > 1)
+              {
+                $("#itemCodeNew").val("");
+                alert("Can not select more than one checkbox..!");
+                return false;
+                exit();
+              }
+              var chkVal = $('.cbCheck').val();
+              $("#itemCodeNew").val(chkVal);
+              $.ajaxSetup({
+                     headers: {
+                         'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                     }
+                 });
+
+              $.ajax({
+                    url: "{{ url('pointofsaleitemSave') }}",
+                    method: 'post',
+                    data:form.serialize(),
+                    success: function(data)
+                    {
+                      
+                    }
+                 });
+
+             });
+
             $('#Mobile').mouseleave(function(e){
                  e.preventDefault();
                  $.ajaxSetup({
