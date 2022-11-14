@@ -115,12 +115,12 @@ class PointofSale extends Controller
                     ]);
                 }
             }
-            $getTempData=temp_stock_details::select('t_item_code','t_batch_no','t_mrp','t_sale_rate',DB::raw('SUM(t_sum_bal_qty) AS sum_bal_qty'))->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->where('t_item_code',$getItemCode->item_code)->groupBy('t_mrp')->groupBy('t_sale_rate')->groupBy('t_item_code')->groupBy('t_batch_no')->get();
+            $getTempData=temp_stock_details::select('t_stock_id','t_item_code','t_batch_no','t_mrp','t_sale_rate',DB::raw('SUM(t_sum_bal_qty) AS sum_bal_qty'))->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->where('t_item_code',$getItemCode->item_code)->groupBy('t_mrp')->groupBy('t_sale_rate')->groupBy('t_item_code')->groupBy('t_batch_no')->orderBy('t_stock_id')->get();
             $SrNo=0;$ItemData=array();
             foreach ($getTempData as $key => $value) 
             {
                 $discount=$value->t_mrp - $value->t_sale_rate;
-                $ItemData[]=array('batch_no' => $value->t_batch_no,'mrp' => $value->t_mrp,'disc' => round($discount,2),'qty' => $value->sum_bal_qty,'sale_rate' => $value->t_sale_rate,'amt' => 100,'SrNo' => ++$SrNo,'itemName' => $this->item_master_data[$value->t_item_code],'item_code' => $value->t_item_code);
+                $ItemData[]=array('batch_no' => $value->t_batch_no,'mrp' => $value->t_mrp,'disc' => round($discount,2),'qty' => $value->sum_bal_qty,'sale_rate' => $value->t_sale_rate,'amt' => 100,'SrNo' => ++$SrNo,'itemName' => $this->item_master_data[$value->t_item_code],'item_code' => $value->t_item_code,'stock_id' => $value->t_stock_id);
             } 
         return Response::json(['ItemData' => $ItemData,'countVal' => $countVal]);
         // foreach ($stocDetails as $key => $stockVal) 
@@ -142,13 +142,43 @@ class PointofSale extends Controller
     public function itemSave(Request $request)
     {
         $itemCodeNew=$request->itemCodeNew;
-        $getTempData=temp_stock_details::
-                    select('t_stock_id','t_batch_no','t_mrp','t_sale_rate')
+        $itemBalQty=$request->itemBalQty;
+        $getStockTempData=temp_stock_details::
+                    select('t_item_code','t_batch_no','t_mrp','t_sale_rate')
                     ->where('t_updatedby',Session::get('useremail'))
                     ->where('t_machine_name',$this->machineName)
-                    ->where('t_item_code',$itemCodeNew)
+                    ->where('t_stock_id',$itemCodeNew)
                     ->first();
-        
+        try {
+            $getExistCount=temp_print_stock_details::select('id')->where('t_stock_id',$itemCodeNew)->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->get();
+            $printCount=count($getExistCount);
+            if($printCount==0)
+            {
+                temp_print_stock_details::create([
+                    't_stock_id' => $itemCodeNew,
+                    't_item_code' => $getStockTempData->t_item_code,
+                    't_batch_no' => $getStockTempData->t_batch_no,
+                    't_mrp' => $getStockTempData->t_mrp,
+                    't_sale_rate' => $getStockTempData->t_sale_rate,
+                    't_sum_bal_qty' => $itemBalQty,
+                    't_updatedby' => Session::get('useremail'),
+                    't_machine_name' => $this->machineName,
+                    'created_at' => $this->sysDate,
+                    'updated_at' => $this->sysDate
+                ]);
+            }
+            $temp_print_stock_details=temp_print_stock_details::select('*')->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->get();
+            $SrNo=0;
+            foreach ($temp_print_stock_details as $key => $value) 
+            {
+                $discount=$value->t_mrp - $value->t_sale_rate;
+                $ItemData[]=array('batch_no' => $value->t_batch_no,'mrp' => $value->t_mrp,'disc' => round($discount,2),'qty' => $value->sum_bal_qty,'sale_rate' => $value->t_sale_rate,'amt' => 100,'SrNo' => ++$SrNo,'itemName' => $this->item_master_data[$value->t_item_code],'item_code' => $value->t_item_code,'stock_id' => $value->t_stock_id);
+            }
+            return Response::json(['success' => true,'ItemData' => $ItemData]);
+        }
+        catch (Exception $exception) {
+            return Response::json(['errors' => $exception->getMessage()]);
+        }
     }
 
     public function store(Request $request)

@@ -40,7 +40,8 @@
             <b> Oth Chrg: </b><input type="text" name="" onkeypress="return isNumber(event)" style="width: 60px;" placeholder="Amt"><input type="text" name="" onkeypress="return isNumber(event)" style="width:50px;" placeholder="%">
             <b> Last Bill Amt/Change: </b><input type="text" name="" onkeypress="return isNumber(event)" style="width: 100px;" placeholder="Last Bill Amt" readonly><input type="text" name="" style="width: 60px;" onkeypress="return isNumber(event)" placeholder="Change"><br>
             <input type="hidden" name="existCust" id="existCust" value="" placeholder="existCust">
-            <input type="text" name="itemCodeNew" id="itemCodeNew" value="" placeholder="itemCodeNew">
+            <input type="hidden" name="itemCodeNew" id="itemCodeNew" value="" placeholder="itemCodeNew">
+            <input type="hidden" name="itemBalQty" id="itemBalQty" value="" placeholder="itemBalQty">
             <b>Scan Barcode:</b><input type="text" name="barcode" id="barcode" placeholder="Barcode" value="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <b>SEARCH SKU:</b><input type="text" name="skusearch" id="skusearch" placeholder="SKU" value="">&nbsp;&nbsp;<input type="button" class="btn btn-primary btn-xs" id="getItem" name="getItem " value="Get Item Details"><br><br>
             <table width="100%" border="1">
@@ -160,7 +161,7 @@
             <th>Select</th>
           </tr>
           <tbody id="tbdata1">
-
+            
           </tbody>
        </table>
       </div>
@@ -254,8 +255,8 @@
                                 <td>${row.itemName}</td>
                                 <td>${row.mrp}</td>
                                 <td>${row.sale_rate}</td>
-                                <td>${row.qty}</td>
-                                <td><input type="checkbox" class="cbCheck" value="${row.item_code}" name="itemCheck[]" id="itemCheck[]"></td>
+                                <td>${row.qty} <input type="hidden"  value="${row.qty}" name="balQty_${row.stock_id}" id="balQty_${row.stock_id}"></td>
+                                <td><input type="checkbox" class="cbCheck" value="${row.stock_id}" name="itemCheck[]" id="itemCheck[]"></td>
                               </tr>`;
                             $('#tbdata1').append(rowContent);
                           });
@@ -267,16 +268,19 @@
 
             $(".btn-submit").click(function(){
               var chkCount = $(".cbCheck:checked").length;
-             
               if(chkCount > 1)
               {
                 $("#itemCodeNew").val("");
+                $("#itemBalQty").val("");
                 alert("Can not select more than one checkbox..!");
                 return false;
                 exit();
               }
-              var chkVal = $('.cbCheck').val();
+              var chkVal = $('.cbCheck:checked').val();
               $("#itemCodeNew").val(chkVal);
+              var balqty= $("#balQty_"+chkVal).val();
+              $("#itemBalQty").val(balqty);
+              
               $.ajaxSetup({
                      headers: {
                          'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
@@ -289,7 +293,25 @@
                     data:form.serialize(),
                     success: function(data)
                     {
-                      
+                      if(data.success)
+                      {
+                        $('#myModal2').modal('hide');
+                        $('#tbdata').empty();
+                              $.each(data.ItemData, (index, row) => {
+                              const rowContent 
+                              = `<tr>
+                                  <td><input type="hidden" value="${row.SrNo}"> ${row.SrNo}</td>
+                                  <td>${row.itemName}</td>
+                                  <td>${row.batch_no}</td>
+                                  <td>${row.mrp}</td>
+                                  <td>${row.disc}</td>
+                                  <td>${row.qty}</td>
+                                  <td>${row.sale_rate}</td>
+                                  <td>${row.sale_rate}</td>
+                                </tr>`;
+                              $('#tbdata').append(rowContent);
+                            });
+                      }
                     }
                  });
 
