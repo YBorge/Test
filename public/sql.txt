@@ -22,3 +22,7 @@ INSERT INTO `categories` (`id`, `category_name`, `category_slug`, `parent_catego
 ---insert to home pc------
 INSERT INTO `parameters` (`param_id`, `param_code`, `param_value`, `param_desc`, `data_type`, `t_user`, `t_date`) VALUES (NULL, 'OTP_COMP', 'Y', 'Y - Compalsary, N - Not', 'C', 'Admin', '2022-08-13 08:07:38'); 
 ---done-----
+
+---insert to home pc------
+ALTER TABLE `temp_print_stock_details` ADD `t_barcode` VARCHAR(200) NULL DEFAULT NULL AFTER `id`;
+ALTER TABLE `temp_stock_details` ADD `t_barcode` VARCHAR(200) NULL DEFAULT NULL AFTER `t_item_code`;

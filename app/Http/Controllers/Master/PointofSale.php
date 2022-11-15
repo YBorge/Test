@@ -102,6 +102,7 @@ class PointofSale extends Controller
                 foreach($stocDetails as $value)
                 {
                     temp_stock_details::create([
+                        't_barcode' => $barcode,
                         't_stock_id' => $value->stock_id,
                         't_item_code' => $value->item_code,
                         't_batch_no' => $value->batch_no,
@@ -113,14 +114,40 @@ class PointofSale extends Controller
                         'created_at' => $sysDate,
                         'updated_at' => $sysDate
                     ]);
+                    if ($countVal==1) 
+                    {
+                        
+                        temp_print_stock_details::create([
+                            't_stock_id' => $value->stock_id,
+                            't_item_code' => $value->item_code,
+                            't_barcode' => $barcode,
+                            't_batch_no' => $value->batch_no,
+                            't_mrp' => $value->mrp,
+                            't_sale_rate' => $value->sale_rate,
+                            't_sum_bal_qty' => $value->sum_bal_qty,
+                            't_updatedby' => Session::get('useremail'),
+                            't_machine_name' => $this->machineName,
+                            'created_at' => $this->sysDate,
+                            'updated_at' => $this->sysDate
+                        ]);
+                    }
                 }
             }
-            $getTempData=temp_stock_details::select('t_stock_id','t_item_code','t_batch_no','t_mrp','t_sale_rate',DB::raw('SUM(t_sum_bal_qty) AS sum_bal_qty'))->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->where('t_item_code',$getItemCode->item_code)->groupBy('t_mrp')->groupBy('t_sale_rate')->groupBy('t_item_code')->groupBy('t_batch_no')->orderBy('t_stock_id')->get();
+            $getExistCount=temp_print_stock_details::select('id')->where('t_barcode',$barcode)->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->get();
+            $CheckCount=count($getExistCount);
+            if ($CheckCount >= 1) 
+            {
+                temp_print_stock_details::where('t_barcode', $barcode)->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)
+                    ->update([
+                        'name' => $name
+                    ]);
+            }
+            $getTempData=temp_stock_details::select('t_stock_id','t_item_code','t_batch_no','t_mrp','t_sale_rate','t_barcode',DB::raw('SUM(t_sum_bal_qty) AS sum_bal_qty'))->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->where('t_item_code',$getItemCode->item_code)->groupBy('t_mrp')->groupBy('t_sale_rate')->groupBy('t_item_code')->groupBy('t_batch_no')->orderBy('t_stock_id')->get();
             $SrNo=0;$ItemData=array();
             foreach ($getTempData as $key => $value) 
             {
                 $discount=$value->t_mrp - $value->t_sale_rate;
-                $ItemData[]=array('batch_no' => $value->t_batch_no,'mrp' => $value->t_mrp,'disc' => round($discount,2),'qty' => $value->sum_bal_qty,'sale_rate' => $value->t_sale_rate,'amt' => 100,'SrNo' => ++$SrNo,'itemName' => $this->item_master_data[$value->t_item_code],'item_code' => $value->t_item_code,'stock_id' => $value->t_stock_id);
+                $ItemData[]=array('batch_no' => $value->t_batch_no,'mrp' => $value->t_mrp,'disc' => round($discount,2),'qty' => $value->sum_bal_qty,'sale_rate' => $value->t_sale_rate,'amt' => 100,'SrNo' => $value->t_barcode,'itemName' => $this->item_master_data[$value->t_item_code],'item_code' => $value->t_item_code,'stock_id' => $value->t_stock_id);
             } 
         return Response::json(['ItemData' => $ItemData,'countVal' => $countVal]);
         // foreach ($stocDetails as $key => $stockVal) 
@@ -141,6 +168,7 @@ class PointofSale extends Controller
 
     public function itemSave(Request $request)
     {
+        $barcode=$request->barcode;
         $itemCodeNew=$request->itemCodeNew;
         $itemBalQty=$request->itemBalQty;
         $getStockTempData=temp_stock_details::
@@ -156,6 +184,7 @@ class PointofSale extends Controller
             {
                 temp_print_stock_details::create([
                     't_stock_id' => $itemCodeNew,
+                    't_barcode' => $barcode,
                     't_item_code' => $getStockTempData->t_item_code,
                     't_batch_no' => $getStockTempData->t_batch_no,
                     't_mrp' => $getStockTempData->t_mrp,
@@ -172,7 +201,7 @@ class PointofSale extends Controller
             foreach ($temp_print_stock_details as $key => $value) 
             {
                 $discount=$value->t_mrp - $value->t_sale_rate;
-                $ItemData[]=array('batch_no' => $value->t_batch_no,'mrp' => $value->t_mrp,'disc' => round($discount,2),'qty' => $value->sum_bal_qty,'sale_rate' => $value->t_sale_rate,'amt' => 100,'SrNo' => ++$SrNo,'itemName' => $this->item_master_data[$value->t_item_code],'item_code' => $value->t_item_code,'stock_id' => $value->t_stock_id);
+                $ItemData[]=array('batch_no' => $value->t_batch_no,'mrp' => $value->t_mrp,'disc' => round($discount,2),'qty' => $value->t_sum_bal_qty,'sale_rate' => $value->t_sale_rate,'amt' => 100,'SrNo' => $value->t_barcode,'itemName' => $this->item_master_data[$value->t_item_code],'item_code' => $value->t_item_code,'stock_id' => $value->t_stock_id);
             }
             return Response::json(['success' => true,'ItemData' => $ItemData]);
         }

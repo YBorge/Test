@@ -226,6 +226,7 @@
                        }
                         if(data.ItemData)
                         {
+                          
                           if (data.countVal==1) 
                           {
                             $('#tbdata').empty();
@@ -243,6 +244,7 @@
                                 </tr>`;
                               $('#tbdata').append(rowContent);
                             });
+                            
                             return true;
                           }
                           $('#tbdata1').empty();
@@ -260,6 +262,7 @@
                               </tr>`;
                             $('#tbdata1').append(rowContent);
                           });
+                          
                           $('#myModal2').modal('show');
                         }
                       }
