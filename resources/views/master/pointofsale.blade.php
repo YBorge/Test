@@ -240,7 +240,7 @@
                                   <td>${row.disc}</td>
                                   <td>${row.qty}</td>
                                   <td>${row.sale_rate}</td>
-                                  <td>${row.sale_rate}</td>
+                                  <td>${row.amt}</td>
                                 </tr>`;
                               $('#tbdata').append(rowContent);
                             });
