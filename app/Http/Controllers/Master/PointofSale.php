@@ -142,7 +142,7 @@ class PointofSale extends Controller
             $CheckCount=count($getExistCount);
             if ($CheckCount == 1 and $insertTempPrintDetails=="false") 
             {
-                $updateTprint=temp_print_stock_details::where('t_barcode', $barcode)->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)
+                $updateTprint=temp_print_stock_details::where('t_barcode', $barcode)->where('t_item_code',$getItemCode->item_code)->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)
                     ->update([
                         't_sum_bal_qty' => $getExistCount[0]['t_sum_bal_qty'] + 1
                     ]);
