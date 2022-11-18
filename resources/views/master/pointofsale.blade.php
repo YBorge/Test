@@ -54,6 +54,7 @@
                 <th>Qty </th>
                 <th>Rate </th>
                 <th>Amount </th>
+                <th>Select</th>
               </tr>
               <tbody id="tbdata">
               </tbody>
@@ -241,6 +242,7 @@
                                   <td>${row.qty}</td>
                                   <td>${row.sale_rate}</td>
                                   <td>${row.amt}</td>
+                                  <td><input type="checkbox" class="" value="${row.id}" name="itemCheckId[]" id="itemCheckId[]"></td>
                                 </tr>`;
                               $('#tbdata').append(rowContent);
                             });
@@ -310,7 +312,8 @@
                                   <td>${row.disc}</td>
                                   <td>${row.qty}</td>
                                   <td>${row.sale_rate}</td>
-                                  <td>${row.sale_rate}</td>
+                                  <td>${row.amt}</td>
+                                  <td align="center"><input type="checkbox" class="" value="${row.id}" name="itemCheckId[]" id="itemCheckId[]"></td>
                                 </tr>`;
                               $('#tbdata').append(rowContent);
                             });

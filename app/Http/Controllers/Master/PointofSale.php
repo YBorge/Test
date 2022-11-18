@@ -140,17 +140,20 @@ class PointofSale extends Controller
             $updateTprint="0";
             $getExistCount=temp_print_stock_details::select('t_sum_bal_qty')->where('t_item_code',$getItemCode->item_code)->where('t_barcode',$barcode)->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->get();
             $CheckCount=count($getExistCount);
-            if ($CheckCount == 1 and $insertTempPrintDetails=="false") 
+            if ($countVal==1) 
             {
-                $updateTprint=temp_print_stock_details::where('t_barcode', $barcode)->where('t_item_code',$getItemCode->item_code)->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)
-                    ->update([
-                        't_sum_bal_qty' => $getExistCount[0]['t_sum_bal_qty'] + 1
-                    ]);
+                if ($CheckCount == 1 and $insertTempPrintDetails=="false") 
+                {
+                    $updateTprint=temp_print_stock_details::where('t_barcode', $barcode)->where('t_item_code',$getItemCode->item_code)->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)
+                        ->update([
+                            't_sum_bal_qty' => $getExistCount[0]['t_sum_bal_qty'] + 1
+                        ]);
+                }
             }
             //dd($insertTempPrint);
             if ($insertTempPrintDetails=="true" or $updateTprint==1) 
             {
-                $getTempData=temp_print_stock_details::select('*')->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->get();
+                $getTempData=temp_print_stock_details::select('*')->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->orderBy('id','desc')->get();
             }
             else{
                 $getTempData=temp_stock_details::select('t_stock_id','t_item_code','t_batch_no','t_mrp','t_sale_rate','t_barcode',DB::raw('SUM(t_sum_bal_qty) AS t_sum_bal_qty'))->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->where('t_item_code',$getItemCode->item_code)->groupBy('t_mrp')->groupBy('t_sale_rate')->groupBy('t_item_code')->groupBy('t_batch_no')->orderBy('t_stock_id')->get();
@@ -165,23 +168,10 @@ class PointofSale extends Controller
                     $discount=$discount * $value->t_sum_bal_qty;
                 }
                 $amount=$value->t_sale_rate * $value->t_sum_bal_qty;
-                $ItemData[]=array('batch_no' => $value->t_batch_no,'mrp' => $value->t_mrp,'disc' => round($discount,2),'qty' => $value->t_sum_bal_qty,'sale_rate' => $value->t_sale_rate,'amt' => round($amount,2),'SrNo' => $value->t_barcode,'itemName' => $this->item_master_data[$value->t_item_code],'item_code' => $value->t_item_code,'stock_id' => $value->t_stock_id);
+                $ItemData[]=array('batch_no' => $value->t_batch_no,'mrp' => $value->t_mrp,'disc' => round($discount,2),'qty' => $value->t_sum_bal_qty,'sale_rate' => $value->t_sale_rate,'amt' => round($amount,2),'SrNo' => $value->t_barcode,'itemName' => $this->item_master_data[$value->t_item_code],'item_code' => $value->t_item_code,'stock_id' => $value->t_stock_id,'id' => $value->id);
             } 
         return Response::json(['ItemData' => $ItemData,'countVal' => $countVal]);
-        // foreach ($stocDetails as $key => $stockVal) 
-        // {
-        //     $arrOfMrp[]=$stockVal->mrp;
-        //     $arrOfSaleRate[]=$stockVal->sale_rate;
-        //     $arrOfItemcode[]=$stockVal->item_code;
-        //     $arrOfBalQty[]=$stockVal->sum_bal_qty;
-        // }
-
-        // $arUniq=array_unique($arrOfBalQty);
-        // //print_r($arUniq);
-        // if (array_count_values($arrOfMrp) > 1) 
-        // {
-        //    echo "string";
-        // }
+        
     }
 
     public function itemSave(Request $request)
@@ -196,8 +186,8 @@ class PointofSale extends Controller
                     ->where('t_stock_id',$itemCodeNew)
                     ->first();
         try {
-            $getExistCount=temp_print_stock_details::select('id')->where('t_stock_id',$itemCodeNew)->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->get();
-            $printCount=count($getExistCount);
+            $getExistCount=temp_print_stock_details::select('t_sum_bal_qty')->where('t_stock_id',$itemCodeNew)->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->get();
+            $printCount=count($getExistCount);$updateTprint=0;
             if($printCount==0)
             {
                 temp_print_stock_details::create([
@@ -214,12 +204,23 @@ class PointofSale extends Controller
                     'updated_at' => $this->sysDate
                 ]);
             }
-            $temp_print_stock_details=temp_print_stock_details::select('*')->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->get();
-            $SrNo=0;
+            else{
+                $updateTprint=temp_print_stock_details::where('t_barcode', $barcode)->where('t_stock_id',$itemCodeNew)->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)
+                ->update([
+                    't_sum_bal_qty' => $getExistCount[0]['t_sum_bal_qty'] + 1
+                ]);
+            }
+            $temp_print_stock_details=temp_print_stock_details::select('*')->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->orderBy('id','desc')->get();
+            $SrNo=0;$ItemData=array();
             foreach ($temp_print_stock_details as $key => $value) 
             {
                 $discount=$value->t_mrp - $value->t_sale_rate;
-                $ItemData[]=array('batch_no' => $value->t_batch_no,'mrp' => $value->t_mrp,'disc' => round($discount,2),'qty' => $value->t_sum_bal_qty,'sale_rate' => $value->t_sale_rate,'amt' => 100,'SrNo' => $value->t_barcode,'itemName' => $this->item_master_data[$value->t_item_code],'item_code' => $value->t_item_code,'stock_id' => $value->t_stock_id);
+                if ($updateTprint==1) 
+                {
+                    $discount=$discount * $value->t_sum_bal_qty;
+                }
+                $amount=$value->t_sale_rate * $value->t_sum_bal_qty;
+                $ItemData[]=array('batch_no' => $value->t_batch_no,'mrp' => $value->t_mrp,'disc' => round($discount,2),'qty' => $value->t_sum_bal_qty,'sale_rate' => $value->t_sale_rate,'amt' => round($amount,2),'SrNo' => $value->t_barcode,'itemName' => $this->item_master_data[$value->t_item_code],'item_code' => $value->t_item_code,'stock_id' => $value->t_stock_id,'id' => $value->id);
             }
             return Response::json(['success' => true,'ItemData' => $ItemData]);
         }
