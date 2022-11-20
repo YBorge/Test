@@ -105,7 +105,9 @@
             </table>
         </div>
         <div class="col-md-12">
-          <a href="#" class="btn btn-xs btn-success"> Non-Lnv Sku</a>&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-xs btn-success"> Sku Copy</a>&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-xs btn-success"> Remove Sku</a>&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-xs btn-success"> Change Qty</a>&nbsp;&nbsp;&nbsp;
+          <a href="#" class="btn btn-xs btn-success"> Non-Lnv Sku</a>&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-xs btn-success"> Sku Copy</a>&nbsp;&nbsp;&nbsp;
+          <button type="button" class="btn btn-xs btn-success RemoveSku"> Remove Sku</button>&nbsp;&nbsp;&nbsp;
+          <a href="#" class="btn btn-xs btn-success"> Change Qty</a>&nbsp;&nbsp;&nbsp;
           <a href="#" class="btn btn-xs btn-success"> Block Change</a>&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-xs btn-success"> Query Mode</a>&nbsp;&nbsp;&nbsp;
           <a href="#" class="btn btn-xs btn-success"> Display / Show</a>&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-xs btn-success"> Sku List-LOV</a>&nbsp;&nbsp;&nbsp;
           <a href="#" class="btn btn-xs btn-success"> Hold Bill</a>&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-xs btn-success">Pop Hold Bill </a>
@@ -318,11 +320,56 @@
                               $('#tbdata').append(rowContent);
                             });
                       }
+                      if(data.errors) 
+                      {  
+                        toastr.error(data.errors);
+                      }
                     }
                  });
 
              });
 
+            $(".RemoveSku").click(function(e){
+                $.ajaxSetup({
+                     headers: {
+                         'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                     }
+                 });
+
+                $.ajax({
+                    url: "{{ url('pointofsale_RemoveSku') }}",
+                    method: 'post',
+                    data:form.serialize(),
+                     success: function(data)
+                     {
+                      if (data.success) 
+                      {
+                        $('#tbdata').empty();
+                              $.each(data.ItemData, (index, row) => {
+                              const rowContent 
+                              = `<tr>
+                                  <td><input type="hidden" value="${row.SrNo}"> ${row.SrNo}</td>
+                                  <td>${row.itemName}</td>
+                                  <td>${row.batch_no}</td>
+                                  <td>${row.mrp}</td>
+                                  <td>${row.disc}</td>
+                                  <td>${row.qty}</td>
+                                  <td>${row.sale_rate}</td>
+                                  <td>${row.amt}</td>
+                                  <td align="center"><input type="checkbox" class="" value="${row.id}" name="itemCheckId[]" id="itemCheckId[]"></td>
+                                </tr>`;
+                              $('#tbdata').append(rowContent);
+                            });
+                      }
+                      else if(data.errors)
+                      {
+                        alert('Error...');
+                        exit();
+                      }
+                     }
+                 });
+
+            });
             $('#Mobile').mouseleave(function(e){
                  e.preventDefault();
                  $.ajaxSetup({

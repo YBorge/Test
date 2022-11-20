@@ -32,6 +32,7 @@ class PointofSale extends Controller
         $this->otpCop= parameters::select('param_value')->where('param_code','=','OTP_COMP')->first();
         $this->item_master_data=item_master::pluck('item_name','item_code');
         $this->machineName=gethostname();
+        
          //$sysDate=$currentTime->toDateTimeString();
     }
     public function index()
@@ -179,6 +180,8 @@ class PointofSale extends Controller
         $barcode=$request->barcode;
         $itemCodeNew=$request->itemCodeNew;
         $itemBalQty=$request->itemBalQty;
+        $mytime = Carbon::now();
+        $mytime=$mytime->toDateTimeString();
         $getStockTempData=temp_stock_details::
                     select('t_item_code','t_batch_no','t_mrp','t_sale_rate')
                     ->where('t_updatedby',Session::get('useremail'))
@@ -200,8 +203,8 @@ class PointofSale extends Controller
                     't_sum_bal_qty' => 1,
                     't_updatedby' => Session::get('useremail'),
                     't_machine_name' => $this->machineName,
-                    'created_at' => $this->sysDate,
-                    'updated_at' => $this->sysDate
+                    'created_at' =>$mytime,
+                    'updated_at' => $mytime
                 ]);
             }
             else{
@@ -226,6 +229,29 @@ class PointofSale extends Controller
         }
         catch (Exception $exception) {
             return Response::json(['errors' => $exception->getMessage()]);
+        }
+    }
+
+    public function removeSku(Request $request)
+    {
+        $itemCheckId=$request->itemCheckId;
+        $skuRemove=temp_print_stock_details::whereIn('id', $itemCheckId)->delete();
+        if ($skuRemove) 
+        {
+            $temp_print_stock_details=temp_print_stock_details::select('*')->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->orderBy('id','desc')->get();
+            $SrNo=0;$ItemData=array();
+            foreach ($temp_print_stock_details as $key => $value) 
+            {
+                $discount=$value->t_mrp - $value->t_sale_rate;
+                $discount=$discount * $value->t_sum_bal_qty;
+                $amount=$value->t_sale_rate * $value->t_sum_bal_qty;
+                $ItemData[]=array('batch_no' => $value->t_batch_no,'mrp' => $value->t_mrp,'disc' => round($discount,2),'qty' => $value->t_sum_bal_qty,'sale_rate' => $value->t_sale_rate,'amt' => round($amount,2),'SrNo' => $value->t_barcode,'itemName' => $this->item_master_data[$value->t_item_code],'item_code' => $value->t_item_code,'stock_id' => $value->t_stock_id,'id' => $value->id);
+            }
+            return Response::json(['success' => true,'ItemData' => $ItemData]);
+        }
+        else
+        {
+            return Response::json(['errors' => true]);
         }
     }
 
@@ -280,6 +306,8 @@ class PointofSale extends Controller
         if ($existCust=='') 
         {
             $sysDate = Carbon::now()->format('d-m-Y');
+            $mytime = Carbon::now();
+            $mytime->toDateTimeString();
             $getLocData=location_master::select('city','pin','state_code','country_code')
                         ->where('loc_code','=', Session::get('companyloc_code'))
                         ->where('status','=', 'Y')
@@ -300,8 +328,8 @@ class PointofSale extends Controller
                     'status' =>'Y',
                     'created_by' => Session::get('useremail'),
                     'updated_by' => Session::get('useremail'),
-                    'created_at' => $sysDate,
-                    'updated_at' => $sysDate
+                    'created_at' => $mytime,
+                    'updated_at' => $mytime
                 ]);
                
                 return Response::json(['success' => true]);
