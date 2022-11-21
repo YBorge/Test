@@ -98,7 +98,9 @@ class PointofSale extends Controller
             $countVal=count($stocDetails);
             $existCount=DB::table('temp_stock_details')->select('id')->where('t_item_code',$getItemCode->item_code)->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->get();
             $tempstockdata=count($existCount); $insertTempPrintDetails="false";
-            if ($tempstockdata==0) 
+            $getExistCount=temp_print_stock_details::select('t_sum_bal_qty')->where('t_item_code',$getItemCode->item_code)->where('t_barcode',$barcode)->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->get();
+            $CheckCount=count($getExistCount);
+            if ($tempstockdata==0 or $CheckCount==0) 
             { 
                 foreach($stocDetails as $value)
                 {
@@ -139,8 +141,7 @@ class PointofSale extends Controller
                 }
             }
             $updateTprint="0";
-            $getExistCount=temp_print_stock_details::select('t_sum_bal_qty')->where('t_item_code',$getItemCode->item_code)->where('t_barcode',$barcode)->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->get();
-            $CheckCount=count($getExistCount);
+           
             if ($countVal==1) 
             {
                 if ($CheckCount == 1 and $insertTempPrintDetails=="false") 
@@ -151,7 +152,7 @@ class PointofSale extends Controller
                         ]);
                 }
             }
-            //dd($insertTempPrint);
+            //dd($insertTempPrintDetails,$updateTprint);
             if ($insertTempPrintDetails=="true" or $updateTprint==1) 
             {
                 $getTempData=temp_print_stock_details::select('*')->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->orderBy('id','desc')->get();
@@ -335,8 +336,10 @@ class PointofSale extends Controller
                 return Response::json(['success' => true]);
             }
             catch (Exception $exception) {
+                dd($exception);
                 return Response::json(['errors' => $exception->getMessage()]);
             }
+            
         }
     }
 }
