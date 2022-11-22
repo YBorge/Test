@@ -248,6 +248,9 @@
                                 </tr>`;
                               $('#tbdata').append(rowContent);
                             });
+                            setTimeout(function() {
+                              $("#barcode").val("");
+                            }, 10000);
                             
                             return true;
                           }
@@ -266,7 +269,9 @@
                               </tr>`;
                             $('#tbdata1').append(rowContent);
                           });
-                          
+                          setTimeout(function(){
+                              $("#barcode").val("");
+                            }, 10000);
                           $('#myModal2').modal('show');
                         }
                       }
@@ -319,6 +324,7 @@
                                 </tr>`;
                               $('#tbdata').append(rowContent);
                             });
+                            $("#barcode").val("");
                       }
                       if(data.errors) 
                       {  

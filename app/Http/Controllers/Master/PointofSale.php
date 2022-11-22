@@ -93,6 +93,7 @@ class PointofSale extends Controller
             ->groupBy('stock_id')
             ->orderBy('stock_id')
             ->get();
+            //dd($stocDetails);
             $mytime = Carbon::now();
             $sysDate=$mytime->toDateTimeString();
             $countVal=count($stocDetails);
@@ -100,7 +101,7 @@ class PointofSale extends Controller
             $tempstockdata=count($existCount); $insertTempPrintDetails="false";
             $getExistCount=temp_print_stock_details::select('t_sum_bal_qty')->where('t_item_code',$getItemCode->item_code)->where('t_barcode',$barcode)->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->get();
             $CheckCount=count($getExistCount);
-            if ($tempstockdata==0 or $CheckCount==0) 
+            if ($tempstockdata==0) 
             { 
                 foreach($stocDetails as $value)
                 {
@@ -236,6 +237,15 @@ class PointofSale extends Controller
     public function removeSku(Request $request)
     {
         $itemCheckId=$request->itemCheckId;
+        $getExistCount=temp_print_stock_details::select('t_stock_id','t_item_code','t_barcode')->whereIn('id',$itemCheckId)->get();
+        $arrOft_stock_id=array();$arrOft_item_code=array();$arrOft_barcode=array();
+        foreach($getExistCount as $val)
+        {
+            $arrOft_stock_id[]=$val->t_stock_id;
+            $arrOft_item_code[]=$val->t_item_code;
+            $arrOft_barcode[]=$val->t_barcode;
+        }
+        $skuRemoveTmp=temp_stock_details::whereIn('t_item_code',$arrOft_item_code)->whereIn('t_barcode',$arrOft_barcode)->delete();
         $skuRemove=temp_print_stock_details::whereIn('id', $itemCheckId)->delete();
         if ($skuRemove) 
         {
