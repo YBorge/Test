@@ -54,7 +54,7 @@
                 <th>Qty </th>
                 <th>Rate </th>
                 <th>Amount </th>
-                <th>Select</th>
+                <th style="text-align: center;">Select</th>
               </tr>
               <tbody id="tbdata">
               </tbody>
@@ -105,7 +105,8 @@
             </table>
         </div>
         <div class="col-md-12">
-          <a href="#" class="btn btn-xs btn-success"> Non-Lnv Sku</a>&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-xs btn-success"> Sku Copy</a>&nbsp;&nbsp;&nbsp;
+          <a href="#" class="btn btn-xs btn-success"> Non-Lnv Sku</a>&nbsp;&nbsp;&nbsp;
+          <button type="button" class="btn btn-xs btn-success" id="skuCopy"> Sku Copy</button>&nbsp;&nbsp;&nbsp;
           <button type="button" class="btn btn-xs btn-success RemoveSku"> Remove Sku</button>&nbsp;&nbsp;&nbsp;
           <a href="#" class="btn btn-xs btn-success"> Change Qty</a>&nbsp;&nbsp;&nbsp;
           <a href="#" class="btn btn-xs btn-success"> Block Change</a>&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-xs btn-success"> Query Mode</a>&nbsp;&nbsp;&nbsp;
@@ -161,7 +162,7 @@
             <th>MRP</th>
             <th>Sale</th>
             <th>Bal Qty</th>
-            <th>Select</th>
+            <th align="center">Select</th>
           </tr>
           <tbody id="tbdata1">
             
@@ -244,13 +245,13 @@
                                   <td>${row.qty}</td>
                                   <td>${row.sale_rate}</td>
                                   <td>${row.amt}</td>
-                                  <td><input type="checkbox" class="" value="${row.id}" name="itemCheckId[]" id="itemCheckId[]"></td>
+                                  <td align="center"><input type="checkbox" class="" value="${row.id}" name="itemCheckId[]" id="itemCheckId[]"></td>
                                 </tr>`;
                               $('#tbdata').append(rowContent);
                             });
                             setTimeout(function() {
                               $("#barcode").val("");
-                            }, 10000);
+                            }, 2000);
                             
                             return true;
                           }
@@ -269,9 +270,9 @@
                               </tr>`;
                             $('#tbdata1').append(rowContent);
                           });
-                          setTimeout(function(){
+                          setTimeout(function() {
                               $("#barcode").val("");
-                            }, 10000);
+                            }, 7000);
                           $('#myModal2').modal('show');
                         }
                       }
@@ -324,7 +325,10 @@
                                 </tr>`;
                               $('#tbdata').append(rowContent);
                             });
-                            $("#barcode").val("");
+                          setTimeout(function(){
+                              $("#barcode").val("");
+                          }, 2000);
+                            
                       }
                       if(data.errors) 
                       {  
@@ -374,8 +378,15 @@
                       }
                      }
                  });
-
             });
+
+            $("#skuCopy").click(function(){
+              alert();
+              var autoId=document.getElementById("itemCheckId").val();
+              alert(autoId);
+              return false;
+            });
+
             $('#Mobile').mouseleave(function(e){
                  e.preventDefault();
                  $.ajaxSetup({

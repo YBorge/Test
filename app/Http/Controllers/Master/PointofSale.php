@@ -93,7 +93,6 @@ class PointofSale extends Controller
             ->groupBy('stock_id')
             ->orderBy('stock_id')
             ->get();
-            //dd($stocDetails);
             $mytime = Carbon::now();
             $sysDate=$mytime->toDateTimeString();
             $countVal=count($stocDetails);
@@ -161,7 +160,7 @@ class PointofSale extends Controller
             else{
                 $getTempData=temp_stock_details::select('t_stock_id','t_item_code','t_batch_no','t_mrp','t_sale_rate','t_barcode',DB::raw('SUM(t_sum_bal_qty) AS t_sum_bal_qty'))->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->where('t_item_code',$getItemCode->item_code)->groupBy('t_mrp')->groupBy('t_sale_rate')->groupBy('t_item_code')->groupBy('t_batch_no')->orderBy('t_stock_id')->get();
             }
-            
+            //dd($getTempData);
             $SrNo=0;$ItemData=array();
             foreach ($getTempData as $key => $value) 
             {
