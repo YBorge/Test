@@ -251,7 +251,7 @@
                             });
                             setTimeout(function() {
                               $("#barcode").val("");
-                            }, 2000);
+                            }, 3000);
                             
                             return true;
                           }
@@ -327,7 +327,7 @@
                             });
                           setTimeout(function(){
                               $("#barcode").val("");
-                          }, 2000);
+                          }, 3000);
                             
                       }
                       if(data.errors) 
