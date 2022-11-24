@@ -48,6 +48,7 @@ Route::post('pointofsale_store',[PointofSale::class, 'store'])->name('pointofsal
 Route::post('pointofsale_getItem',[PointofSale::class, 'itemData'])->name('pointofsale_getItem');
 Route::post('pointofsaleitemSave',[PointofSale::class, 'itemSave'])->name('pointofsaleitemSave');
 Route::post('pointofsale_RemoveSku',[PointofSale::class, 'removeSku'])->name('pointofsale_RemoveSku');
+Route::post('pointofsale_copySku',[PointofSale::class, 'skucopy'])->name('pointofsale_copySku');
 
 Route::get('branch_master', [branchMaster::class, 'index'])->name('branch_master');
 Route::post('branch_master_post', [branchMaster::class, 'store'])->name('branch_master_post');

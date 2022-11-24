@@ -270,9 +270,6 @@
                               </tr>`;
                             $('#tbdata1').append(rowContent);
                           });
-                          setTimeout(function() {
-                              $("#barcode").val("");
-                            }, 7000);
                           $('#myModal2').modal('show');
                         }
                       }
@@ -327,7 +324,7 @@
                             });
                           setTimeout(function(){
                               $("#barcode").val("");
-                          }, 3000);
+                          }, 7000);
                             
                       }
                       if(data.errors) 
@@ -380,11 +377,47 @@
                  });
             });
 
-            $("#skuCopy").click(function(){
-              alert();
-              var autoId=document.getElementById("itemCheckId").val();
-              alert(autoId);
-              return false;
+            $("#skuCopy").click(function(e){
+                e.preventDefault();
+                 $.ajaxSetup({
+                     headers: {
+                         'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                     }
+                });
+
+                $.ajax({
+                    url: "{{ url('pointofsale_copySku') }}",
+                    method: 'post',
+                    data:form.serialize(),
+                    success: function(data)
+                    {
+                      if (data.success) 
+                      {
+                        $('#tbdata').empty();
+                              $.each(data.ItemData, (index, row) => {
+                              const rowContent 
+                              = `<tr>
+                                  <td><input type="hidden" value="${row.SrNo}"> ${row.SrNo}</td>
+                                  <td>${row.itemName}</td>
+                                  <td>${row.batch_no}</td>
+                                  <td>${row.mrp}</td>
+                                  <td>${row.disc}</td>
+                                  <td>${row.qty}</td>
+                                  <td>${row.sale_rate}</td>
+                                  <td>${row.amt}</td>
+                                  <td align="center"><input type="checkbox" class="" value="${row.id}" name="itemCheckId[]" id="itemCheckId[]"></td>
+                                </tr>`;
+                              $('#tbdata').append(rowContent);
+                            });
+                      }
+                      else if(data.errors)
+                      {
+                        alert('Error...');
+                        exit();
+                      }
+                    }
+                 });
+
             });
 
             $('#Mobile').mouseleave(function(e){

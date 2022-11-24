@@ -130,8 +130,8 @@ class PointofSale extends Controller
                             't_sum_bal_qty' => 1,
                             't_updatedby' => Session::get('useremail'),
                             't_machine_name' => $this->machineName,
-                            'created_at' => $this->sysDate,
-                            'updated_at' => $this->sysDate
+                            'created_at' => $sysDate,
+                            'updated_at' => $sysDate
                         ]);
                         if ($insertTempPrint==true) 
                         {
@@ -265,6 +265,29 @@ class PointofSale extends Controller
         }
     }
 
+    public function skucopy(Request $request)
+    {
+        $copySku=temp_print_stock_details::select('id','t_sum_bal_qty')->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->orderBy('id','desc')->first();
+
+        $updateSku=temp_print_stock_details::where('id',$copySku->id)->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)
+                ->update([
+                    't_sum_bal_qty' => $copySku->t_sum_bal_qty+ 1
+                ]);
+        if ($updateSku) 
+        {
+            $getskuCopy=temp_print_stock_details::select('*')->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->orderBy('id','desc')->get();
+            $SrNo=0;$ItemData=array();
+            foreach ($getskuCopy as $key => $value) 
+            {
+                $discount=$value->t_mrp - $value->t_sale_rate;
+                $discount=$discount * $value->t_sum_bal_qty;
+                $amount=$value->t_sale_rate * $value->t_sum_bal_qty;
+                $ItemData[]=array('batch_no' => $value->t_batch_no,'mrp' => $value->t_mrp,'disc' => round($discount,2),'qty' => $value->t_sum_bal_qty,'sale_rate' => $value->t_sale_rate,'amt' => round($amount,2),'SrNo' => $value->t_barcode,'itemName' => $this->item_master_data[$value->t_item_code],'item_code' => $value->t_item_code,'stock_id' => $value->t_stock_id,'id' => $value->id);
+            }
+
+            return Response::json(['success' => true,'ItemData' => $ItemData]);
+        }
+    }
     public function store(Request $request)
     {
         $Mobile=$request->Mobile;
