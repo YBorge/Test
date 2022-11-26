@@ -64,9 +64,9 @@
             <table width="80%" border="1">
               <tr>
                 <th><b>Sku Count</b> </th>
-                <th><input type="text" name="" class="point" style="text-align:center" placeholder="" value="1"> </th>
+                <th><input type="text" name="skuCount" id="skuCount" class="point" style="text-align:center" placeholder="" value="" readonly=""> </th>
                 <th><b>Total Qty</b> </th>
-                <th><input type="text" name="" class="point" style="text-align:center" placeholder="" value="1.00"> </th>
+                <th><input type="text" name="totalQty" id="totalQty" class="point" style="text-align:center" placeholder="" value="" readonly=""> </th>
               </tr>
             </table>
             <table width="80%" border="1">  
@@ -76,31 +76,32 @@
               </tr>
               <tr>
                 <td colspan="4" align="center">
-                <input type="text" name="" style="text-align:center" class="" placeholder="" value="95.00"></td>
+                <input type="text" name="payAmt" id="payAmt" readonly="" style="text-align:center" class="" placeholder="" value=""></td>
               </tr>
               </table>
             <table width="80%" border="1">  
               <br>
               <tr>
-                <td colspan="4" ><b >Total MRP :</b>  <input type="text" name="" class="" style="text-align:right" placeholder="" value="100.00"></td>
+                <td colspan="4" ><b >Total MRP :</b>  <input type="text" name="totalMrp" id="totalMrp" class="" style="text-align:right" placeholder="" readonly="" value=""></td>
               </tr>
               <tr>
-                <td colspan="4" ><b>Save :</b><input type="text" name="" class="" style="text-align:right" placeholder="" value="5.00"></td>
+                <td colspan="4" ><b>Save :</b><input type="text" name="saveAmt" id="saveAmt" class="" readonly="" style="text-align:right" placeholder="" value=""></td>
               </tr>
                <tr>
-                <td colspan="4" ><b>Amount :</b>  <input type="text" name="" class="" style="text-align:right" placeholder="" value="95.00"></td>
+                <td colspan="4" ><b>Amount :</b>  <input type="text" name="totalAmt" id="totalAmt" readonly="" class="" style="text-align:right" placeholder="" value="">
+                </td>
               </tr>
                <tr>
-                <td colspan="4" ><b>Pmt. Chrg :</b>  <input type="text" name="" class="" style="text-align:right" placeholder="" value=".00"></td>
+                <td colspan="4" ><b>Pmt. Chrg :</b>  <input type="text" name="pmtCharge" id="pmtCharge" class="" style="text-align:right" placeholder="" value=""></td>
               </tr>
               <tr>
-                <td colspan="4" ><b>Item Disc :</b>  <input type="text" name="" class="" style="text-align:right" placeholder="" value=".00"></td>
+                <td colspan="4" ><b>Item Disc :</b>  <input type="text" name="itemDiscount" id="itemDiscount" class="" style="text-align:right" placeholder="" value=""></td>
               </tr>
               <tr>
-                <td colspan="4" ><b>Bill Disc :</b>  <input type="text" name="" class="" style="text-align:right" placeholder="" value=".00"></td>
+                <td colspan="4" ><b>Bill Disc :</b>  <input type="text" name="billDiscont" id="billDiscont" class="" style="text-align:right" placeholder="" value=""></td>
               </tr>
               <tr>
-                <td colspan="4" ><b>Round Off :</b>  <input type="text" name="" class="" style="text-align:right" placeholder="" value="0.00"></td>
+                <td colspan="4" ><b>Round Off :</b>  <input type="text" name="roundOff" id="roundOff" class="" style="text-align:right" placeholder="" value=""></td>
               </tr>
             </table>
         </div>
@@ -249,6 +250,13 @@
                                 </tr>`;
                               $('#tbdata').append(rowContent);
                             });
+                            $("#skuCount").val(data.skuCount);
+                            $("#totalQty").val(data.totalQty);
+                            $("#payAmt").val(data.payAmt);
+                            $("#totalMrp").val(data.totalMrp);
+                            $("#saveAmt").val(data.saveAmt);
+                            $("#totalAmt").val(data.payAmt);
+                            $("#itemDiscount").val(data.itemDiscount);
                             setTimeout(function() {
                               $("#barcode").val("");
                             }, 3000);
@@ -370,8 +378,7 @@
                       }
                       else if(data.errors)
                       {
-                        alert('Error...');
-                        exit();
+                        toastr.error(data.errors);
                       }
                      }
                  });

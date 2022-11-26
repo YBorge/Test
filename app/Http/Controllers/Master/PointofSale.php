@@ -161,7 +161,7 @@ class PointofSale extends Controller
                 $getTempData=temp_stock_details::select('t_stock_id','t_item_code','t_batch_no','t_mrp','t_sale_rate','t_barcode',DB::raw('SUM(t_sum_bal_qty) AS t_sum_bal_qty'))->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->where('t_item_code',$getItemCode->item_code)->groupBy('t_mrp')->groupBy('t_sale_rate')->groupBy('t_item_code')->groupBy('t_batch_no')->orderBy('t_stock_id')->get();
             }
             //dd($getTempData);
-            $SrNo=0;$ItemData=array();
+            $SrNo=0;$ItemData=array();$arrOft_barcode=array();$arrOf_t_sum_bal_qty=array();$arrOf_amountp=array();$arrOf_totalMrp=array();
             foreach ($getTempData as $key => $value) 
             {
                 $discount=$value->t_mrp - $value->t_sale_rate;
@@ -170,10 +170,21 @@ class PointofSale extends Controller
                     $discount=$discount * $value->t_sum_bal_qty;
                 }
                 $amount=$value->t_sale_rate * $value->t_sum_bal_qty;
+                $totalMrpCal=$value->t_mrp * $value->t_sum_bal_qty;
                 $ItemData[]=array('batch_no' => $value->t_batch_no,'mrp' => $value->t_mrp,'disc' => round($discount,2),'qty' => $value->t_sum_bal_qty,'sale_rate' => $value->t_sale_rate,'amt' => round($amount,2),'SrNo' => $value->t_barcode,'itemName' => $this->item_master_data[$value->t_item_code],'item_code' => $value->t_item_code,'stock_id' => $value->t_stock_id,'id' => $value->id);
-            } 
-        return Response::json(['ItemData' => $ItemData,'countVal' => $countVal]);
-        
+                $arrOft_barcode[]=$value->t_barcode;
+                $arrOf_t_sum_bal_qty[]=$value->t_sum_bal_qty;
+                $arrOf_amountp[]=round($amount,2);
+                $arrOf_totalMrp[]=round($totalMrpCal,2);
+                $arrof_Discount[]=round($discount,2);
+            }
+            $skuCount=sizeof(array_unique($arrOft_barcode));
+            $totalQty=array_sum($arrOf_t_sum_bal_qty);
+            $payAmt=array_sum($arrOf_amountp);
+            $totalMrp=array_sum($arrOf_totalMrp);
+            $saveAmt=round($totalMrp - $payAmt,2);
+            $itemDiscount=array_sum($arrof_Discount);
+            return Response::json(['ItemData' => $ItemData,'countVal' => $countVal,'skuCount' => $skuCount,'totalQty' => $totalQty,'payAmt' => $payAmt,'totalMrp' => $totalMrp,'saveAmt' => $saveAmt,'itemDiscount' => round($itemDiscount,2)]);
     }
 
     public function itemSave(Request $request)
@@ -215,7 +226,7 @@ class PointofSale extends Controller
                 ]);
             }
             $temp_print_stock_details=temp_print_stock_details::select('*')->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->orderBy('id','desc')->get();
-            $SrNo=0;$ItemData=array();
+            $SrNo=0;$ItemData=array();$arrOft_barcode=array();
             foreach ($temp_print_stock_details as $key => $value) 
             {
                 $discount=$value->t_mrp - $value->t_sale_rate;
@@ -225,8 +236,10 @@ class PointofSale extends Controller
                 }
                 $amount=$value->t_sale_rate * $value->t_sum_bal_qty;
                 $ItemData[]=array('batch_no' => $value->t_batch_no,'mrp' => $value->t_mrp,'disc' => round($discount,2),'qty' => $value->t_sum_bal_qty,'sale_rate' => $value->t_sale_rate,'amt' => round($amount,2),'SrNo' => $value->t_barcode,'itemName' => $this->item_master_data[$value->t_item_code],'item_code' => $value->t_item_code,'stock_id' => $value->t_stock_id,'id' => $value->id);
+                $arrOft_barcode[]=$value->t_barcode;
             }
-            return Response::json(['success' => true,'ItemData' => $ItemData]);
+            $skuCount=sizeof(array_unique($arrOft_barcode));
+            return Response::json(['success' => true,'ItemData' => $ItemData,'skuCount' => $skuCount]);
         }
         catch (Exception $exception) {
             return Response::json(['errors' => $exception->getMessage()]);
@@ -236,6 +249,12 @@ class PointofSale extends Controller
     public function removeSku(Request $request)
     {
         $itemCheckId=$request->itemCheckId;
+        if(blank($itemCheckId))
+        {
+            $Message="Please Select Any One CheckBox..!";
+            return Response::json(['errors' => $Message]);
+            die();
+        }
         $getExistCount=temp_print_stock_details::select('t_stock_id','t_item_code','t_barcode')->whereIn('id',$itemCheckId)->get();
         $arrOft_stock_id=array();$arrOft_item_code=array();$arrOft_barcode=array();
         foreach($getExistCount as $val)
