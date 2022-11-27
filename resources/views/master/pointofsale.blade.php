@@ -4,6 +4,9 @@
 <style type="text/css">
   .point{ width: 50px;padding: 5px;}
   table tr th,td {padding: 3px;}
+  #myTable tr.header, #myTable tr:hover {
+  background-color: #f1f1f1;
+}
 </style>
 
 <div class="container-fluid">
@@ -28,24 +31,42 @@
         </div>
         <div class="col-md-9">
           <br>
-          <b> Mobile: </b> <input type="text" name="Mobile" id="Mobile" placeholder="Mobile" style="width: 85px;" maxlength="10" onkeypress="return isNumber(event)"><b>  Cust-Id: <span style="color:red;">*</span> </b><input type="text" name="cust_code" id="cust_code" style="width: 80px;" placeholder="Customer Id" onkeypress="return isNumber(event)" maxlength="50" ><input type="text" name="cust_name" id="cust_name" style="width: 147px;" placeholder="Customer Name" maxlength="60"> <a href="{{route('customer_master')}}" target="_blank" class="btn btn-xs btn-primary">New Cust</a><b>  Points: </b><input type="text" name="points" id="points" style="width: 80px;" placeholder="Points" readonly>
+          <b> Mobile: </b> 
+            <input type="text" name="Mobile" id="Mobile" placeholder="Mobile" style="width: 85px;" maxlength="10" onkeypress="return isNumber(event)">
+          <b>  Cust-Id: <span style="color:red;">*</span> </b>
+            <input type="text" name="cust_code" id="cust_code" style="width: 80px;" placeholder="Customer Id" onkeypress="return isNumber(event)" maxlength="50" >
+            <input type="text" name="cust_name" id="cust_name" style="width: 147px;" placeholder="Customer Name" maxlength="60"> 
+            <a href="{{route('customer_master')}}" target="_blank" class="btn btn-xs btn-primary">New Cust</a>
+          <b>Points: </b>
+            <input type="text" name="points" id="points" style="width: 80px;" placeholder="Points" readonly>
           <b> Home-Delivery: <span style="color:red;"></span> </b>
               <select name="homedel" id="homedel">
                 <option value="">Select</option>
                 <option value="Y">YES</option>
                 <option value="N">NO</option>
-              </select><b>  Last Bill No: </b><input type="text" name="" align="center" style="width: 93px;" placeholder="Last Bill No" readonly><br>
-            <b> Address: </b> <input type="text" name="cust_addr1" id="cust_addr1" style="width: 270px;" placeholder="Address">
-            <b> Disc: </b><input type="text" name="discAmt" id="discAmt" onclick="openmodal(this);" style="width: 60px;" placeholder="Amt" onkeypress="return isNumber(event)" readonly><input type="text" name="discPercent" id="discPercent" onkeypress="return isNumber(event)" readonly style="width: 50px;" placeholder="%"><b>
-            <b> Oth Chrg: </b><input type="text" name="" onkeypress="return isNumber(event)" style="width: 60px;" placeholder="Amt"><input type="text" name="" onkeypress="return isNumber(event)" style="width:50px;" placeholder="%">
-            <b> Last Bill Amt/Change: </b><input type="text" name="" onkeypress="return isNumber(event)" style="width: 100px;" placeholder="Last Bill Amt" readonly><input type="text" name="" style="width: 60px;" onkeypress="return isNumber(event)" placeholder="Change"><br>
-            <input type="hidden" name="existCust" id="existCust" value="" placeholder="existCust">
-            <input type="hidden" name="itemCodeNew" id="itemCodeNew" value="" placeholder="itemCodeNew">
-            <input type="hidden" name="itemBalQty" id="itemBalQty" value="" placeholder="itemBalQty">
-            <b>Scan Barcode:</b><input type="text" name="barcode" id="barcode" placeholder="Barcode" value="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <b>SEARCH SKU:</b><input type="text" name="skusearch" id="skusearch" placeholder="SKU" value="">&nbsp;&nbsp;<input type="button" class="btn btn-primary btn-xs" id="getItem" name="getItem " value="Get Item Details"><br><br>
-            <table width="100%" border="1">
-              <tr>
+              </select>
+            <b>  Last Bill No: </b>
+                <input type="text" name="lastBillNo" id="lastBillNo" align="center" maxlength="30" style="width: 93px;" placeholder="Last Bill No" readonly><br>
+            <b> Address: </b> 
+              <input type="text" name="cust_addr1" id="cust_addr1" style="width: 270px;" placeholder="Address">
+            <b> Disc: </b>
+              <input type="text" name="discAmt" id="discAmt" onclick="openmodal(this);" style="width: 60px;" maxlength="10" placeholder="Amt" onkeypress="return isNumber(event)" readonly>
+              <input type="text" name="discPercent" id="discPercent" onkeypress="return isNumber(event)" readonly style="width: 50px;" placeholder="%"><b>
+            <b> Oth Chrg: </b>
+              <input type="text" name="otherCharges" id="otherCharges" onkeypress="return isNumber(event)" maxlength="10" style="width: 60px;" placeholder="Amt"><input type="text" name="" onkeypress="return isNumber(event)" style="width:50px;" placeholder="%">
+            <b> Last Bill Amt/Change: </b>
+              <input type="text" name="lastBillamt" id="lastBillamt"  onkeypress="return isNumber(event)" style="width: 100px;" placeholder="Last Bill Amt" readonly>
+              <input type="text" name="lastBillamtChange" id="lastBillamtChange" style="width: 60px;" onkeypress="return isNumber(event)" placeholder="Change" maxlength="14">
+            <br>
+              <input type="hidden" name="existCust" id="existCust" value="" placeholder="existCust">
+              <input type="hidden" name="itemCodeNew" id="itemCodeNew" value="" placeholder="itemCodeNew">
+              <input type="hidden" name="itemBalQty" id="itemBalQty" value="" placeholder="itemBalQty">
+            <b>Scan Barcode:</b>
+              <input type="text" name="barcode" id="barcode" placeholder="Barcode" value="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <b>SEARCH SKU:</b>
+              <input type="text" name="skusearch" id="skusearch" onkeyup="myFunction()" placeholder="SEARCH SKU" value="">&nbsp;&nbsp;<input type="button" class="btn btn-primary btn-xs" id="getItem" name="getItem " value="Get Item Details"><br><br>
+            <table width="100%" border="1" id="myTable">
+              <tr class="header">
                 <th>Sku </th>
                 <th>Sku Name </th>
                 <th>Batch-No </th>
@@ -232,8 +253,9 @@
                         if(data.ItemData)
                         {
                           
-                          if (data.countVal==1) 
+                          if (data.countVal==1 || data.countVal==0 || data.countVal==null) 
                           {
+                            alert("Stock Not Available");
                             $('#tbdata').empty();
                               $.each(data.ItemData, (index, row) => {
                               const rowContent 
@@ -263,6 +285,7 @@
                             
                             return true;
                           }
+                          
                           $('#tbdata1').empty();
                             $.each(data.ItemData, (index, row) => {
                             const rowContent 
@@ -330,9 +353,17 @@
                                 </tr>`;
                               $('#tbdata').append(rowContent);
                             });
+
+                            $("#skuCount").val(data.skuCount);
+                            $("#totalQty").val(data.totalQty);
+                            $("#payAmt").val(data.payAmt);
+                            $("#totalMrp").val(data.totalMrp);
+                            $("#saveAmt").val(data.saveAmt);
+                            $("#totalAmt").val(data.payAmt);
+                            $("#itemDiscount").val(data.itemDiscount);
                           setTimeout(function(){
                               $("#barcode").val("");
-                          }, 7000);
+                          }, 1000);
                             
                       }
                       if(data.errors) 
@@ -375,6 +406,14 @@
                                 </tr>`;
                               $('#tbdata').append(rowContent);
                             });
+
+                            $("#skuCount").val(data.skuCount);
+                            $("#totalQty").val(data.totalQty);
+                            $("#payAmt").val(data.payAmt);
+                            $("#totalMrp").val(data.totalMrp);
+                            $("#saveAmt").val(data.saveAmt);
+                            $("#totalAmt").val(data.payAmt);
+                            $("#itemDiscount").val(data.itemDiscount);
                       }
                       else if(data.errors)
                       {
@@ -416,11 +455,18 @@
                                 </tr>`;
                               $('#tbdata').append(rowContent);
                             });
+
+                            $("#skuCount").val(data.skuCount);
+                            $("#totalQty").val(data.totalQty);
+                            $("#payAmt").val(data.payAmt);
+                            $("#totalMrp").val(data.totalMrp);
+                            $("#saveAmt").val(data.saveAmt);
+                            $("#totalAmt").val(data.payAmt);
+                            $("#itemDiscount").val(data.itemDiscount);
                       }
                       else if(data.errors)
                       {
-                        alert('Error...');
-                        exit();
+                        toastr.error(data.errors);
                       }
                     }
                  });
@@ -531,13 +577,9 @@
              });
         });
         function openmodal(e) {
-        //prevent(default);
-        //document.getElementById("demo").innerHTML = "YOU CLICKED ME!";
           $('#myModal').modal('show');
           $(document).on("click", ".hello", function(event){
             event.preventDefault();
-            //e.value=$(this).attr("data-id");
-            //alert(e.value);
             $('#myModal').modal('hide');
           });
         }
@@ -551,7 +593,26 @@
             return false;
           }
         });
+
+        function myFunction() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("skusearch");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("myTable");
+            tr = table.getElementsByTagName("tr");
+            for (i = 0; i < tr.length; i++) {
+              td = tr[i].getElementsByTagName("td")[0];
+              if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                  tr[i].style.display = "";
+                } else {
+                  tr[i].style.display = "none";
+                }
+              }       
+            }
+        }
         
-      </script>
+</script>
 
 @endsection
