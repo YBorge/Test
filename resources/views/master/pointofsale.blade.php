@@ -252,10 +252,13 @@
                        }
                         if(data.ItemData)
                         {
-                          
-                          if (data.countVal==1 || data.countVal==0 || data.countVal==null) 
+                          if(data.emptyItemCode==1)
                           {
                             alert("Stock Not Available");
+                          }
+                          if (data.countVal==1) 
+                          {
+                            
                             $('#tbdata').empty();
                               $.each(data.ItemData, (index, row) => {
                               const rowContent 

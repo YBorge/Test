@@ -84,7 +84,14 @@ class PointofSale extends Controller
         
         $barcode=$request->barcode;
         $getItemCode=item_barcode::select('item_code')->where('barcode',$barcode)->first();
-        $stocDetails=DB::table('stock_detail')->select('item_code','batch_no','mrp','sale_rate','recd_date','stock_id',DB::raw('SUM(bal_qty) AS sum_bal_qty'))->where('item_code',$getItemCode->item_code)->where('bal_qty','>',0)
+        if(blank($getItemCode))
+        {
+            $getTempData=temp_print_stock_details::select('*')->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->orderBy('id','desc')->get();
+            $updateTprint=0;$countVal=1;$emptyItemCode=1;
+        }
+        else
+        {
+            $stocDetails=DB::table('stock_detail')->select('item_code','batch_no','mrp','sale_rate','recd_date','stock_id',DB::raw('SUM(bal_qty) AS sum_bal_qty'))->where('item_code',$getItemCode->item_code)->where('bal_qty','>',0)
             ->groupBy('mrp')
             ->groupBy('item_code')
             ->groupBy('batch_no')
@@ -96,10 +103,10 @@ class PointofSale extends Controller
             $mytime = Carbon::now();
             $sysDate=$mytime->toDateTimeString();
             $countVal=count($stocDetails);
-            // if ($countVal==0 or $countVal==null) 
-            // {
-            //     return Response::json(['errors' => "Stock Not Available..!"]);
-            // }
+            if ($countVal==0 or $countVal==null) 
+            {
+                return Response::json(['errors' => "Stock Not Available..!"]);
+            }
             $existCount=DB::table('temp_stock_details')->select('id')->where('t_item_code',$getItemCode->item_code)->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->get();
             $tempstockdata=count($existCount); $insertTempPrintDetails="false";
             $getExistCount=temp_print_stock_details::select('t_sum_bal_qty')->where('t_item_code',$getItemCode->item_code)->where('t_barcode',$barcode)->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->get();
@@ -167,6 +174,8 @@ class PointofSale extends Controller
             else{
                 $getTempData=temp_stock_details::select('t_stock_id','t_item_code','t_batch_no','t_mrp','t_sale_rate','t_barcode',DB::raw('SUM(t_sum_bal_qty) AS t_sum_bal_qty'))->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->where('t_item_code',$getItemCode->item_code)->groupBy('t_mrp')->groupBy('t_sale_rate')->groupBy('t_item_code')->groupBy('t_batch_no')->orderBy('t_stock_id')->get();
             }
+            $emptyItemCode=0;
+        }
             //dd($getTempData);
             $SrNo=0;$ItemData=array();$arrOft_barcode=array();$arrOf_t_sum_bal_qty=array();$arrOf_amountp=array();$arrOf_totalMrp=array();$arrof_Discount=array();
             foreach ($getTempData as $key => $value) 
@@ -191,7 +200,7 @@ class PointofSale extends Controller
             $totalMrp=array_sum($arrOf_totalMrp);
             $saveAmt=round($totalMrp - $payAmt,2);
             $itemDiscount=array_sum($arrof_Discount);
-            return Response::json(['ItemData' => $ItemData,'countVal' => $countVal,'skuCount' => $skuCount,'totalQty' => $totalQty,'payAmt' => round($payAmt,2),'totalMrp' => $totalMrp,'saveAmt' => $saveAmt,'itemDiscount' => round($itemDiscount,2)]);
+            return Response::json(['ItemData' => $ItemData,'countVal' => $countVal,'skuCount' => $skuCount,'totalQty' => $totalQty,'payAmt' => round($payAmt,2),'totalMrp' => $totalMrp,'saveAmt' => $saveAmt,'itemDiscount' => round($itemDiscount,2),'emptyItemCode' => $emptyItemCode]);
     }
 
     public function itemSave(Request $request)
