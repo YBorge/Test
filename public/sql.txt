@@ -1,4 +1,14 @@
-02-12-22---- upload below table to home pc----------
+-----------------insert to office pc-------------5-12-22
+INSERT INTO `categories` (`id`, `category_name`, `category_slug`, `parent_category_id`, `category_image`, `is_home`, `status`, `created_by`, `created_at`) VALUES (NULL, 'Scheme Master', '#', '2', '1613553407.jpg', '1', '1', 'admin', '2021-02-17 03:46:47');
+
+INSERT INTO `categories` (`id`, `category_name`, `category_slug`, `parent_category_id`, `category_image`, `is_home`, `status`, `created_by`, `created_at`) VALUES (NULL, 'Item Group Master', 'item_group_master', '1023', '1613553407.jpg', '1', '1', 'admin', '2021-02-17 03:46:47');
+
+INSERT INTO `categories` (`id`, `category_name`, `category_slug`, `parent_category_id`, `category_image`, `is_home`, `status`, `created_by`, `created_at`) VALUES (NULL, 'Item Level Scheme Master', 'item_scheme_disc', '1023', '1613553407.jpg', '1', '1', 'admin', '2021-02-17 03:46:47');
+
+INSERT INTO `categories` (`id`, `category_name`, `category_slug`, `parent_category_id`, `category_image`, `is_home`, `status`, `created_by`, `created_at`) VALUES (NULL, 'Basket/Bill Level Scheme Master', 'bill_scheme_master', '1023', '1613553407.jpg', '1', '1', 'admin','2021-02-17 03:46:47');
+------------------------------------------
+
+--------------02-12-22---- upload below table to home pc----------done
 item_scheme_disc
 
 ------27-11-22-------------------
