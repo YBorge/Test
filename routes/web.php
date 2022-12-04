@@ -17,6 +17,7 @@ use App\Http\Controllers\Master\userMaster;
 use App\Http\Controllers\Master\openStock;
 use App\Http\Controllers\Master\pmtinclexclMaster;
 use App\Http\Controllers\Master\itemtaxMaster;
+use App\Http\Controllers\Master\itemScheme;
 
 
 /*
@@ -49,6 +50,11 @@ Route::post('pointofsale_getItem',[PointofSale::class, 'itemData'])->name('point
 Route::post('pointofsaleitemSave',[PointofSale::class, 'itemSave'])->name('pointofsaleitemSave');
 Route::post('pointofsale_RemoveSku',[PointofSale::class, 'removeSku'])->name('pointofsale_RemoveSku');
 Route::post('pointofsale_copySku',[PointofSale::class, 'skucopy'])->name('pointofsale_copySku');
+
+Route::get('item_scheme_disc', [itemScheme::class, 'index'])->name('item_scheme_disc');
+Route::post('item_scheme_disc_post', [itemScheme::class, 'store'])->name('item_scheme_disc_post');
+Route::get('item_scheme_disc_pdf', [itemScheme::class, 'itemSchemePdf'])->name('item_scheme_disc_pdf');
+Route::post('item_scheme_disc_excel', [itemScheme::class, 'itemSchemeExcel'])->name('item_scheme_disc_excel');
 
 Route::get('branch_master', [branchMaster::class, 'index'])->name('branch_master');
 Route::post('branch_master_post', [branchMaster::class, 'store'])->name('branch_master_post');

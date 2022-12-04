@@ -1,0 +1,18 @@
+1) Create Table item_scheme_disc with script Ins_item_scheme_disc.sql
+-------------------------------------------------------------------------------
+2) Add in E:\xampp\htdocs\Test\routes\web.php
+
+use App\Http\Controllers\Master\itemScheme;
+
+Route::get('item_scheme_disc', [itemScheme::class, 'index'])->name('item_scheme_disc');
+Route::post('item_scheme_disc_post', [itemScheme::class, 'store'])->name('item_scheme_disc_post');
+Route::get('item_scheme_disc_pdf', [itemScheme::class, 'itemSchemePdf'])->name('item_scheme_disc_pdf');
+Route::post('item_scheme_disc_excel', [itemScheme::class, 'itemSchemeExcel'])->name('item_scheme_disc_excel');
+------------------------------------------------------------------------------------------------------------------
+3) Copy itemScheme.php in E:\xampp\htdocs\Test\app\Http\Controllers\Master
+-------------------------------------------------------------------------
+4) Copy item_scheme_disc.php in E:\xampp\htdocs\Test\app\Models
+-----------------------------------------------------------------------------------------------------
+5) Copy item_scheme_disc.blade & itemSchemePDF.blade  in E:\xampp\htdocs\Test\resources\views\master
+---------------------------------------------------------------------------------------------------
+
