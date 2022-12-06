@@ -11,6 +11,7 @@ use App\Models\stock_detail;
 use App\Models\item_master;
 use App\Models\temp_stock_details;
 use App\Models\temp_print_stock_details;
+use App\Models\item_scheme_disc;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
@@ -184,6 +185,15 @@ class PointofSale extends Controller
                 if ($updateTprint==1) 
                 {
                     $discount=$discount * $value->t_sum_bal_qty;
+                }
+                $item_scheme_disc=item_scheme_disc::select('disc_perc','disc_amt')->where('item_code',$value->t_item_code)->first();
+                if ($item_scheme_disc->disc_perc!="0.00" and $item_scheme_disc->disc_perc!=null)
+                {
+                    $discount=$discount + $item_scheme_disc->disc_perc;
+                }
+                else if ($item_scheme_disc->disc_amt!="0.00" and $item_scheme_disc->disc_amt!=null)
+                {
+                    $discount=$discount + $item_scheme_disc->disc_amt;
                 }
                 $amount=$value->t_sale_rate * $value->t_sum_bal_qty;
                 $totalMrpCal=$value->t_mrp * $value->t_sum_bal_qty;
