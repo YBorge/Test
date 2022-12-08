@@ -193,11 +193,18 @@ class PointofSale extends Controller
                 }
                 else if ($item_scheme_disc->disc_amt!="0.00" and $item_scheme_disc->disc_amt!=null)
                 {
-                    $discount=$discount + $item_scheme_disc->disc_amt;
+                    $discount=$discount + ($item_scheme_disc->disc_amt * $value->t_sum_bal_qty);
+                    $sale_rate_disp=round($value->t_sale_rate - $item_scheme_disc->disc_amt,2);
+                    $amount=$sale_rate_disp * $value->t_sum_bal_qty;
                 }
-                $amount=$value->t_sale_rate * $value->t_sum_bal_qty;
+                else
+                {
+                    $sale_rate_disp=round($value->t_sale_rate,2);
+                    $amount=$value->t_sale_rate * $value->t_sum_bal_qty;
+                }
+                
                 $totalMrpCal=$value->t_mrp * $value->t_sum_bal_qty;
-                $ItemData[]=array('batch_no' => $value->t_batch_no,'mrp' => $value->t_mrp,'disc' => round($discount,2),'qty' => $value->t_sum_bal_qty,'sale_rate' => $value->t_sale_rate,'amt' => round($amount,2),'SrNo' => $value->t_barcode,'itemName' => $this->item_master_data[$value->t_item_code],'item_code' => $value->t_item_code,'stock_id' => $value->t_stock_id,'id' => $value->id);
+                $ItemData[]=array('batch_no' => $value->t_batch_no,'mrp' => $value->t_mrp,'disc' => round($discount,2),'qty' => $value->t_sum_bal_qty,'sale_rate' => $sale_rate_disp,'amt' => round($amount,2),'SrNo' => $value->t_barcode,'itemName' => $this->item_master_data[$value->t_item_code],'item_code' => $value->t_item_code,'stock_id' => $value->t_stock_id,'id' => $value->id);
                 $arrOft_barcode[]=$value->t_barcode;
                 $arrOf_t_sum_bal_qty[]=$value->t_sum_bal_qty;
                 $arrOf_amountp[]=round($amount,2);
@@ -260,9 +267,24 @@ class PointofSale extends Controller
                 {
                     $discount=$discount * $value->t_sum_bal_qty;
                 }
-                $amount=$value->t_sale_rate * $value->t_sum_bal_qty;
+                $item_scheme_disc=item_scheme_disc::select('disc_perc','disc_amt')->where('item_code',$value->t_item_code)->first();
+                if ($item_scheme_disc->disc_perc!="0.00" and $item_scheme_disc->disc_perc!=null)
+                {
+                    $discount=$discount + $item_scheme_disc->disc_perc;
+                }
+                else if ($item_scheme_disc->disc_amt!="0.00" and $item_scheme_disc->disc_amt!=null)
+                {
+                    $discount=$discount + ($item_scheme_disc->disc_amt * $value->t_sum_bal_qty);
+                    $sale_rate_disp=round($value->t_sale_rate - $item_scheme_disc->disc_amt,2);
+                    $amount=$sale_rate_disp * $value->t_sum_bal_qty;
+                }
+                else
+                {
+                    $sale_rate_disp=round($value->t_sale_rate,2);
+                    $amount=$value->t_sale_rate * $value->t_sum_bal_qty;
+                }
                 $totalMrpCal=$value->t_mrp * $value->t_sum_bal_qty;
-                $ItemData[]=array('batch_no' => $value->t_batch_no,'mrp' => $value->t_mrp,'disc' => round($discount,2),'qty' => $value->t_sum_bal_qty,'sale_rate' => $value->t_sale_rate,'amt' => round($amount,2),'SrNo' => $value->t_barcode,'itemName' => $this->item_master_data[$value->t_item_code],'item_code' => $value->t_item_code,'stock_id' => $value->t_stock_id,'id' => $value->id);
+                $ItemData[]=array('batch_no' => $value->t_batch_no,'mrp' => $value->t_mrp,'disc' => round($discount,2),'qty' => $value->t_sum_bal_qty,'sale_rate' => $sale_rate_disp,'amt' => round($amount,2),'SrNo' => $value->t_barcode,'itemName' => $this->item_master_data[$value->t_item_code],'item_code' => $value->t_item_code,'stock_id' => $value->t_stock_id,'id' => $value->id);
                 $arrOft_barcode[]=$value->t_barcode;
                 $arrOf_t_sum_bal_qty[]=$value->t_sum_bal_qty;
                 $arrOf_amountp[]=round($amount,2);
@@ -309,9 +331,24 @@ class PointofSale extends Controller
             {
                 $discount=$value->t_mrp - $value->t_sale_rate;
                 $discount=$discount * $value->t_sum_bal_qty;
-                $amount=$value->t_sale_rate * $value->t_sum_bal_qty;
+                $item_scheme_disc=item_scheme_disc::select('disc_perc','disc_amt')->where('item_code',$value->t_item_code)->first();
+                if ($item_scheme_disc->disc_perc!="0.00" and $item_scheme_disc->disc_perc!=null)
+                {
+                    $discount=$discount + $item_scheme_disc->disc_perc;
+                }
+                else if ($item_scheme_disc->disc_amt!="0.00" and $item_scheme_disc->disc_amt!=null)
+                {
+                    $discount=$discount + ($item_scheme_disc->disc_amt * $value->t_sum_bal_qty);
+                    $sale_rate_disp=round($value->t_sale_rate - $item_scheme_disc->disc_amt,2);
+                    $amount=$sale_rate_disp * $value->t_sum_bal_qty;
+                }
+                else
+                {
+                    $sale_rate_disp=round($value->t_sale_rate,2);
+                    $amount=$value->t_sale_rate * $value->t_sum_bal_qty;
+                }
                 $totalMrpCal=$value->t_mrp * $value->t_sum_bal_qty;
-                $ItemData[]=array('batch_no' => $value->t_batch_no,'mrp' => $value->t_mrp,'disc' => round($discount,2),'qty' => $value->t_sum_bal_qty,'sale_rate' => $value->t_sale_rate,'amt' => round($amount,2),'SrNo' => $value->t_barcode,'itemName' => $this->item_master_data[$value->t_item_code],'item_code' => $value->t_item_code,'stock_id' => $value->t_stock_id,'id' => $value->id);
+                $ItemData[]=array('batch_no' => $value->t_batch_no,'mrp' => $value->t_mrp,'disc' => round($discount,2),'qty' => $value->t_sum_bal_qty,'sale_rate' => $sale_rate_disp,'amt' => round($amount,2),'SrNo' => $value->t_barcode,'itemName' => $this->item_master_data[$value->t_item_code],'item_code' => $value->t_item_code,'stock_id' => $value->t_stock_id,'id' => $value->id);
                 $arrOft_barcode[]=$value->t_barcode;
                 $arrOf_t_sum_bal_qty[]=$value->t_sum_bal_qty;
                 $arrOf_amountp[]=round($amount,2);
@@ -348,9 +385,24 @@ class PointofSale extends Controller
             {
                 $discount=$value->t_mrp - $value->t_sale_rate;
                 $discount=$discount * $value->t_sum_bal_qty;
-                $amount=$value->t_sale_rate * $value->t_sum_bal_qty;
+                $item_scheme_disc=item_scheme_disc::select('disc_perc','disc_amt')->where('item_code',$value->t_item_code)->first();
+                if ($item_scheme_disc->disc_perc!="0.00" and $item_scheme_disc->disc_perc!=null)
+                {
+                    $discount=$discount + $item_scheme_disc->disc_perc;
+                }
+                else if ($item_scheme_disc->disc_amt!="0.00" and $item_scheme_disc->disc_amt!=null)
+                {
+                    $discount=$discount + ($item_scheme_disc->disc_amt * $value->t_sum_bal_qty);
+                    $sale_rate_disp=round($value->t_sale_rate - $item_scheme_disc->disc_amt,2);
+                    $amount=$sale_rate_disp * $value->t_sum_bal_qty;
+                }
+                else
+                {
+                    $sale_rate_disp=round($value->t_sale_rate,2);
+                    $amount=$value->t_sale_rate * $value->t_sum_bal_qty;
+                }
                 $totalMrpCal=$value->t_mrp * $value->t_sum_bal_qty;
-                $ItemData[]=array('batch_no' => $value->t_batch_no,'mrp' => $value->t_mrp,'disc' => round($discount,2),'qty' => $value->t_sum_bal_qty,'sale_rate' => $value->t_sale_rate,'amt' => round($amount,2),'SrNo' => $value->t_barcode,'itemName' => $this->item_master_data[$value->t_item_code],'item_code' => $value->t_item_code,'stock_id' => $value->t_stock_id,'id' => $value->id);
+                $ItemData[]=array('batch_no' => $value->t_batch_no,'mrp' => $value->t_mrp,'disc' => round($discount,2),'qty' => $value->t_sum_bal_qty,'sale_rate' => $sale_rate_disp,'amt' => round($amount,2),'SrNo' => $value->t_barcode,'itemName' => $this->item_master_data[$value->t_item_code],'item_code' => $value->t_item_code,'stock_id' => $value->t_stock_id,'id' => $value->id);
                 $arrOft_barcode[]=$value->t_barcode;
                 $arrOf_t_sum_bal_qty[]=$value->t_sum_bal_qty;
                 $arrOf_amountp[]=round($amount,2);
