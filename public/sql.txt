@@ -1,4 +1,4 @@
------------------insert to office pc-------------5-12-22
+-----------------insert to office pc-------------5-12-22-------------done
 INSERT INTO `categories` (`id`, `category_name`, `category_slug`, `parent_category_id`, `category_image`, `is_home`, `status`, `created_by`, `created_at`) VALUES (NULL, 'Scheme Master', '#', '2', '1613553407.jpg', '1', '1', 'admin', '2021-02-17 03:46:47');
 
 INSERT INTO `categories` (`id`, `category_name`, `category_slug`, `parent_category_id`, `category_image`, `is_home`, `status`, `created_by`, `created_at`) VALUES (NULL, 'Item Group Master', 'item_group_master', '1023', '1613553407.jpg', '1', '1', 'admin', '2021-02-17 03:46:47');
