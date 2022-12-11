@@ -186,15 +186,31 @@ class PointofSale extends Controller
                 {
                     $discount=$discount * $value->t_sum_bal_qty;
                 }
-                $item_scheme_disc=item_scheme_disc::select('disc_perc','disc_amt')->where('item_code',$value->t_item_code)->first();
-                if ($item_scheme_disc->disc_perc!=null and $item_scheme_disc->disc_perc!='0.00')
+                $item_scheme_disc=item_scheme_disc::select('disc_perc','disc_amt','promo_code','calc_on','fix_rate')->where('item_code',$value->t_item_code)->first();
+                $item_scheme_disc->calc_on =='S' ? $calcOnMrpSale=$value->t_sale_rate : $item_scheme_disc->calc_on =='M' ?? $calcOnMrpSale=$value->t_mrp;
+                if ($item_scheme_disc->promo_code=='P') 
                 {
-                    $discount=$discount + $item_scheme_disc->disc_perc;
+                    if ($item_scheme_disc->disc_perc!=null)
+                    {
+                        $discount=$discount + ($calcOnMrpSale * $item_scheme_disc->disc_perc)/100;
+                        $perCentAmt=($calcOnMrpSale * $item_scheme_disc->disc_perc)/100;
+                        $sale_rate_disp=round($calcOnMrpSale - $perCentAmt,2);
+                        $amount=round($sale_rate_disp * $value->t_sum_bal_qty,2);
+                    }
                 }
-                else if ($item_scheme_disc->disc_amt!=null and $item_scheme_disc->disc_amt!='0.00')
+                else if ($item_scheme_disc->promo_code=='A')
                 {
-                    $discount=$discount + ($item_scheme_disc->disc_amt * $value->t_sum_bal_qty);
-                    $sale_rate_disp=round($value->t_sale_rate - $item_scheme_disc->disc_amt,2);
+                    if ($item_scheme_disc->disc_amt!=null) 
+                    {
+                        $discount=$discount + ($item_scheme_disc->disc_amt * $value->t_sum_bal_qty);
+                        $sale_rate_disp=round($calcOnMrpSale - $item_scheme_disc->disc_amt,2);
+                        $amount=round($sale_rate_disp * $value->t_sum_bal_qty,2);
+                    }
+                }
+                elseif ($item_scheme_disc->promo_code=='F') 
+                {
+                    $discount=$discount + ($calcOnMrpSale - $item_scheme_disc->fix_rate);
+                    $sale_rate_disp=round($item_scheme_disc->fix_rate,2);
                     $amount=round($sale_rate_disp * $value->t_sum_bal_qty,2);
                 }
                 else
@@ -267,15 +283,31 @@ class PointofSale extends Controller
                 {
                     $discount=$discount * $value->t_sum_bal_qty;
                 }
-                $item_scheme_disc=item_scheme_disc::select('disc_perc','disc_amt')->where('item_code',$value->t_item_code)->first();
-                if ($item_scheme_disc->disc_perc!=null and $item_scheme_disc->disc_perc!='0.00')
+                $item_scheme_disc=item_scheme_disc::select('disc_perc','disc_amt','promo_code','calc_on','fix_rate')->where('item_code',$value->t_item_code)->first();
+                $item_scheme_disc->calc_on =='S' ? $calcOnMrpSale=$value->t_sale_rate : $item_scheme_disc->calc_on =='M' ?? $calcOnMrpSale=$value->t_mrp;
+                if ($item_scheme_disc->promo_code=='P') 
                 {
-                    $discount=$discount + $item_scheme_disc->disc_perc;
+                    if ($item_scheme_disc->disc_perc!=null)
+                    {
+                        $discount=$discount + ($calcOnMrpSale * $item_scheme_disc->disc_perc)/100;
+                        $perCentAmt=($calcOnMrpSale * $item_scheme_disc->disc_perc)/100;
+                        $sale_rate_disp=round($calcOnMrpSale - $perCentAmt,2);
+                        $amount=round($sale_rate_disp * $value->t_sum_bal_qty,2);
+                    }
                 }
-                else if ($item_scheme_disc->disc_amt!=null and $item_scheme_disc->disc_amt!='0.00')
+                else if ($item_scheme_disc->promo_code=='A')
                 {
-                    $discount=$discount + ($item_scheme_disc->disc_amt * $value->t_sum_bal_qty);
-                    $sale_rate_disp=round($value->t_sale_rate - $item_scheme_disc->disc_amt,2);
+                    if ($item_scheme_disc->disc_amt!=null) 
+                    {
+                        $discount=$discount + ($item_scheme_disc->disc_amt * $value->t_sum_bal_qty);
+                        $sale_rate_disp=round($calcOnMrpSale - $item_scheme_disc->disc_amt,2);
+                        $amount=round($sale_rate_disp * $value->t_sum_bal_qty,2);
+                    }
+                }
+                elseif ($item_scheme_disc->promo_code=='F') 
+                {
+                    $discount=$discount + ($calcOnMrpSale - $item_scheme_disc->fix_rate);
+                    $sale_rate_disp=round($item_scheme_disc->fix_rate,2);
                     $amount=round($sale_rate_disp * $value->t_sum_bal_qty,2);
                 }
                 else
@@ -331,15 +363,31 @@ class PointofSale extends Controller
             {
                 $discount=$value->t_mrp - $value->t_sale_rate;
                 $discount=$discount * $value->t_sum_bal_qty;
-                $item_scheme_disc=item_scheme_disc::select('disc_perc','disc_amt')->where('item_code',$value->t_item_code)->first();
-                if ($item_scheme_disc->disc_perc!=null and $item_scheme_disc->disc_perc!='0.00')
+                $item_scheme_disc=item_scheme_disc::select('disc_perc','disc_amt','promo_code','calc_on','fix_rate')->where('item_code',$value->t_item_code)->first();
+                $item_scheme_disc->calc_on =='S' ? $calcOnMrpSale=$value->t_sale_rate : $item_scheme_disc->calc_on =='M' ?? $calcOnMrpSale=$value->t_mrp;
+                if ($item_scheme_disc->promo_code=='P') 
                 {
-                    $discount=$discount + $item_scheme_disc->disc_perc;
+                    if ($item_scheme_disc->disc_perc!=null)
+                    {
+                        $discount=$discount + ($calcOnMrpSale * $item_scheme_disc->disc_perc)/100;
+                        $perCentAmt=($calcOnMrpSale * $item_scheme_disc->disc_perc)/100;
+                        $sale_rate_disp=round($calcOnMrpSale - $perCentAmt,2);
+                        $amount=round($sale_rate_disp * $value->t_sum_bal_qty,2);
+                    }
                 }
-                else if ($item_scheme_disc->disc_amt!=null and $item_scheme_disc->disc_amt!='0.00')
+                else if ($item_scheme_disc->promo_code=='A')
                 {
-                    $discount=$discount + ($item_scheme_disc->disc_amt * $value->t_sum_bal_qty);
-                    $sale_rate_disp=round($value->t_sale_rate - $item_scheme_disc->disc_amt,2);
+                    if ($item_scheme_disc->disc_amt!=null) 
+                    {
+                        $discount=$discount + ($item_scheme_disc->disc_amt * $value->t_sum_bal_qty);
+                        $sale_rate_disp=round($calcOnMrpSale - $item_scheme_disc->disc_amt,2);
+                        $amount=round($sale_rate_disp * $value->t_sum_bal_qty,2);
+                    }
+                }
+                elseif ($item_scheme_disc->promo_code=='F') 
+                {
+                    $discount=$discount + ($calcOnMrpSale - $item_scheme_disc->fix_rate);
+                    $sale_rate_disp=round($item_scheme_disc->fix_rate,2);
                     $amount=round($sale_rate_disp * $value->t_sum_bal_qty,2);
                 }
                 else
@@ -385,15 +433,31 @@ class PointofSale extends Controller
             {
                 $discount=$value->t_mrp - $value->t_sale_rate;
                 $discount=$discount * $value->t_sum_bal_qty;
-                $item_scheme_disc=item_scheme_disc::select('disc_perc','disc_amt')->where('item_code',$value->t_item_code)->first();
-                if ($item_scheme_disc->disc_perc!=null and $item_scheme_disc->disc_perc!='0.00')
+                $item_scheme_disc=item_scheme_disc::select('disc_perc','disc_amt','promo_code','calc_on','fix_rate')->where('item_code',$value->t_item_code)->first();
+                $item_scheme_disc->calc_on =='S' ? $calcOnMrpSale=$value->t_sale_rate : $item_scheme_disc->calc_on =='M' ?? $calcOnMrpSale=$value->t_mrp;
+                if ($item_scheme_disc->promo_code=='P') 
                 {
-                    $discount=$discount + $item_scheme_disc->disc_perc;
+                    if ($item_scheme_disc->disc_perc!=null)
+                    {
+                        $discount=$discount + ($calcOnMrpSale * $item_scheme_disc->disc_perc)/100;
+                        $perCentAmt=($calcOnMrpSale * $item_scheme_disc->disc_perc)/100;
+                        $sale_rate_disp=round($calcOnMrpSale - $perCentAmt,2);
+                        $amount=round($sale_rate_disp * $value->t_sum_bal_qty,2);
+                    }
                 }
-                else if ($item_scheme_disc->disc_amt!=null and $item_scheme_disc->disc_amt!='0.00')
+                else if ($item_scheme_disc->promo_code=='A')
                 {
-                    $discount=$discount + ($item_scheme_disc->disc_amt * $value->t_sum_bal_qty);
-                    $sale_rate_disp=round($value->t_sale_rate - $item_scheme_disc->disc_amt,2);
+                    if ($item_scheme_disc->disc_amt!=null) 
+                    {
+                        $discount=$discount + ($item_scheme_disc->disc_amt * $value->t_sum_bal_qty);
+                        $sale_rate_disp=round($calcOnMrpSale - $item_scheme_disc->disc_amt,2);
+                        $amount=round($sale_rate_disp * $value->t_sum_bal_qty,2);
+                    }
+                }
+                elseif ($item_scheme_disc->promo_code=='F') 
+                {
+                    $discount=$discount + ($calcOnMrpSale - $item_scheme_disc->fix_rate);
+                    $sale_rate_disp=round($item_scheme_disc->fix_rate,2);
                     $amount=round($sale_rate_disp * $value->t_sum_bal_qty,2);
                 }
                 else

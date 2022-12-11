@@ -1,0 +1,19 @@
+for calculate on percentage
+=(sale_rate*discountPercent)/100   = for single qty
+
+
+mrp 
+=(mrp*discountPercent)/100  = for single qty
+
+
+promo code
+fix => get fix_rate from item_desc per qty
+Amount => minus on mrp/sale_rate per qty
+
+for calculate on percentage
+=(sale_rate*discountPercent)/100   = for single qty
+
+
+mrp 
+=(mrp*discountPercent)/100  = for single qty
+
