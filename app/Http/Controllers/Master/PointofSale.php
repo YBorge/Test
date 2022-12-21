@@ -12,6 +12,7 @@ use App\Models\item_master;
 use App\Models\temp_stock_details;
 use App\Models\temp_print_stock_details;
 use App\Models\item_scheme_disc;
+use App\Models\pos_sale;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
@@ -525,6 +526,8 @@ class PointofSale extends Controller
     }
     public function store(Request $request)
     {
+        $mytime = Carbon::now();
+        $sysDate=$mytime->toDateTimeString();
         $Mobile=$request->Mobile;
         $homedel=$request->homedel;
         $existCust=$request->existCust;
@@ -556,8 +559,8 @@ class PointofSale extends Controller
         [
             'Mobile' => 'required',
             'cust_code' => $autoCode==true ? 'required|unique:cust_master' : 'unique:cust_master',
-            'cust_name' => $MobileValid==1 ? 'required' : '',
-            'cust_addr1' => $MobileValid==1 ? 'required' : ''
+            'cust_name' =>'required',
+            'cust_addr1' =>'required'
         ],
         [
             'Mobile.required' => 'Please Enter Mobile No..!',
@@ -571,6 +574,97 @@ class PointofSale extends Controller
             return Response::json(['errors' => $validatedData->errors()->first()]);
         }
 
+        $getskuCopy=temp_print_stock_details::select('*')->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->orderBy('id','desc')->get();
+        foreach ($getskuCopy as $key => $value) 
+        {
+            $item_scheme_disc=item_scheme_disc::select('disc_perc','disc_amt','promo_code','calc_on','fix_rate')->where('item_code',$value->t_item_code)->first();
+            if (!blank($item_scheme_disc)) 
+            {
+                if ($item_scheme_disc->calc_on =='S') 
+                {
+                    $calcOnMrpSale=$value->t_sale_rate;
+                }else if($item_scheme_disc->calc_on =='M') 
+                {
+                    $calcOnMrpSale=$value->t_mrp;
+                }
+                if ($item_scheme_disc->promo_code=='P') 
+                {
+                    if ($item_scheme_disc->disc_perc!=null)
+                    {
+                        $discount=$discount + ($calcOnMrpSale * $item_scheme_disc->disc_perc)/100;
+                        $perCentAmt=($calcOnMrpSale * $item_scheme_disc->disc_perc)/100;
+                        $sale_rate_disp=round($calcOnMrpSale - $perCentAmt,2);
+                        $amount=round($sale_rate_disp * $value->t_sum_bal_qty,2);
+                    }
+                }
+                else if ($item_scheme_disc->promo_code=='A')
+                {
+                    if ($item_scheme_disc->disc_amt!=null) 
+                    {
+                        $discount=$discount + ($item_scheme_disc->disc_amt * $value->t_sum_bal_qty);
+                        $sale_rate_disp=round($calcOnMrpSale - $item_scheme_disc->disc_amt,2);
+                        $amount=round($sale_rate_disp * $value->t_sum_bal_qty,2);
+                    }
+                }
+                elseif ($item_scheme_disc->promo_code=='F') 
+                {
+                    $discount=$discount + ($calcOnMrpSale - $item_scheme_disc->fix_rate);
+                    $sale_rate_disp=round($item_scheme_disc->fix_rate,2);
+                    $amount=round($sale_rate_disp * $value->t_sum_bal_qty,2);
+                }
+            }
+            else
+            {
+                $sale_rate_disp=round($value->t_sale_rate,2);
+                $amount=round($value->t_sale_rate * $value->t_sum_bal_qty,2);
+            }
+
+            try {
+                pos_sale::create([
+                    'loc_code' =>  Session::get('companyloc_code'),
+                    'v_no' => '',
+                    'v_date' => $sysDate,
+                    'mac_id' => $this->machineName,
+                    'inv_type' => '',
+                    'cust_code' => $autoCode==true ? $request->cust_code : $custcode,
+                    'gl_code' => '',
+                    'gstin' => '',
+                    'home_delvy' => '',
+                    'bill_amt' => '',
+                    'roundoff' => '',
+                    'recd_amt' => '',
+                    'ord_id' => '',
+                    'salesman_code' => '',
+                    'token_no' => '',
+                    'session_id' => '',
+                    'comp_code' => '',
+                    'bill_type' => '',
+                    'item_code' => '',
+                    'barcode' => '',
+                    'bill_qty' => '',
+                    'mrp' => '',
+                    'cost_rate' => '',
+                    'sale_rate' => '',
+                    'item_amt' => '',
+                    'batch_no' => '',
+                    'promo_item' => '',
+                    'item_disc' => '',
+                    'promo_bill' =>'',
+                    'created_by' => Session::get('useremail'),
+                    'updated_by' => Session::get('useremail'),
+                    'created_at' => $mytime,
+                    'updated_at' => $mytime
+                ]);
+               
+                return Response::json(['success' => true]);
+            }
+            catch (Exception $exception) {
+                
+                return Response::json(['errors' => $exception->getMessage()]);
+            }
+
+            
+        }
         if ($existCust=='') 
         {
             $sysDate = Carbon::now()->format('d-m-Y');
@@ -603,10 +697,11 @@ class PointofSale extends Controller
                 return Response::json(['success' => true]);
             }
             catch (Exception $exception) {
-                dd($exception);
+                
                 return Response::json(['errors' => $exception->getMessage()]);
             }
             
-        }
+        }   
+        
     }
 }
