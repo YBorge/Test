@@ -12,7 +12,7 @@ use App\Models\item_master;
 use App\Models\temp_stock_details;
 use App\Models\temp_print_stock_details;
 use App\Models\item_scheme_disc;
-use App\Models\pos_sale;
+use App\Models\pointofsale;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
@@ -534,11 +534,6 @@ class PointofSale extends Controller
         $custSeq=parameters::select('param_value')
                                     ->where('param_code', '=', 'USE_CUSTOMER_SEQ')
                                     ->first();
-        if ($Mobile=='') 
-        {
-            $Message="Please Enter Mobile No..!";
-            return Response::json(['errors' => $Message]);
-        }
         if ($existCust=='') 
         {
             $MobileValid=1;
@@ -551,19 +546,19 @@ class PointofSale extends Controller
         else{
             $autoCode=true;
         }
-        // if ($homedel=='Y' and $existCust=='') 
-        // {
-        //     $autoCode=true;
-        // }
+        if ($homedel=='Y') 
+        {
+            $valHomeDel=true;
+        }
         $validatedData = Validator::make($request->all(), 
         [
-            'Mobile' => 'required',
+            // 'Mobile' => 'required',
             'cust_code' => $autoCode==true ? 'required|unique:cust_master' : 'unique:cust_master',
-            'cust_name' =>'required',
-            'cust_addr1' =>'required'
+            'cust_name' => $valHomeDel==true ? 'required' : '',
+            'cust_addr1' =>$valHomeDel==true ? 'required' : ''
         ],
         [
-            'Mobile.required' => 'Please Enter Mobile No..!',
+            // 'Mobile.required' => 'Please Enter Mobile No..!',
             'cust_code.required' => 'Please Enter Code..!',
             'cust_code.unique' => 'Code Already Exist..!',
             'cust_name.required' => 'Please Enter Name..!',
@@ -620,12 +615,12 @@ class PointofSale extends Controller
             }
 
             try {
-                pos_sale::create([
+                pointofsale::create([
                     'loc_code' =>  Session::get('companyloc_code'),
                     'v_no' => '',
                     'v_date' => $sysDate,
                     'mac_id' => $this->machineName,
-                    'inv_type' => '',
+                    'inv_type' => 'R',
                     'cust_code' => $autoCode==true ? $request->cust_code : $custcode,
                     'gl_code' => '',
                     'gstin' => '',
