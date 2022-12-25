@@ -12,7 +12,7 @@ use App\Models\item_master;
 use App\Models\temp_stock_details;
 use App\Models\temp_print_stock_details;
 use App\Models\item_scheme_disc;
-use App\Models\pointofsale;
+use App\Models\pos_sale;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
@@ -615,7 +615,7 @@ class PointofSale extends Controller
             }
 
             try {
-                pointofsale::create([
+                pos_sale::create([
                     'loc_code' =>  Session::get('companyloc_code'),
                     'v_no' => '',
                     'v_date' => $sysDate,
