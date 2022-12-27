@@ -534,10 +534,8 @@ class PointofSale extends Controller
         $custSeq=parameters::select('param_value')
                                     ->where('param_code', '=', 'USE_CUSTOMER_SEQ')
                                     ->first();
-        if ($existCust=='') 
-        {
-            $MobileValid=1;
-        }
+
+        $existCust=='' ? $MobileValid=1 : $MobileValid='';
         if($custSeq->param_value=='Y')
         {
             $autoCode=false;
@@ -546,10 +544,8 @@ class PointofSale extends Controller
         else{
             $autoCode=true;
         }
-        if ($homedel=='Y') 
-        {
-            $valHomeDel=true;
-        }
+        
+        $homedel=='Y' ? $valHomeDel=true : $valHomeDel='';
         $validatedData = Validator::make($request->all(), 
         [
             // 'Mobile' => 'required',
@@ -569,6 +565,47 @@ class PointofSale extends Controller
             return Response::json(['errors' => $validatedData->errors()->first()]);
         }
 
+        try {
+            pos_sale::create([
+                'loc_code' =>  Session::get('companyloc_code'),
+                'comp_code' => Session::get('companycode'),
+                'v_no' => '',
+                'v_date' => $sysDate,
+                'mac_id' => $this->machineName,
+                'inv_type' => 'R',
+                'cust_code' => $autoCode==true ? $request->cust_code : $custcode,
+                'gl_code' => '',
+                'gstin' => '',
+                'home_delvy' => '',
+                'ord_id' => '',
+                'salesman_code' => '',
+                'token_no' => '',
+                'session_id' => '',
+                'bill_type' => '',
+                'manual_disc_user' => '',
+                'manual_disc_perc' => '',
+                'oth_chrg_user' => '',
+                'oth_chrg_perc' => '',
+                'net_bill_amt' => '',
+                'roundoff' => '',
+                'net_sale_amt' => '',
+                'item_amt' => '',
+                'item_disc' => '',
+                'bill_disc' => '',
+                'manual_disc_amt' => '',
+                'oth_chrg_amt' => '',
+                'pmt_chrg' => '',
+                'created_by' => Session::get('useremail'),
+                'created_at' => $sysDate,
+                'updated_at' => $sysDate
+            ]);
+           
+            return Response::json(['success' => true]);
+        }
+        catch (Exception $exception) {
+            
+            return Response::json(['errors' => $exception->getMessage()]);
+        }
         $getskuCopy=temp_print_stock_details::select('*')->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->orderBy('id','desc')->get();
         foreach ($getskuCopy as $key => $value) 
         {
@@ -612,53 +649,7 @@ class PointofSale extends Controller
             {
                 $sale_rate_disp=round($value->t_sale_rate,2);
                 $amount=round($value->t_sale_rate * $value->t_sum_bal_qty,2);
-            }
-
-            try {
-                pos_sale::create([
-                    'loc_code' =>  Session::get('companyloc_code'),
-                    'v_no' => '',
-                    'v_date' => $sysDate,
-                    'mac_id' => $this->machineName,
-                    'inv_type' => 'R',
-                    'cust_code' => $autoCode==true ? $request->cust_code : $custcode,
-                    'gl_code' => '',
-                    'gstin' => '',
-                    'home_delvy' => '',
-                    'bill_amt' => '',
-                    'roundoff' => '',
-                    'recd_amt' => '',
-                    'ord_id' => '',
-                    'salesman_code' => '',
-                    'token_no' => '',
-                    'session_id' => '',
-                    'comp_code' => '',
-                    'bill_type' => '',
-                    'item_code' => '',
-                    'barcode' => '',
-                    'bill_qty' => '',
-                    'mrp' => '',
-                    'cost_rate' => '',
-                    'sale_rate' => '',
-                    'item_amt' => '',
-                    'batch_no' => '',
-                    'promo_item' => '',
-                    'item_disc' => '',
-                    'promo_bill' =>'',
-                    'created_by' => Session::get('useremail'),
-                    'updated_by' => Session::get('useremail'),
-                    'created_at' => $mytime,
-                    'updated_at' => $mytime
-                ]);
-               
-                return Response::json(['success' => true]);
-            }
-            catch (Exception $exception) {
-                
-                return Response::json(['errors' => $exception->getMessage()]);
-            }
-
-            
+            }   
         }
         if ($existCust=='') 
         {

@@ -135,7 +135,7 @@
           <a href="#" class="btn btn-xs btn-success"> Display / Show</a>&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-xs btn-success"> Sku List-LOV</a>&nbsp;&nbsp;&nbsp;
           <a href="#" class="btn btn-xs btn-success"> Hold Bill</a>&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-xs btn-success">Pop Hold Bill </a>
           <a href="#" class="btn btn-xs btn-primary"> Re-Print Bill</a>&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-xs btn-success"> Cancel Bill</a>&nbsp;&nbsp;&nbsp;
-          <a href="#" id="btn_submit" class="btn btn-xs btn-success">Payment</a>
+          <a href="#" id="btn_submit3" onclick="openmodal3(this);" class="btn btn-xs btn-success">Payment</a>
         </div>  
       
     </div>
@@ -194,6 +194,47 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary btn-submit">Save</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div id="myModal3" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        
+        <h4 class="modal-title"><b>Payment</b></h4>
+      </div>
+      <div class="modal-body">
+        <table border="1">
+          <tr>
+            <th>Payment Type & Name</th>
+            <th>Amt bef.Chrgs</th>
+            <th>Pmt Charge</th>
+            <th>item name</th>
+            <th>Cash Recd./CR Note <br> Coupon/ Card No</th>
+            <th>Ammount</th>
+            <th>Bal Qty</th>
+            <th>Narration</th>
+          </tr>
+          <tbody id="tbdata3">
+            <td>CASH</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td id="PaymentId"></td>
+            <td></td>
+            <td></td>
+          </tbody>
+       </table>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" type="button" id="btn_submit">Save</button>
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
       </div>
     </div>
@@ -587,6 +628,18 @@
             $('#myModal').modal('hide');
           });
         }
+        
+        function openmodal3(e) {
+          var payAmt=document.getElementById("payAmt").value;
+          $("#PaymentId").html(payAmt);
+          $('#myModal3').modal('show');
+          
+          $(document).on("click", ".hello", function(event){
+            event.preventDefault();
+            $('#myModal3').modal('hide');
+          });
+        }
+
         $('#homedel').change(function(e){
           var hD= document.getElementById('homedel').value;
           var cd= document.getElementById('cust_code').value;
