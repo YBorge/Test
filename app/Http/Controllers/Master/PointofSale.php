@@ -13,6 +13,7 @@ use App\Models\temp_stock_details;
 use App\Models\temp_print_stock_details;
 use App\Models\item_scheme_disc;
 use App\Models\pos_sale;
+use App\Models\pointofsaledetails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
@@ -528,6 +529,7 @@ class PointofSale extends Controller
     {
         $mytime = Carbon::now();
         $sysDate=$mytime->toDateTimeString();
+        $vDate=$mytime->toDateString();
         $Mobile=$request->Mobile;
         $homedel=$request->homedel;
         $existCust=$request->existCust;
@@ -549,12 +551,14 @@ class PointofSale extends Controller
         $validatedData = Validator::make($request->all(), 
         [
             // 'Mobile' => 'required',
+            'payAmt' => 'required',
             'cust_code' => $autoCode==true ? 'required|unique:cust_master' : 'unique:cust_master',
             'cust_name' => $valHomeDel==true ? 'required' : '',
             'cust_addr1' =>$valHomeDel==true ? 'required' : ''
         ],
         [
             // 'Mobile.required' => 'Please Enter Mobile No..!',
+            'payAmt.required' => 'Payment Must be greater than 0..!',
             'cust_code.required' => 'Please Enter Code..!',
             'cust_code.unique' => 'Code Already Exist..!',
             'cust_name.required' => 'Please Enter Name..!',
@@ -564,37 +568,47 @@ class PointofSale extends Controller
         {
             return Response::json(['errors' => $validatedData->errors()->first()]);
         }
-
+        $currentYear = Carbon::now()->format('Y');
+        $v_number=$currentYear."0000001";
+        $getVnum=pos_sale::select('v_no')->orderBy('p_id', 'DESC')->first();
+        
+        if($getVnum ==null or $getVnum=='')
+        {
+            $v_no1=$v_number;
+        }else{
+            $v_no1=$getVnum->v_no +1;
+        }
+        
         try {
             pos_sale::create([
                 'loc_code' =>  Session::get('companyloc_code'),
                 'comp_code' => Session::get('companycode'),
-                'v_no' => '',
-                'v_date' => $sysDate,
+                'v_no' => $v_no1,
+                'v_date' => $vDate,
                 'mac_id' => $this->machineName,
                 'inv_type' => 'R',
-                'cust_code' => $autoCode==true ? $request->cust_code : $custcode,
+                'cust_code' => '',
                 'gl_code' => '',
                 'gstin' => '',
-                'home_delvy' => '',
+                'home_delvy' => $homedel,
                 'ord_id' => '',
                 'salesman_code' => '',
                 'token_no' => '',
                 'session_id' => '',
                 'bill_type' => '',
                 'manual_disc_user' => '',
-                'manual_disc_perc' => '',
+                'manual_disc_perc' => $request->discAmt,
                 'oth_chrg_user' => '',
-                'oth_chrg_perc' => '',
-                'net_bill_amt' => '',
-                'roundoff' => '',
-                'net_sale_amt' => '',
-                'item_amt' => '',
-                'item_disc' => '',
-                'bill_disc' => '',
+                'oth_chrg_perc' => $request->otherCharges,
+                'net_bill_amt' => $request->payAmt,
+                'roundoff' => $request->roundOff,
+                'net_sale_amt' => $request->payAmt,
+                'item_amt' => $request->totalMrp,
+                'item_disc' => $request->saveAmt,
+                'bill_disc' => $request->billDiscont,
                 'manual_disc_amt' => '',
                 'oth_chrg_amt' => '',
-                'pmt_chrg' => '',
+                'pmt_chrg' => $request->pmtCharge,
                 'created_by' => Session::get('useremail'),
                 'created_at' => $sysDate,
                 'updated_at' => $sysDate
@@ -619,6 +633,7 @@ class PointofSale extends Controller
                 {
                     $calcOnMrpSale=$value->t_mrp;
                 }
+                $promoCode=$item_scheme_disc->promo_code;
                 if ($item_scheme_disc->promo_code=='P') 
                 {
                     if ($item_scheme_disc->disc_perc!=null)
@@ -649,7 +664,45 @@ class PointofSale extends Controller
             {
                 $sale_rate_disp=round($value->t_sale_rate,2);
                 $amount=round($value->t_sale_rate * $value->t_sum_bal_qty,2);
-            }   
+                $promoCode='';
+                $discount=$value->t_mrp-$value->t_sale_rate;
+            }
+            try {
+                pointofsaledetails::create([
+                    'loc_code' =>  Session::get('companyloc_code'),
+                    'comp_code' => Session::get('companycode'),
+                    'v_no' => $v_no1,
+                    'v_date' => $vDate,
+                    'mac_id' => $this->machineName,
+                    'item_code' => $value->t_item_code,
+                    'barcode' => $value->t_barcode,
+                    'bill_qty' => $value->t_sum_bal_qty,
+                    'mrp' => $sale_rate_disp,
+                    'cost_rate' => $value->t_sale_rate,
+                    'sale_rate' => '',
+                    'sale_amt' => $value->t_sale_rate,
+                    'batch_no' => $value->t_batch_no,
+                    'promo_item' => $promoCode,
+                    'item_disc' => round($discount,2),
+                    'promo_bill' => round($discount,2),
+                    'bill_disc' => '',
+                    'net_sale_amt' => '',
+                    'net_sale_rate' => '',
+                    'tax_code' => '',
+                    'tax_amt' => '',
+                    'manual_disc_amt' => '',
+                    'oth_chrg_amt' => '',
+                    'free_item' => '',
+                    'pmt_chrg' => '',
+                    'adj_amt' => '',
+                    'created_at' => '',
+                    'updated_at' => '',
+                ]);
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
+            
+            
         }
         if ($existCust=='') 
         {
