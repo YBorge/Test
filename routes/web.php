@@ -50,6 +50,7 @@ Route::post('pointofsale_getItem',[PointofSale::class, 'itemData'])->name('point
 Route::post('pointofsaleitemSave',[PointofSale::class, 'itemSave'])->name('pointofsaleitemSave');
 Route::post('pointofsale_RemoveSku',[PointofSale::class, 'removeSku'])->name('pointofsale_RemoveSku');
 Route::post('pointofsale_copySku',[PointofSale::class, 'skucopy'])->name('pointofsale_copySku');
+Route::post('pointofsale_PaymentCharge',[PointofSale::class, 'paymentcharge'])->name('pointofsale_PaymentCharge');
 
 Route::get('item_scheme_disc', [itemScheme::class, 'index'])->name('item_scheme_disc');
 Route::post('item_scheme_disc_post', [itemScheme::class, 'store'])->name('item_scheme_disc_post');

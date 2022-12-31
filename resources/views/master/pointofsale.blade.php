@@ -215,21 +215,26 @@
             <th>Payment Type & Name</th>
             <th>Amt bef.Chrgs</th>
             <th>Pmt Charge</th>
-            <th>item name</th>
             <th>Cash Recd./CR Note <br> Coupon/ Card No</th>
             <th>Ammount</th>
-            <th>Bal Qty</th>
             <th>Narration</th>
           </tr>
           <tbody id="tbdata3">
-            <td>CASH</td>
+            <td>
+              <select name="paymentType" id="paymentType" style="width: ">
+              @foreach($pmt_master_data as $key => $value)
+                  <option value="{{$value->pmt_code}}">{{$value->pmt_code}} &nbsp; {{$value->pmt_name}}</option>
+              @endforeach
+              </select>
+            </td>
             <td></td>
-            <td></td>
-            <td></td>
+            <td>
+              <input type="text" readonly="" value="{{$pmt_master_data[0]['charge_per']}}" name="pmt_chrg" id="pmt_chrg" maxlength="50" style="width: 50px;">
+              <input type="hidden" readonly="" value="{{$pmt_master_data[0]['calc_on']}}" name="calc_on" id="calc_on">
+            </td>
             <td></td>
             <td id="PaymentId"></td>
-            <td></td>
-            <td></td>
+            <td><input type="text" name="remark" id="remark" maxlength="50" style="width: 50px;"></td>
           </tbody>
        </table>
       </div>
@@ -620,7 +625,36 @@
                      }
                  });
              });
+
+             $("#paymentType").change(function(e){
+                $.ajaxSetup({
+                     headers: {
+                         'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                     }
+                 });
+
+                $.ajax({
+                    url: "{{ url('pointofsale_PaymentCharge') }}",
+                    method: 'post',
+                    data:form.serialize(),
+                      success: function(data)
+                      {
+                        if (data.success) 
+                        {
+                          $("#pmt_chrg").val(data.charge_per);
+                          $("#calc_on").val(data.calc_on);    
+                        }
+                        else if(data.errors)
+                        {
+                          toastr.error(data.errors);
+                        }
+                      }
+                 });
+            });
+
         });
+
+
         function openmodal(e) {
           $('#myModal').modal('show');
           $(document).on("click", ".hello", function(event){

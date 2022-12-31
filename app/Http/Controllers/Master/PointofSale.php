@@ -14,6 +14,8 @@ use App\Models\temp_print_stock_details;
 use App\Models\item_scheme_disc;
 use App\Models\pos_sale;
 use App\Models\pointofsaledetails;
+use App\Models\pointofsalepayment;
+use App\Models\pmt_master;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
@@ -27,6 +29,7 @@ class PointofSale extends Controller
     public $custcode;
     public $otpCop;
     public $item_master_data;
+    public $pmt_master_data;
     public $machineName;
     public function __construct()
     {
@@ -34,6 +37,7 @@ class PointofSale extends Controller
         $this->sysDate= Carbon::now("Asia/Kolkata")->format('d-m-Y');
         $this->otpCop= parameters::select('param_value')->where('param_code','=','OTP_COMP')->first();
         $this->item_master_data=item_master::pluck('item_name','item_code');
+        $this->pmt_master_data=pmt_master::select('pmt_name','pmt_code','calc_on','charge_per')->where('status','Y')->get();
         $this->machineName=gethostname();
         
          //$sysDate=$currentTime->toDateTimeString();
@@ -45,7 +49,7 @@ class PointofSale extends Controller
         $macAddr = exec('getmac');
         //echo php_uname();
         //echo $host = request()->getHttpHost();
-        return view('master.pointofsale',['macAddr' => $this->machineName,'sysDate' => $sysDate,'otpCop' => $this->otpCop->param_value]);
+        return view('master.pointofsale',['macAddr' => $this->machineName,'sysDate' => $sysDate,'otpCop' => $this->otpCop->param_value,'pmt_master_data' => $this->pmt_master_data]);
     }
 
     public function posCustomerData(Request $request)
@@ -525,6 +529,21 @@ class PointofSale extends Controller
             return Response::json(['errors' => "Something went wrong...!"]);
         }
     }
+
+    public function paymentcharge(Request $request)
+    { 
+        $PmtData=pmt_master::select('calc_on','charge_per')
+                                    ->where('pmt_code', '=', $request->paymentType)
+                                    ->first();
+        if (!empty($PmtData)) 
+        {
+            return Response::json(['success' => true,'calc_on' => $PmtData->calc_on,'charge_per' => $PmtData->charge_per]);
+        }
+        else
+        {
+            return Response::json(['errors' => "Something went wrong...!"]);
+        }   
+    }
     public function store(Request $request)
     {
         $mytime = Carbon::now();
@@ -667,6 +686,12 @@ class PointofSale extends Controller
                 $promoCode='';
                 $discount=$value->t_mrp-$value->t_sale_rate;
             }
+            $insSaleAmt=round($value->t_sum_bal_qty * $value->t_sale_rate,2);
+            $insItemDiscount=round($discount * $value->t_sum_bal_qty,2);
+            $insBillDiscount=round($request->billDiscont * $discount,2);
+            $insNetSaleAmt=round(($insSaleAmt-$insItemDiscount-$insBillDiscount),2);
+            $insTaxCode='';// $request->tax_code
+            $insTaxAmt='';// ($insNetSaleAmt * $insTaxCode)/100 
             try {
                 pointofsaledetails::create([
                     'loc_code' =>  Session::get('companyloc_code'),
@@ -680,30 +705,52 @@ class PointofSale extends Controller
                     'mrp' => $value->t_mrp,
                     'cost_rate' => 'stock_details',
                     'sale_rate' => $value->t_sale_rate,
-                    'sale_amt' => $value->t_sum_bal_qty * $value->t_sale_rate,
+                    'sale_amt' => $insSaleAmt,
                     'batch_no' => $value->t_batch_no,
                     'promo_item' => $promoCode,
-                    'item_disc' => round($discount,2),
-                    'promo_bill' => round($discount,2),
-                    'bill_disc' => $discount,
-                    'net_sale_amt' => '',
-                    'net_sale_rate' => '',
-                    'tax_code' => '',
-                    'tax_amt' => '',
+                    'item_disc' => $insItemDiscount,
+                    'promo_bill' => '',
+                    'bill_disc' => $insBillDiscount,
+                    'net_sale_amt' => $insNetSaleAmt,
+                    'net_sale_rate' => round($insNetSaleAmt / $value->t_sum_bal_qty,2),
+                    'tax_code' => $insTaxCode,
+                    'tax_amt' => $insTaxAmt,
                     'manual_disc_amt' => '',
                     'oth_chrg_amt' => '',
                     'free_item' => '',
-                    'pmt_chrg' => '',
+                    'pmt_chrg' => $request->pmtCharge,
                     'adj_amt' => '',
-                    'created_at' => '',
-                    'updated_at' => '',
+                    'created_at' => $sysDate,
+                    'updated_at' => $sysDate
                 ]);
-            } catch (\Throwable $th) {
-                //throw $th;
             }
+            catch (Exception $exception) {
             
-            
+            return Response::json(['errors' => $exception->getMessage()]);
+            } 
+             
         }
+        $insPmtAmt=$request->payAmt + $request->pmt_chrg;
+        try{
+            pointofsalepayment::create([
+                    'loc_code' =>  Session::get('companyloc_code'),
+                    'comp_code' => Session::get('companycode'),
+                    'v_no' => $v_no1,
+                    'v_date' => $vDate,
+                    'mac_id' => $this->machineName,
+                    'pmt_code' => $request->paymentType,
+                    'ref_amt' => $request->payAmt - $insPmtAmt,
+                    'pmt_chrg' => $request->pmt_chrg,
+                    'pmt_amt' => $insPmtAmt,
+                    'remark' => $request->remark,
+                    'created_at' => $sysDate,
+                    'updated_at' => $sysDate
+            ]);
+        }
+        catch (Exception $exception) {
+            return Response::json(['errors' => $exception->getMessage()]);
+        }
+
         if ($existCust=='') 
         {
             $sysDate = Carbon::now()->format('d-m-Y');
