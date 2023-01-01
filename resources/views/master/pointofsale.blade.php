@@ -23,6 +23,12 @@
                 <th>Bill No: <input type="text" name="Bill No" id="Bill_No" class="form-control" value="" readonly></th>
                 <th>Cashier: <input type="text" name="Cashier" id="Cashier" class="form-control" value="{{ Session::get('useremail')}}" readonly></th>
                 <th>Machine: <input type="text" name="Machine" id="Machine" class="form-control" value="{{$macAddr}}" readonly></th>
+                <th>Invice Type :
+                  <select name="inv_type" id="inv_type">
+                    <option value="R">Retail</option>
+                    <option value="T">Tax</option>
+                  </select>
+                </th>
               </tr>
             </table>
         </div><br>
@@ -53,7 +59,8 @@
               <input type="text" name="discAmt" id="discAmt" onclick="openmodal(this);" style="width: 60px;" maxlength="10" placeholder="Amt" onkeypress="return isNumber(event)" readonly>
               <input type="text" name="discPercent" id="discPercent" onkeypress="return isNumber(event)" readonly style="width: 50px;" placeholder="%"><b>
             <b> Oth Chrg: </b>
-              <input type="text" name="otherCharges" id="otherCharges" onkeypress="return isNumber(event)" maxlength="10" style="width: 60px;" placeholder="Amt"><input type="text" name="" onkeypress="return isNumber(event)" style="width:50px;" placeholder="%">
+              <input type="text" name="otherChargesAmt" id="otherChargesAmt" onkeypress="return isNumber(event)" maxlength="10" style="width: 60px;" placeholder="Amt">
+              <input type="text" name="otherChargePer" id="otherChargePer" onkeypress="return isNumber(event)" style="width:50px;" placeholder="%">
             <b> Last Bill Amt/Change: </b>
               <input type="text" name="lastBillamt" id="lastBillamt"  onkeypress="return isNumber(event)" style="width: 100px;" placeholder="Last Bill Amt" readonly>
               <input type="text" name="lastBillamtChange" id="lastBillamtChange" style="width: 60px;" onkeypress="return isNumber(event)" placeholder="Change" maxlength="14">
@@ -103,7 +110,9 @@
             <table width="80%" border="1">  
               <br>
               <tr>
-                <td colspan="4" ><b >Total MRP :</b>  <input type="text" name="totalMrp" id="totalMrp" class="" style="text-align:right" placeholder="" readonly="" value=""></td>
+                <td colspan="4" ><b >Total MRP :</b>  <input type="text" name="totalMrp" id="totalMrp" class="" style="text-align:right" placeholder="" readonly="" value="">
+                  <input type="hidden" name="sumOfSalRate" id="sumOfSalRate" value="">
+                </td>
               </tr>
               <tr>
                 <td colspan="4" ><b>Save :</b><input type="text" name="saveAmt" id="saveAmt" class="" readonly="" style="text-align:right" placeholder="" value=""></td>
@@ -231,6 +240,7 @@
             <td>
               <input type="text" readonly="" value="{{$pmt_master_data[0]['charge_per']}}" name="pmt_chrg" id="pmt_chrg" maxlength="50" style="width: 50px;">
               <input type="hidden" readonly="" value="{{$pmt_master_data[0]['calc_on']}}" name="calc_on" id="calc_on">
+              <input type="hidden" readonly="" value="{{$PmtCharge}}" name="Pmt_Charge" id="Pmt_Charge">
             </td>
             <td></td>
             <td id="PaymentId"></td>
@@ -328,6 +338,7 @@
                             $("#totalMrp").val(data.totalMrp);
                             $("#saveAmt").val(data.saveAmt);
                             $("#totalAmt").val(data.payAmt);
+                            $("#sumOfSalRate").val(data.sumOfSalRate);
                             $("#itemDiscount").val(data.itemDiscount);
                             setTimeout(function() {
                               $("#barcode").val("");
@@ -410,6 +421,7 @@
                             $("#totalMrp").val(data.totalMrp);
                             $("#saveAmt").val(data.saveAmt);
                             $("#totalAmt").val(data.payAmt);
+                            $("#sumOfSalRate").val(data.sumOfSalRate);
                             $("#itemDiscount").val(data.itemDiscount);
                           setTimeout(function(){
                               $("#barcode").val("");
@@ -463,6 +475,7 @@
                             $("#totalMrp").val(data.totalMrp);
                             $("#saveAmt").val(data.saveAmt);
                             $("#totalAmt").val(data.payAmt);
+                            $("#sumOfSalRate").val(data.sumOfSalRate);
                             $("#itemDiscount").val(data.itemDiscount);
                       }
                       else if(data.errors)
@@ -512,6 +525,7 @@
                             $("#totalMrp").val(data.totalMrp);
                             $("#saveAmt").val(data.saveAmt);
                             $("#totalAmt").val(data.payAmt);
+                            $("#sumOfSalRate").val(data.sumOfSalRate);
                             $("#itemDiscount").val(data.itemDiscount);
                       }
                       else if(data.errors)
@@ -643,6 +657,8 @@
                         {
                           $("#pmt_chrg").val(data.charge_per);
                           $("#calc_on").val(data.calc_on);    
+                          $("#Pmt_Charge").val(data.Pmt_Charge);
+                          $("#PaymentId").html(data.totalSum);    
                         }
                         else if(data.errors)
                         {
@@ -666,8 +682,10 @@
         function openmodal3(e) {
           var payAmt=document.getElementById("payAmt").value;
           $("#PaymentId").html(payAmt);
+          $("#pmt_chrg").val("0");
+          $('#paymentType').prop('selectedIndex',0);
           $('#myModal3').modal('show');
-          
+
           $(document).on("click", ".hello", function(event){
             event.preventDefault();
             $('#myModal3').modal('hide');

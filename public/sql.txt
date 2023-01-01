@@ -1,3 +1,13 @@
+-----insert to office pc-----
+
+ALTER TABLE `pointofsale` CHANGE `bill_type` `bill_type` VARCHAR(2) CHARACTER SET latin1 COLLATE latin1_general_ci NULL DEFAULT 'N' COMMENT 'Online (Y)/ Offline(N)';
+
+ALTER TABLE `pointofsale` CHANGE `bill_type` `is_online` VARCHAR(2) CHARACTER SET latin1 COLLATE latin1_general_ci NULL DEFAULT 'N' COMMENT 'Online (Y)/ Offline(N)';
+
+INSERT INTO `parameters` (`param_id`, `param_code`, `param_value`, `param_desc`, `data_type`, `t_user`, `t_date`) VALUES (NULL, 'IS_ONLINE', 'Y', 'Online (Y)/ Offline(N)', 'C', 'Admin', '2023-08-01 08:07:38');
+
+ALTER TABLE `pointofsalepayment` CHANGE `remark` `remark` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+
 -----------------insert to office pc-------------5-12-22-------------done
 INSERT INTO `categories` (`id`, `category_name`, `category_slug`, `parent_category_id`, `category_image`, `is_home`, `status`, `created_by`, `created_at`) VALUES (NULL, 'Scheme Master', '#', '2', '1613553407.jpg', '1', '1', 'admin', '2021-02-17 03:46:47');
 

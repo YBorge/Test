@@ -16,6 +16,7 @@ use App\Models\pos_sale;
 use App\Models\pointofsaledetails;
 use App\Models\pointofsalepayment;
 use App\Models\pmt_master;
+use App\Models\tax_master;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
@@ -31,11 +32,13 @@ class PointofSale extends Controller
     public $item_master_data;
     public $pmt_master_data;
     public $machineName;
+    public $is_online;
     public function __construct()
     {
         $this->custcode=cust_master::max('cust_code');
         $this->sysDate= Carbon::now("Asia/Kolkata")->format('d-m-Y');
         $this->otpCop= parameters::select('param_value')->where('param_code','=','OTP_COMP')->first();
+        $this->is_online= parameters::select('param_value')->where('param_code','=','IS_ONLINE')->first();
         $this->item_master_data=item_master::pluck('item_name','item_code');
         $this->pmt_master_data=pmt_master::select('pmt_name','pmt_code','calc_on','charge_per')->where('status','Y')->get();
         $this->machineName=gethostname();
@@ -47,9 +50,10 @@ class PointofSale extends Controller
          
         $sysDate = Carbon::now()->format('d-m-Y');
         $macAddr = exec('getmac');
+        $PaymentWithCharge="0";
         //echo php_uname();
         //echo $host = request()->getHttpHost();
-        return view('master.pointofsale',['macAddr' => $this->machineName,'sysDate' => $sysDate,'otpCop' => $this->otpCop->param_value,'pmt_master_data' => $this->pmt_master_data]);
+        return view('master.pointofsale',['macAddr' => $this->machineName,'sysDate' => $sysDate,'otpCop' => $this->otpCop->param_value,'pmt_master_data' => $this->pmt_master_data,'PmtCharge' => $PaymentWithCharge]);
     }
 
     public function posCustomerData(Request $request)
@@ -184,7 +188,7 @@ class PointofSale extends Controller
             $emptyItemCode=0;
         }
             
-            $SrNo=0;$ItemData=array();$arrOft_barcode=array();$arrOf_t_sum_bal_qty=array();$arrOf_amountp=array();$arrOf_totalMrp=array();$arrof_Discount=array();
+            $SrNo=0;$ItemData=array();$arrOft_barcode=array();$arrOf_t_sum_bal_qty=array();$arrOf_amountp=array();$arrOf_totalMrp=array();$arrof_Discount=array();$arrof_sale_rate=array();
             foreach ($getTempData as $key => $value) 
             {
                 $discount=$value->t_mrp - $value->t_sale_rate;
@@ -241,6 +245,7 @@ class PointofSale extends Controller
                 $arrOf_amountp[]=$amount ?? '-';
                 $arrOf_totalMrp[]=round($totalMrpCal,2);
                 $arrof_Discount[]=round($discount,2);
+                $arrof_sale_rate[]=round($sale_rate_disp,2);
             }
             $skuCount=sizeof(array_unique($arrOft_barcode));
             $totalQty=array_sum($arrOf_t_sum_bal_qty);
@@ -248,7 +253,8 @@ class PointofSale extends Controller
             $totalMrp=array_sum($arrOf_totalMrp);
             $saveAmt=round($totalMrp - $payAmt,2);
             $itemDiscount=array_sum($arrof_Discount);
-            return Response::json(['ItemData' => $ItemData,'countVal' => $countVal,'skuCount' => $skuCount,'totalQty' => $totalQty,'payAmt' => round($payAmt,2),'totalMrp' => $totalMrp,'saveAmt' => $saveAmt,'itemDiscount' => round($itemDiscount,2),'emptyItemCode' => $emptyItemCode]);
+            $sumOfSalRate=array_sum($arrof_sale_rate);
+            return Response::json(['ItemData' => $ItemData,'countVal' => $countVal,'skuCount' => $skuCount,'totalQty' => $totalQty,'payAmt' => round($payAmt,2),'totalMrp' => $totalMrp,'saveAmt' => $saveAmt,'itemDiscount' => round($itemDiscount,2),'emptyItemCode' => $emptyItemCode,'sumOfSalRate' => $sumOfSalRate]);
     }
 
     public function itemSave(Request $request)
@@ -290,7 +296,7 @@ class PointofSale extends Controller
                 ]);
             }
             $temp_print_stock_details=temp_print_stock_details::select('*')->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->orderBy('id','desc')->get();
-            $SrNo=0;$ItemData=array();$arrOft_barcode=array();$arrOf_t_sum_bal_qty=array();$arrOf_amountp=array();$arrOf_totalMrp=array();$arrof_Discount=array();
+            $SrNo=0;$ItemData=array();$arrOft_barcode=array();$arrOf_t_sum_bal_qty=array();$arrOf_amountp=array();$arrOf_totalMrp=array();$arrof_Discount=array();$arrof_sale_rate=array();
             foreach ($temp_print_stock_details as $key => $value) 
             {
                 $discount=$value->t_mrp - $value->t_sale_rate;
@@ -346,6 +352,7 @@ class PointofSale extends Controller
                 $arrOf_amountp[]=$amount ?? '-';
                 $arrOf_totalMrp[]=round($totalMrpCal,2);
                 $arrof_Discount[]=round($discount,2);
+                $arrof_sale_rate[]=round($sale_rate_disp,2);
             }
             $skuCount=sizeof(array_unique($arrOft_barcode));
             $totalQty=array_sum($arrOf_t_sum_bal_qty);
@@ -353,7 +360,8 @@ class PointofSale extends Controller
             $totalMrp=array_sum($arrOf_totalMrp);
             $saveAmt=round($totalMrp - $payAmt,2);
             $itemDiscount=array_sum($arrof_Discount);
-            return Response::json(['success' => true,'ItemData' => $ItemData,'skuCount' => $skuCount,'totalQty' => $totalQty,'payAmt' => round($payAmt,2),'totalMrp' => $totalMrp,'saveAmt' => $saveAmt,'itemDiscount' => round($itemDiscount,2)]);
+            $sumOfSalRate=array_sum($arrof_sale_rate);
+            return Response::json(['success' => true,'ItemData' => $ItemData,'skuCount' => $skuCount,'totalQty' => $totalQty,'payAmt' => round($payAmt,2),'totalMrp' => $totalMrp,'saveAmt' => $saveAmt,'itemDiscount' => round($itemDiscount,2),'sumOfSalRate' => $sumOfSalRate]);
         }
         catch (Exception $exception) {
             return Response::json(['errors' => $exception->getMessage()]);
@@ -382,7 +390,7 @@ class PointofSale extends Controller
         if ($skuRemove) 
         {
             $temp_print_stock_details=temp_print_stock_details::select('*')->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->orderBy('id','desc')->get();
-            $SrNo=0;$ItemData=array();$arrOft_barcode=array();$arrOf_t_sum_bal_qty=array();$arrOf_amountp=array();$arrOf_totalMrp=array();$arrof_Discount=array();
+            $SrNo=0;$ItemData=array();$arrOft_barcode=array();$arrOf_t_sum_bal_qty=array();$arrOf_amountp=array();$arrOf_totalMrp=array();$arrof_Discount=array();$arrof_sale_rate=array();
             foreach ($temp_print_stock_details as $key => $value) 
             {
                 $discount=$value->t_mrp - $value->t_sale_rate;
@@ -435,6 +443,7 @@ class PointofSale extends Controller
                 $arrOf_amountp[]=$amount?? '-';
                 $arrOf_totalMrp[]=round($totalMrpCal,2);
                 $arrof_Discount[]=round($discount,2);
+                $arrof_sale_rate[]=round($sale_rate_disp,2);
             }
             $skuCount=sizeof(array_unique($arrOft_barcode));
             $totalQty=array_sum($arrOf_t_sum_bal_qty);
@@ -442,7 +451,8 @@ class PointofSale extends Controller
             $totalMrp=array_sum($arrOf_totalMrp);
             $saveAmt=round($totalMrp - $payAmt,2);
             $itemDiscount=array_sum($arrof_Discount);
-            return Response::json(['success' => true,'ItemData' => $ItemData,'skuCount' => $skuCount,'totalQty' => $totalQty,'payAmt' => round($payAmt,2),'totalMrp' => $totalMrp,'saveAmt' => $saveAmt,'itemDiscount' => round($itemDiscount,2)]);
+            $sumOfSalRate=array_sum($arrof_sale_rate);
+            return Response::json(['success' => true,'ItemData' => $ItemData,'skuCount' => $skuCount,'totalQty' => $totalQty,'payAmt' => round($payAmt,2),'totalMrp' => $totalMrp,'saveAmt' => $saveAmt,'itemDiscount' => round($itemDiscount,2),'sumOfSalRate' => $sumOfSalRate]);
         }
         else
         {
@@ -461,7 +471,7 @@ class PointofSale extends Controller
         if ($updateSku) 
         {
             $getskuCopy=temp_print_stock_details::select('*')->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->orderBy('id','desc')->get();
-            $SrNo=0;$ItemData=array();$arrOft_barcode=array();$arrOf_t_sum_bal_qty=array();$arrOf_amountp=array();$arrOf_totalMrp=array();$arrof_Discount=array();
+            $SrNo=0;$ItemData=array();$arrOft_barcode=array();$arrOf_t_sum_bal_qty=array();$arrOf_amountp=array();$arrOf_totalMrp=array();$arrof_Discount=array();$arrof_sale_rate=array();
             foreach ($getskuCopy as $key => $value) 
             {
                 $discount=$value->t_mrp - $value->t_sale_rate;
@@ -514,6 +524,7 @@ class PointofSale extends Controller
                 $arrOf_amountp[]=$amount?? '-';
                 $arrOf_totalMrp[]=round($totalMrpCal,2);
                 $arrof_Discount[]=round($discount,2);
+                $arrof_sale_rate[]=round($sale_rate_disp,2);
             }
             $skuCount=sizeof(array_unique($arrOft_barcode));
             $totalQty=array_sum($arrOf_t_sum_bal_qty);
@@ -521,8 +532,9 @@ class PointofSale extends Controller
             $totalMrp=array_sum($arrOf_totalMrp);
             $saveAmt=round($totalMrp - $payAmt,2);
             $itemDiscount=array_sum($arrof_Discount);
+            $sumOfSalRate=array_sum($arrof_sale_rate);
 
-            return Response::json(['success' => true,'ItemData' => $ItemData,'skuCount' => $skuCount,'totalQty' => $totalQty,'payAmt' => round($payAmt,2),'totalMrp' => $totalMrp,'saveAmt' => $saveAmt,'itemDiscount' => round($itemDiscount,2)]);
+            return Response::json(['success' => true,'ItemData' => $ItemData,'skuCount' => $skuCount,'totalQty' => $totalQty,'payAmt' => round($payAmt,2),'totalMrp' => $totalMrp,'saveAmt' => $saveAmt,'itemDiscount' => round($itemDiscount,2),'sumOfSalRate' => $sumOfSalRate]);
         }
         else
         {
@@ -537,7 +549,15 @@ class PointofSale extends Controller
                                     ->first();
         if (!empty($PmtData)) 
         {
-            return Response::json(['success' => true,'calc_on' => $PmtData->calc_on,'charge_per' => $PmtData->charge_per]);
+            if ($PmtData->calc_on=='S') 
+            {
+               $PaymentWithCharge = ($PmtData->charge_per / 100) * $request->sumOfSalRate;
+            }
+            elseif ($PmtData->calc_on=='M') {
+               $PaymentWithCharge = ($PmtData->charge_per / 100) * $request->totalMrp;
+            }
+
+            return Response::json(['success' => true,'calc_on' => $PmtData->calc_on,'charge_per' => $PmtData->charge_per,'Pmt_Charge' => $PaymentWithCharge,'totalSum' => round($request->payAmt + $PaymentWithCharge,0)]);
         }
         else
         {
@@ -552,6 +572,7 @@ class PointofSale extends Controller
         $Mobile=$request->Mobile;
         $homedel=$request->homedel;
         $existCust=$request->existCust;
+        $Pmt_Charge=$request->Pmt_Charge;
         $custSeq=parameters::select('param_value')
                                     ->where('param_code', '=', 'USE_CUSTOMER_SEQ')
                                     ->first();
@@ -597,52 +618,13 @@ class PointofSale extends Controller
         }else{
             $v_no1=$getVnum->v_no +1;
         }
-        
-        try {
-            pos_sale::create([
-                'loc_code' =>  Session::get('companyloc_code'),
-                'comp_code' => Session::get('companycode'),
-                'v_no' => $v_no1,
-                'v_date' => $vDate,
-                'mac_id' => $this->machineName,
-                'inv_type' => 'R',
-                'cust_code' => '',
-                'gl_code' => '',
-                'gstin' => '',
-                'home_delvy' => $homedel,
-                'ord_id' => '',
-                'salesman_code' => '',
-                'token_no' => '',
-                'session_id' => '',
-                'bill_type' => '',
-                'manual_disc_user' => '',
-                'manual_disc_perc' => $request->discAmt,
-                'oth_chrg_user' => '',
-                'oth_chrg_perc' => $request->otherCharges,
-                'net_bill_amt' => $request->payAmt,
-                'roundoff' => $request->roundOff,
-                'net_sale_amt' => $request->payAmt,
-                'item_amt' => $request->totalMrp,
-                'item_disc' => $request->saveAmt,
-                'bill_disc' => $request->billDiscont,
-                'manual_disc_amt' => '',
-                'oth_chrg_amt' => '',
-                'pmt_chrg' => $request->pmtCharge,
-                'created_by' => Session::get('useremail'),
-                'created_at' => $sysDate,
-                'updated_at' => $sysDate
-            ]);
-           
-            return Response::json(['success' => true]);
-        }
-        catch (Exception $exception) {
-            
-            return Response::json(['errors' => $exception->getMessage()]);
-        }
-        $getskuCopy=temp_print_stock_details::select('*')->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->orderBy('id','desc')->get();
+
+        $getskuCopy=temp_print_stock_details::select('*')->where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->orderBy('id','desc')->get();$arrOfNetsaleAmt=array();$arrOfSaleAmt=array();$arrOfbilldisc=array();
         foreach ($getskuCopy as $key => $value) 
         {
             $item_scheme_disc=item_scheme_disc::select('disc_perc','disc_amt','promo_code','calc_on','fix_rate')->where('item_code',$value->t_item_code)->first();
+            $discount=$value->t_mrp - $value->t_sale_rate;
+            $discount=$discount * $value->t_sum_bal_qty;
             if (!blank($item_scheme_disc)) 
             {
                 if ($item_scheme_disc->calc_on =='S') 
@@ -686,14 +668,20 @@ class PointofSale extends Controller
                 $promoCode='';
                 $discount=$value->t_mrp-$value->t_sale_rate;
             }
+            $get_tax_code=item_master::select('tax_code')->where('item_code',$value->t_item_code)->first();
+            $get_tax_percent=tax_master::select('tax_per')->where('tax_code',$get_tax_code->tax_code)->first();
+            $get_cost_rate=stock_detail::select('cost_rate')->where('stock_id',$value->t_stock_id)->where('item_code',$value->t_item_code)->first();
             $insSaleAmt=round($value->t_sum_bal_qty * $value->t_sale_rate,2);
             $insItemDiscount=round($discount * $value->t_sum_bal_qty,2);
             $insBillDiscount=round($request->billDiscont * $discount,2);
             $insNetSaleAmt=round(($insSaleAmt-$insItemDiscount-$insBillDiscount),2);
-            $insTaxCode='';// $request->tax_code
-            $insTaxAmt='';// ($insNetSaleAmt * $insTaxCode)/100 
+            $arrOfNetsaleAmt[]=$insNetSaleAmt;
+            $arrOfSaleAmt[]=$insSaleAmt;
+            $arrOfbilldisc[]=$insBillDiscount;
+            $insTaxCode=$get_tax_code->tax_code;
+            $insTaxAmt=round(($insNetSaleAmt * $get_tax_percent->tax_per)/100,2);
             try {
-                pointofsaledetails::create([
+                $posdetails=pointofsaledetails::create([
                     'loc_code' =>  Session::get('companyloc_code'),
                     'comp_code' => Session::get('companycode'),
                     'v_no' => $v_no1,
@@ -703,7 +691,7 @@ class PointofSale extends Controller
                     'barcode' => $value->t_barcode,
                     'bill_qty' => $value->t_sum_bal_qty,
                     'mrp' => $value->t_mrp,
-                    'cost_rate' => 'stock_details',
+                    'cost_rate' => $get_cost_rate->cost_rate,
                     'sale_rate' => $value->t_sale_rate,
                     'sale_amt' => $insSaleAmt,
                     'batch_no' => $value->t_batch_no,
@@ -718,7 +706,7 @@ class PointofSale extends Controller
                     'manual_disc_amt' => '',
                     'oth_chrg_amt' => '',
                     'free_item' => '',
-                    'pmt_chrg' => $request->pmtCharge,
+                    'pmt_chrg' => '',
                     'adj_amt' => '',
                     'created_at' => $sysDate,
                     'updated_at' => $sysDate
@@ -730,9 +718,82 @@ class PointofSale extends Controller
             } 
              
         }
+
+        $discAmt=$request->discAmt;
+        $discPercent=$request->discPercent;
+        if ($discAmt!='') 
+        {
+            $manual_disc_perc = ($request->payAmt / 100) * $request->discAmt;
+        }
+        elseif ($discPercent!='') 
+        {
+            $manual_disc_perc = ($request->payAmt / 100) * $request->discAmt;
+        }else{$manual_disc_perc="0";}
+
+        $otherChargesAmt=$request->otherChargesAmt;
+        $otherChargePer=$request->otherChargePer;
+        if ($otherChargesAmt!='') 
+        {
+            $oth_chrg_perc = ($request->payAmt / 100) * $request->otherChargesAmt;
+        }
+        elseif ($otherChargePer!='') 
+        {
+            $oth_chrg_perc = ($request->payAmt / 100) * $request->otherChargesAmt;
+        }else{$oth_chrg_perc="0";}
+        $insItemDisc=$request->saveAmt;
+        $insItemAmt=array_sum($arrOfSaleAmt);
+        $insBill_disc=array_sum($arrOfbilldisc);
+        $manual_disc_amt=($insItemAmt-$insItemDisc-$insBill_disc)*$manual_disc_perc/100;
+        $insNet_sale_amt=array_sum($arrOfNetsaleAmt);
+        $oth_chrg_amt=($insItemAmt-$insItemDisc-$insBill_disc)*$oth_chrg_perc/100;
+        $insRoundoff=round(($insNet_sale_amt-$manual_disc_amt+$oth_chrg_amt+$Pmt_Charge),0)-($insNet_sale_amt-$manual_disc_amt+$oth_chrg_amt+$Pmt_Charge);
+        $insNet_bill_amt=($insNet_sale_amt-$manual_disc_perc+$oth_chrg_amt+$Pmt_Charge)+$insRoundoff;
+        
+
+        try {
+            $InsPos=pos_sale::create([
+                'loc_code' =>  Session::get('companyloc_code'),
+                'comp_code' => Session::get('companycode'),
+                'v_no' => $v_no1,
+                'v_date' => $vDate,
+                'mac_id' => $this->machineName,
+                'inv_type' => $request->inv_type,
+                'cust_code' => $autoCode==true ? $request->cust_code : $custcode,
+                'gl_code' => '',
+                'gstin' => '',
+                'home_delvy' => $homedel,
+                'ord_id' => '',
+                'salesman_code' => '',
+                'token_no' => '',
+                'session_id' => '', // after work done of login
+                'is_online' => $this->is_online->param_value,
+                'manual_disc_user' => $request->usercode,
+                'manual_disc_perc' => $manual_disc_perc,
+                'oth_chrg_user' => $request->usercode,
+                'oth_chrg_perc' => $oth_chrg_perc,
+                'net_bill_amt' => $insNet_bill_amt,
+                'roundoff' => $insRoundoff,
+                'net_sale_amt' => $insNet_sale_amt,
+                'item_amt' => $insItemAmt,
+                'item_disc' => $insItemDisc,
+                'bill_disc' => $insBill_disc,
+                'manual_disc_amt' => $manual_disc_amt,
+                'oth_chrg_amt' => $oth_chrg_amt,
+                'pmt_chrg' => $Pmt_Charge,
+                'created_by' => Session::get('useremail'),
+                'created_at' => $sysDate,
+                'updated_at' => $sysDate
+            ]);
+           
+        }
+        catch (Exception $exception) {
+            
+            return Response::json(['errors' => $exception->getMessage()]);
+        }
+
         $insPmtAmt=$request->payAmt + $request->pmt_chrg;
         try{
-            pointofsalepayment::create([
+            $posPayment=pointofsalepayment::create([
                     'loc_code' =>  Session::get('companyloc_code'),
                     'comp_code' => Session::get('companycode'),
                     'v_no' => $v_no1,
@@ -785,9 +846,16 @@ class PointofSale extends Controller
             catch (Exception $exception) {
                 
                 return Response::json(['errors' => $exception->getMessage()]);
-            }
-            
+            } 
+        }
+
+        if ($posdetails and $InsPos and $posPayment) 
+        {
+            return Response::json(['success' => true]);
         }   
-        
+        else
+        {
+            return Response::json(['errors' => $exception->getMessage()]);
+        }
     }
 }
