@@ -1,4 +1,4 @@
------insert to office pc-----
+-----insert to office pc Done-----
 
 ALTER TABLE `pointofsale` CHANGE `bill_type` `bill_type` VARCHAR(2) CHARACTER SET latin1 COLLATE latin1_general_ci NULL DEFAULT 'N' COMMENT 'Online (Y)/ Offline(N)';
 

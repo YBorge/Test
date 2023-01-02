@@ -851,6 +851,8 @@ class PointofSale extends Controller
 
         if ($posdetails and $InsPos and $posPayment) 
         {
+            $ts=temp_print_stock_details::where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->delete();
+            temp_stock_details::where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->delete();
             return Response::json(['success' => true]);
         }   
         else
