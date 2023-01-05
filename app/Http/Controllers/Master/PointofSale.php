@@ -254,7 +254,7 @@ class PointofSale extends Controller
             $saveAmt=round($totalMrp - $payAmt,2);
             $itemDiscount=array_sum($arrof_Discount);
             $sumOfSalRate=array_sum($arrof_sale_rate);
-            return Response::json(['ItemData' => $ItemData,'countVal' => $countVal,'skuCount' => $skuCount,'totalQty' => $totalQty,'payAmt' => round($payAmt,2),'totalMrp' => $totalMrp,'saveAmt' => $saveAmt,'itemDiscount' => round($itemDiscount,2),'emptyItemCode' => $emptyItemCode,'sumOfSalRate' => $sumOfSalRate]);
+            return Response::json(['ItemData' => $ItemData,'countVal' => $countVal,'skuCount' => $skuCount,'totalQty' => $totalQty,'payAmt' => round($payAmt,0),'totalMrp' => $totalMrp,'saveAmt' => $saveAmt,'itemDiscount' => round($itemDiscount,2),'emptyItemCode' => $emptyItemCode,'sumOfSalRate' => $sumOfSalRate]);
     }
 
     public function itemSave(Request $request)
@@ -361,7 +361,7 @@ class PointofSale extends Controller
             $saveAmt=round($totalMrp - $payAmt,2);
             $itemDiscount=array_sum($arrof_Discount);
             $sumOfSalRate=array_sum($arrof_sale_rate);
-            return Response::json(['success' => true,'ItemData' => $ItemData,'skuCount' => $skuCount,'totalQty' => $totalQty,'payAmt' => round($payAmt,2),'totalMrp' => $totalMrp,'saveAmt' => $saveAmt,'itemDiscount' => round($itemDiscount,2),'sumOfSalRate' => $sumOfSalRate]);
+            return Response::json(['success' => true,'ItemData' => $ItemData,'skuCount' => $skuCount,'totalQty' => $totalQty,'payAmt' => round($payAmt,0),'totalMrp' => $totalMrp,'saveAmt' => $saveAmt,'itemDiscount' => round($itemDiscount,2),'sumOfSalRate' => $sumOfSalRate]);
         }
         catch (Exception $exception) {
             return Response::json(['errors' => $exception->getMessage()]);
@@ -452,7 +452,7 @@ class PointofSale extends Controller
             $saveAmt=round($totalMrp - $payAmt,2);
             $itemDiscount=array_sum($arrof_Discount);
             $sumOfSalRate=array_sum($arrof_sale_rate);
-            return Response::json(['success' => true,'ItemData' => $ItemData,'skuCount' => $skuCount,'totalQty' => $totalQty,'payAmt' => round($payAmt,2),'totalMrp' => $totalMrp,'saveAmt' => $saveAmt,'itemDiscount' => round($itemDiscount,2),'sumOfSalRate' => $sumOfSalRate]);
+            return Response::json(['success' => true,'ItemData' => $ItemData,'skuCount' => $skuCount,'totalQty' => $totalQty,'payAmt' => round($payAmt,0),'totalMrp' => $totalMrp,'saveAmt' => $saveAmt,'itemDiscount' => round($itemDiscount,2),'sumOfSalRate' => $sumOfSalRate]);
         }
         else
         {
@@ -534,7 +534,7 @@ class PointofSale extends Controller
             $itemDiscount=array_sum($arrof_Discount);
             $sumOfSalRate=array_sum($arrof_sale_rate);
 
-            return Response::json(['success' => true,'ItemData' => $ItemData,'skuCount' => $skuCount,'totalQty' => $totalQty,'payAmt' => round($payAmt,2),'totalMrp' => $totalMrp,'saveAmt' => $saveAmt,'itemDiscount' => round($itemDiscount,2),'sumOfSalRate' => $sumOfSalRate]);
+            return Response::json(['success' => true,'ItemData' => $ItemData,'skuCount' => $skuCount,'totalQty' => $totalQty,'payAmt' => round($payAmt,0),'totalMrp' => $totalMrp,'saveAmt' => $saveAmt,'itemDiscount' => round($itemDiscount,2),'sumOfSalRate' => $sumOfSalRate]);
         }
         else
         {
@@ -841,7 +841,6 @@ class PointofSale extends Controller
                     'updated_at' => $mytime
                 ]);
                
-                return Response::json(['success' => true]);
             }
             catch (Exception $exception) {
                 
@@ -851,8 +850,9 @@ class PointofSale extends Controller
 
         if ($posdetails and $InsPos and $posPayment) 
         {
-            $ts=temp_print_stock_details::where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->delete();
-            temp_stock_details::where('t_updatedby',Session::get('useremail'))->where('t_machine_name',$this->machineName)->delete();
+            temp_stock_details::where([['t_updatedby', Session::get('useremail')],['t_machine_name',$this->machineName]])->delete();
+
+            temp_print_stock_details::where([['t_updatedby', Session::get('useremail')],['t_machine_name',$this->machineName]])->delete();
             return Response::json(['success' => true]);
         }   
         else

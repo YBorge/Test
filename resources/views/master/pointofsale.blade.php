@@ -122,16 +122,16 @@
                 </td>
               </tr>
                <tr>
-                <td colspan="4" ><b>Pmt. Chrg :</b>  <input type="text" name="pmtCharge" id="pmtCharge" class="" style="text-align:right" placeholder="" value=""></td>
+                <td colspan="4" ><b>Pmt. Chrg :</b>  <input type="text" name="pmtCharge" id="pmtCharge" class="" style="text-align:right" readonly placeholder="" value=""></td>
               </tr>
               <tr>
-                <td colspan="4" ><b>Item Disc :</b>  <input type="text" name="itemDiscount" id="itemDiscount" class="" style="text-align:right" placeholder="" value=""></td>
+                <td colspan="4" ><b>Item Disc :</b>  <input type="text" name="itemDiscount" id="itemDiscount" class="" style="text-align:right" readonly placeholder="" value=""></td>
               </tr>
               <tr>
-                <td colspan="4" ><b>Bill Disc :</b>  <input type="text" name="billDiscont" id="billDiscont" class="" style="text-align:right" placeholder="" value=""></td>
+                <td colspan="4" ><b>Bill Disc :</b>  <input type="text" name="billDiscont" id="billDiscont" class="" style="text-align:right" readonly placeholder="" value=""></td>
               </tr>
               <tr>
-                <td colspan="4" ><b>Round Off :</b>  <input type="text" name="roundOff" id="roundOff" class="" style="text-align:right" placeholder="" value=""></td>
+                <td colspan="4" ><b>Round Off :</b>  <input type="text" name="roundOff" id="roundOff" class="" style="text-align:right" placeholder="" readonly value=""></td>
               </tr>
             </table>
         </div>
