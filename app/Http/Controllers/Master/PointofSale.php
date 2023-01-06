@@ -812,7 +812,7 @@ class PointofSale extends Controller
             return Response::json(['errors' => $exception->getMessage()]);
         }
 
-        if ($existCust=='') 
+        if ($existCust=='' and $request->Mobile!='') 
         {
             $sysDate = Carbon::now()->format('d-m-Y');
             $mytime = Carbon::now();

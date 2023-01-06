@@ -279,6 +279,8 @@
                        if(data.success) 
                        {   
                           toastr.success('Data Saved Successfully');
+                          $("#myTable").style('display-none',true);
+                          $("#model3").hide();
                           //$('#posTransaction')[0].reset();
                           //location.reload();
                        }
