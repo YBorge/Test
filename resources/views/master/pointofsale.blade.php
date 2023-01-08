@@ -18,13 +18,13 @@
         <div class="col-md-9" style="background-color: #cfccc9;">
            <table width="100%">
               <tr>
-                <th>Location: <input type="text" name="loc_Code" id="loc_Code" class="form-control" value="{{ Session::get('companyloc_code')}}" readonly></th>
-                <th>Bill Date: <input type="text" name="Bill Date" id="Bill_Date" class="form-control" value="{{$sysDate}}" readonly></th>
-                <th>Bill No: <input type="text" name="Bill No" id="Bill_No" class="form-control" value="" readonly></th>
-                <th>Cashier: <input type="text" name="Cashier" id="Cashier" class="form-control" value="{{ Session::get('useremail')}}" readonly></th>
-                <th>Machine: <input type="text" name="Machine" id="Machine" class="form-control" value="{{$macAddr}}" readonly></th>
+                <th>Location: <input type="text" name="loc_Code" id="loc_Code" class="form-control posHeader" value="{{ Session::get('companyloc_code')}}" readonly></th>
+                <th>Bill Date: <input type="text" name="Bill Date" id="Bill_Date" class="form-control posHeader" value="{{$sysDate}}" readonly></th>
+                <th>Bill No: <input type="text" name="Bill No" id="Bill_No" class="form-control posHeader" value="{{$billNo->v_no}}" readonly></th>
+                <th>Cashier: <input type="text" name="Cashier" id="Cashier" class="form-control posHeader" value="{{ Session::get('useremail')}}" readonly></th>
+                <th>Machine: <input type="text" name="Machine" id="Machine" class="form-control posHeader" value="{{$macAddr}}" readonly></th>
                 <th>Invice Type :
-                  <select name="inv_type" id="inv_type">
+                  <select name="inv_type" id="inv_type" class="posHeader">
                     <option value="R">Retail</option>
                     <option value="T">Tax</option>
                   </select>
@@ -71,7 +71,7 @@
             <b>Scan Barcode:</b>
               <input type="text" name="barcode" id="barcode" placeholder="Barcode" value="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <b>SEARCH SKU:</b>
-              <input type="text" name="skusearch" id="skusearch" onkeyup="myFunction()" placeholder="SEARCH SKU" value="">&nbsp;&nbsp;<input type="button" class="btn btn-primary btn-xs" id="getItem" name="getItem " value="Get Item Details"><br><br>
+              <input type="text" name="skusearch" id="skusearch" onkeyup="myFunction()" placeholder="SEARCH SKU" value="">&nbsp;&nbsp;<input type="button" class="btn btn-primary btn-xs posHeader" id="getItem" name="getItem " value="Get Item Details"><br><br>
             <table width="100%" border="1" id="myTable">
               <tr class="header">
                 <th>Sku </th>
@@ -278,9 +278,13 @@
                        }
                        if(data.success) 
                        {   
+                          $('#myModal3').modal('toggle');
+                          $("#myTable").css('display','none');
+                          $('input:not(".posHeader")').each(function(){
+                            $(this).val("");
+                          });
+                          $("#Bill_No").val(data.billNo);
                           toastr.success('Data Saved Successfully');
-                          $("#myTable").style('display-none',true);
-                          $("#model3").hide();
                           //$('#posTransaction')[0].reset();
                           //location.reload();
                        }

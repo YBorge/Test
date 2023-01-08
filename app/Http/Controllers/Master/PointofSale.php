@@ -33,6 +33,7 @@ class PointofSale extends Controller
     public $pmt_master_data;
     public $machineName;
     public $is_online;
+
     public function __construct()
     {
         $this->custcode=cust_master::max('cust_code');
@@ -51,9 +52,10 @@ class PointofSale extends Controller
         $sysDate = Carbon::now()->format('d-m-Y');
         $macAddr = exec('getmac');
         $PaymentWithCharge="0";
+        $billNo=pos_sale::select("v_no")->where([['mac_id',$this->machineName],['created_by',Session::get('useremail')]])->orderBy('p_id','desc')->first();
         //echo php_uname();
         //echo $host = request()->getHttpHost();
-        return view('master.pointofsale',['macAddr' => $this->machineName,'sysDate' => $sysDate,'otpCop' => $this->otpCop->param_value,'pmt_master_data' => $this->pmt_master_data,'PmtCharge' => $PaymentWithCharge]);
+        return view('master.pointofsale',['macAddr' => $this->machineName,'sysDate' => $sysDate,'otpCop' => $this->otpCop->param_value,'pmt_master_data' => $this->pmt_master_data,'PmtCharge' => $PaymentWithCharge,'billNo'=>$billNo]);
     }
 
     public function posCustomerData(Request $request)
@@ -853,7 +855,8 @@ class PointofSale extends Controller
             temp_stock_details::where([['t_updatedby', Session::get('useremail')],['t_machine_name',$this->machineName]])->delete();
 
             temp_print_stock_details::where([['t_updatedby', Session::get('useremail')],['t_machine_name',$this->machineName]])->delete();
-            return Response::json(['success' => true]);
+            $billNo=pos_sale::select("v_no")->where([['mac_id',$this->machineName],['created_by',Session::get('useremail')]])->orderBy('p_id','desc')->first();
+            return Response::json(['success' => true,'billNo'=> $billNo->v_no]);
         }   
         else
         {
