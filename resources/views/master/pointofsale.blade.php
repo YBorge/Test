@@ -20,7 +20,7 @@
               <tr>
                 <th>Location: <input type="text" name="loc_Code" id="loc_Code" class="form-control posHeader" value="{{ Session::get('companyloc_code')}}" readonly></th>
                 <th>Bill Date: <input type="text" name="Bill Date" id="Bill_Date" class="form-control posHeader" value="{{$sysDate}}" readonly></th>
-                <th>Bill No: <input type="text" name="Bill No" id="Bill_No" class="form-control posHeader" value="{{$billNo->v_no}}" readonly></th>
+                <th>Bill No: <input type="text" name="Bill No" id="Bill_No" class="form-control posHeader" value="{{$billNo->v_no?? '-'}}" readonly></th>
                 <th>Cashier: <input type="text" name="Cashier" id="Cashier" class="form-control posHeader" value="{{ Session::get('useremail')}}" readonly></th>
                 <th>Machine: <input type="text" name="Machine" id="Machine" class="form-control posHeader" value="{{$macAddr}}" readonly></th>
                 <th>Invice Type :
